@@ -6,13 +6,17 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "section_break_1",
   "customer",
-  "shop_type",
-  "territory",
   "sales_person",
+  "column_break_4",
+  "territory",
+  "shop_type",
+  "section_break_7",
+  "status",
+  "onboarding_date",
   "email_id",
   "mobile_number",
-  "onboarding_date",
   "latitude",
   "longitude",
   "accuracy"
@@ -70,11 +74,29 @@
    "fieldname": "accuracy",
    "fieldtype": "Data",
    "label": "Accuracy"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Lead\nFollow Up\nConverted\nLive\nRejected\nHold"
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-12-06 19:39:21.188546",
+ "modified": "2021-12-07 01:15:50.056319",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Profile",
