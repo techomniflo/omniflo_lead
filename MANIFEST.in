@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include omniflo_lead *.css
+recursive-include omniflo_lead *.csv
+recursive-include omniflo_lead *.html
+recursive-include omniflo_lead *.ico
+recursive-include omniflo_lead *.js
+recursive-include omniflo_lead *.json
+recursive-include omniflo_lead *.md
+recursive-include omniflo_lead *.png
+recursive-include omniflo_lead *.py
+recursive-include omniflo_lead *.svg
+recursive-include omniflo_lead *.txt
+recursive-exclude omniflo_lead *.pyc
