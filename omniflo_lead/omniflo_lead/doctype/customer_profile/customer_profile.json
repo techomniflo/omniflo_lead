@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:customer",
  "creation": "2021-12-06 19:37:38.065424",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -19,14 +20,16 @@
   "mobile_number",
   "latitude",
   "longitude",
-  "accuracy"
+  "accuracy",
+  "qr_code"
  ],
  "fields": [
   {
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "unique": 1
   },
   {
    "fieldname": "shop_type",
@@ -92,14 +95,20 @@
   {
    "fieldname": "section_break_7",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "qr_code",
+   "fieldtype": "Image",
+   "label": "QR Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-12-07 01:15:50.056319",
+ "modified": "2021-12-08 16:31:59.570034",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Profile",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
