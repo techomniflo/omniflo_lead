@@ -98,13 +98,13 @@
   },
   {
    "fieldname": "qr_code",
-   "fieldtype": "Image",
+   "fieldtype": "Attach Image",
    "label": "QR Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-12-08 16:31:59.570034",
+ "modified": "2021-12-08 19:54:08.345084",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Profile",
