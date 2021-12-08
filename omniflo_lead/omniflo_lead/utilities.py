@@ -1,10 +1,9 @@
 
 import os
+from pyqrcode import create as qrcreate
 
-from pymysql.constants.ER import NO
 import frappe
 from frappe.model.document import Document
-from pyqrcode import create as qrcreate
 from frappe.utils import get_url
 
 def create_barcode_folder():
