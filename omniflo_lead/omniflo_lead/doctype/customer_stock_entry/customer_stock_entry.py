@@ -31,7 +31,6 @@ class CustomerStockEntry(Document):
 
 	@frappe.whitelist()
 	def fetch_items(self):
-		print('hi-------')
 		bin_items = frappe.get_all('Customer Bin', filters = {'customer' : self.customer}, fields =['name'])
 		for item in bin_items:
 			customer_bin = frappe.get_doc('Customer Bin', item['name'])
