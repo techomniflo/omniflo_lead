@@ -98,13 +98,16 @@ app_license = "MIT"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	# "*": {
+	# 	"on_update": "method",
+	# 	"on_cancel": "method",
+	# 	"on_trash": "method"
+	# }
+    "Sales Invoice":{
+        "on_submit": "omniflo_lead.omniflo_lead.doctype_events.sales_invoice.on_submit"
+    }
+}
 
 # Scheduled Tasks
 # ---------------
