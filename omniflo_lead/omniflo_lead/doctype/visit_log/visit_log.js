@@ -17,5 +17,5 @@ function getLocation(frm) {
 
 function showPosition(position) {
 	cur_frm.doc.latitude = position.coords.latitude;
-	cur_frm.doc.latitude = position.coords.longitude;
+	cur_frm.doc.longitude = position.coords.longitude;
   }
