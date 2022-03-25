@@ -27,6 +27,7 @@
    "search_index": 1
   },
   {
+   "default": "Now",
    "fieldname": "posting_date",
    "fieldtype": "Datetime",
    "in_list_view": 1,
@@ -83,7 +84,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-26 00:05:39.918475",
+ "modified": "2022-03-26 00:19:28.920178",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Audit Log",

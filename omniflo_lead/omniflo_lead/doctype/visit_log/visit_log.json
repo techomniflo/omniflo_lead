@@ -31,11 +31,13 @@
    "options": "Sales Person"
   },
   {
+   "default": "Now",
    "fieldname": "visited_on",
    "fieldtype": "Date",
    "label": "Visited On"
   },
   {
+   "default": "Now",
    "fieldname": "visited_time",
    "fieldtype": "Time",
    "label": "Visited Time"
@@ -82,7 +84,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-09 09:36:15.823506",
+ "modified": "2022-03-26 00:19:58.344139",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Visit Log",
@@ -98,6 +100,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -110,6 +113,7 @@
    "report": 1,
    "role": "Sales User",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -122,6 +126,7 @@
    "report": 1,
    "role": "Sales Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -134,6 +139,7 @@
    "report": 1,
    "role": "Sales Master Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
