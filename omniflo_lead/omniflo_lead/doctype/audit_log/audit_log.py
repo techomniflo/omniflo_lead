@@ -41,9 +41,15 @@ class AuditLog(Document):
 	@frappe.whitelist()
 	def fetch_items(self):
 		bin_items = frappe.get_all('Customer Bin', filters = {'customer' : self.customer}, fields =['name'])
+		current_items = [item.item_code for item in self.items]
 		for item in bin_items:
 			customer_bin = frappe.get_doc('Customer Bin', item['name'])
+			if customer_bin.item_code in current_items:
+				continue
+
+			item_doc = frappe.get_doc('Item', customer_bin.item_code)
 			self.append('items',
 						{'item_code' : customer_bin.item_code , 
+						'item_name' : item_doc.item_name,
 						'last_visit_qty': customer_bin.available_qty, 
 						'current_available_qty' : customer_bin.available_qty})

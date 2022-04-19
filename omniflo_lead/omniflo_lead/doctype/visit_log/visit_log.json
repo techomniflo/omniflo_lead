@@ -7,15 +7,20 @@
  "engine": "InnoDB",
  "field_order": [
   "customer",
-  "visited_by",
   "visited_on",
+  "column_break_3",
+  "visited_by",
   "visited_time",
+  "section_break_6",
   "status",
+  "column_break_8",
   "reason",
+  "next_visit_date",
+  "section_break_11",
   "customer_stock_entry",
-  "amended_from",
   "latitude",
-  "longitude"
+  "longitude",
+  "amended_from"
  ],
  "fields": [
   {
@@ -27,8 +32,10 @@
   {
    "fieldname": "visited_by",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Visited By",
-   "options": "Sales Person"
+   "options": "Sales Person",
+   "reqd": 1
   },
   {
    "default": "Now",
@@ -46,16 +53,18 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Follow Up\nOn-boarded\nLive\nRejected\nHold\nLive"
+   "options": "Follow Up\nOn-boarded\nLive\nRejected\nHold\nLive\nNot Interested"
   },
   {
    "fieldname": "reason",
    "fieldtype": "Data",
-   "label": "Reason"
+   "label": "Reason",
+   "reqd": 1
   },
   {
    "fieldname": "customer_stock_entry",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Customer Stock Entry",
    "options": "Customer Stock Entry"
   },
@@ -79,12 +88,33 @@
    "fieldtype": "Data",
    "label": "Longitude",
    "read_only": 1
+  },
+  {
+   "fieldname": "next_visit_date",
+   "fieldtype": "Date",
+   "label": "Next Visit Date"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-26 00:19:58.344139",
+ "modified": "2022-04-19 09:13:59.826363",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Visit Log",

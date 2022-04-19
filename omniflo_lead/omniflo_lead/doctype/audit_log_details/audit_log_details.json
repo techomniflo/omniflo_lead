@@ -15,7 +15,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Type",
-   "options": "Shelf\nStore Front\nOthers"
+   "options": "Shelf\nStore Front\nOthers\nCompetition"
   },
   {
    "fieldname": "image",
@@ -27,7 +27,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-03-26 00:01:09.668963",
+ "modified": "2022-04-19 08:54:29.248373",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Audit Log Details",
