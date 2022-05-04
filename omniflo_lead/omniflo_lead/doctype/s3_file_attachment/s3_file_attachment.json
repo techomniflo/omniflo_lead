@@ -1,0 +1,70 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-04-29 17:01:37.863108",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "aws_key",
+  "aws_secret",
+  "region_name",
+  "bucket_name",
+  "folder_name",
+  "signed_url_expiry_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "aws_key",
+   "fieldtype": "Password",
+   "label": "Aws Key"
+  },
+  {
+   "fieldname": "aws_secret",
+   "fieldtype": "Password",
+   "label": "Aws Secret"
+  },
+  {
+   "fieldname": "region_name",
+   "fieldtype": "Data",
+   "label": "Region Name"
+  },
+  {
+   "fieldname": "bucket_name",
+   "fieldtype": "Data",
+   "label": "Bucket Name"
+  },
+  {
+   "fieldname": "folder_name",
+   "fieldtype": "Data",
+   "label": "Folder Name"
+  },
+  {
+   "fieldname": "signed_url_expiry_time",
+   "fieldtype": "Data",
+   "label": "signed_url_expiry_time"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2022-05-04 14:33:00.612590",
+ "modified_by": "Administrator",
+ "module": "Omniflo Lead",
+ "name": "S3 File Attachment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
