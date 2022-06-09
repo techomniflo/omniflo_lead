@@ -38,6 +38,27 @@ class AuditLog(Document):
 				customer_bin.available_qty = item.current_available_qty
 				customer_bin.save(ignore_permissions = True)
 
+	def on_cancel(self):
+		audit_last_doc=frappe.get_last_doc('Audit Log',{'customer': self.customer})
+		if not audit_last_doc:
+			pass
+		else:
+			if audit_last_doc.name==self.name:
+				print(self.name,audit_last_doc.name)
+				print(audit_last_doc.name==self.name)
+				for item in audit_last_doc.items:
+					customer_bin = frappe.db.get_value('Customer Bin', {'customer':self.customer, 'item_code': item.item_code})
+					if not customer_bin:
+						customer_bin = frappe.new_doc('Customer Bin')
+						customer_bin.customer = audit_last_doc.customer
+						customer_bin.item_code = item.item_code
+						customer_bin.available_qty = item.last_visit_qty
+						customer_bin.save(ignore_permissions = True)
+					else:
+						customer_bin = frappe.get_doc('Customer Bin', customer_bin)
+						customer_bin.available_qty = item.last_visit_qty
+						customer_bin.save(ignore_permissions = True)
+ 
 	@frappe.whitelist()
 	def fetch_items(self):
 		bin_items = frappe.get_all('Customer Bin', filters = {'customer' : self.customer}, fields =['name'])
