@@ -106,7 +106,7 @@ doc_events = {
 	# }
     "Sales Invoice":{
         "on_submit": "omniflo_lead.omniflo_lead.doctype_events.sales_invoice.on_submit",
-		"on_cancel": "omniflo_lead.omniflo_lead.doctype_events.sales_invoice.on_submit"
+		"on_cancel": "omniflo_lead.omniflo_lead.doctype_events.sales_invoice.on_cancel"
     },
 	"File":{
 		"after_insert": "omniflo_lead.omniflo_lead.doctype_events.file.file_upload_to_s3"

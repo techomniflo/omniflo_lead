@@ -17,7 +17,6 @@ def on_submit(doc, event):
             customer_bin.stock_uom = item.stock_uom
             customer_bin.save(ignore_permissions = True)
 def on_cancel(doc,event):
-    frappe.msgprint("Hey i am in doctype event")
     for item in doc.items:
         customer_bin = frappe.db.get_value('Customer Bin', {'customer': doc.customer, 'item_code': item.item_code})
         if not customer_bin:
