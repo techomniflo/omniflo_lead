@@ -49,7 +49,57 @@ def total_inventory():
 	order by
 	    it.brand,cb.customer) as total_available_qty""",values=values,as_list=True)
 	return total_inventory
-    
+
+@frappe.whitelist(allow_guest=True) 
+def total_units_sold():
+	values={"brand":frappe.request.args["brand"]}
+
+	total_unit_sold_gmv=frappe.db.sql("""select 
+	  posting_date, 
+	  sum(total) as total_gmv
+	from 
+	  (
+	    select 
+	      si.`posting_date` as posting_date, 
+	      sii.`item_code`, 
+	      (
+	        (i.`mrp`) * (sii.`qty`)
+	      ) as total 
+	    FROM 
+	      `tabSales Invoice` as si
+	      LEFT JOIN `tabSales Invoice Item` as sii
+	      	 ON si.`name` = sii.`parent` 
+	      LEFT JOIN `tabItem` as i
+	       ON sii.`item_code` = i.`item_code` 
+	    WHERE 
+	      (
+	        i.`brand` = %(brand)s 
+	        AND (
+	          si.`status` != 'Cancelled' 
+	          and si.`status` != "Draft"
+	          and si.`status` != "Return"
+	          OR si.`status` IS NULL
+	        ) 
+	        OR si.`status` IS NULL
+	      )
+	  ) as nnnnnnn 
+	where 
+	  posting_date IN (
+	    SELECT 
+	      distinct(
+	        `tabSales Invoice`.`posting_date`
+	      ) 
+	    from 
+	      `tabSales Invoice` 
+	    WHERE 
+	      `tabSales Invoice`.`status` != 'Cancelled' 
+	      and `tabSales Invoice`.`status` != "Draft"
+	  )
+	  group by posting_date
+
+""",values=values,as_list=True)
+	return total_unit_sold_gmv
+
 @frappe.whitelist(allow_guest=True)
 def unit_sold():
 	values={"brand":frappe.request.args["brand"]}
