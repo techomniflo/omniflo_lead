@@ -1,7 +1,8 @@
 import frappe
 import json
 
-@frappe.whitelist(allow_guest=True)
+#Gives total no live store of perticular brand -> int(number)
+@frappe.whitelist()
 def total_live_store():
     values={"brand":frappe.request.args["brand"]}
     count_of_store = frappe.db.sql("""select count(customer) from (select
@@ -16,7 +17,9 @@ def total_live_store():
     """,values=values,as_list=True)
     return count_of_store
 
-@frappe.whitelist(allow_guest=True)
+
+#Gives name of brand with name of customer->brand1:customer1,customer2
+@frappe.whitelist()
 def stores_lives():
 	brand_with_store_name=frappe.db.sql("""select
 	    it.brand,cb.customer
@@ -35,7 +38,8 @@ def stores_lives():
 			di[i[0]].append(i[1])
 	return di
 
-@frappe.whitelist(allow_guest=True)
+#Gives total no of live inventory for perticular brand
+@frappe.whitelist()
 def total_inventory():
 	values={"brand":frappe.request.args["brand"]}
 
@@ -50,7 +54,8 @@ def total_inventory():
 	    it.brand,cb.customer) as total_available_qty""",values=values,as_list=True)
 	return total_inventory
 
-@frappe.whitelist(allow_guest=True) 
+#Gives gmv(no. of item * mrp) amount of brand date wise 
+@frappe.whitelist() 
 def total_units_sold():
 	values={"brand":frappe.request.args["brand"]}
 
@@ -100,7 +105,9 @@ def total_units_sold():
 """,values=values,as_list=True)
 	return total_unit_sold_gmv
 
-@frappe.whitelist(allow_guest=True)
+
+#It gives you total no. of items billed from engine
+@frappe.whitelist()
 def unit_sold():
 	values={"brand":frappe.request.args["brand"]}
 	total_unit_sold=frappe.db.sql("""SELECT sum(`TabSales Invoice Item`.`qty`) AS `sum`
