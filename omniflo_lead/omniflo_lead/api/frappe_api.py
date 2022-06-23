@@ -118,3 +118,9 @@ def unit_sold():
 		AND (`tabSales Invoice`.`status` != 'Cancelled' and `tabSales Invoice`.`status`!="Draft"
 			OR `tabSales Invoice`.`status` IS NULL)  OR `tabSales Invoice`.`status` IS NULL)""",values=values,as_list=True)
 	return total_unit_sold
+
+@frappe.whitelist()
+def image_api():
+	values={"brand":frappe.request.args["brand"]}
+	image_with_customer_name=frappe.db.sql("""select distinct(ald.image),al.customer,ald.creation as image_date from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code where ali.current_available_qty > 0 and i.brand=%(brand)s and ald.status='Approve' and ald.image is not null order by ald.creation desc;""",values=values,as_dict=True)
+	return image_with_customer_name
