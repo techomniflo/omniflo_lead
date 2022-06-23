@@ -135,7 +135,7 @@ let on_hold = function(wrapper,data){
 
 // This function is used to show next image and clear previous html
 let callback_return =function (wrapper,data){
-	console.log(index,"in callback function")
+
 
 	if (data.length==0 || data.length <= index){
 		// $("#myimg").attr("src","")
@@ -144,21 +144,20 @@ let callback_return =function (wrapper,data){
 	}
 	else
 		{
-			console.log("i am in else function")
+			
 		var customer = data[index]['customer']
 		var image = data[index]['image']
 		var picture_type = data[index]['picture_type']
 		var date_and_time = data[index]['date_and_time']
 		var full_name = data[index]['full_name']
 		if (index==0){
-			console.log("in else if function")
+			
 			$(frappe.render_template("image_approver", 
 				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name})).appendTo(page.body);
 		}
 		else{
-			console.log("in else else function ")
+		
 			page.body.empty()
-			console.log("hi have this data",data[0]['image'])
 			$(frappe.render_template("image_approver", 
 				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name})).appendTo(page.body);
 
