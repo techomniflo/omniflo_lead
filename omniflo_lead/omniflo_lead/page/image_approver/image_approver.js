@@ -147,20 +147,19 @@ let callback_return =function (wrapper,data){
 
 
 	if (data.length==0 || data.length <= index){
-		// $("#myimg").attr("src","")
 		page.body.empty()
 		$("<br><h5>There is no image in Queue to be reviewed</h5>").appendTo(page.body)
 	}
 	else
 		{
-			console.log("i am in else function")
+		console.log("when index in range of data")
 		var customer = data[index]['customer']
 		var image = data[index]['image']
 		var picture_type = data[index]['picture_type']
 		var date_and_time = data[index]['date_and_time']
 		var full_name = data[index]['full_name']
 		if (index==0){
-			console.log("in else if function")
+			console.log("if index is 0")
 			$(frappe.render_template("image_approver", 
 				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name})).appendTo(page.body);
 				$("#reason_div").hide();
@@ -168,9 +167,9 @@ let callback_return =function (wrapper,data){
 
 		}
 		else{
-			console.log("in else else function ")
+			console.log("after index 0")
 			page.body.empty()
-			console.log("hi have this data",data[0]['image'])
+			console.log("The image link is",data[0]['image'])
 			$(frappe.render_template("image_approver", 
 				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name})).appendTo(page.body);
 			$("#reason_div").hide();

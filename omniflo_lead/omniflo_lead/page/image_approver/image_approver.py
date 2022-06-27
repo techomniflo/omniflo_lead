@@ -10,10 +10,6 @@ def get_details():
 def approve(data,index):
     data = json.loads(data)
     index=int(index)
-    # print(index,type(index))
-    print(data[index]['name'])
-    # print("hello")
-    # print(type(data))
     doc=frappe.get_doc("Audit Log Details",data[index]['name'])
     doc.db_set('status', 'Approve', update_modified=False)
 
@@ -21,7 +17,6 @@ def approve(data,index):
 def reject(data,index,reason):
     data = json.loads(data)
     index=int(index)
-    print(reason)
     doc=frappe.get_doc("Audit Log Details",data[index]['name'])
     doc.db_set('status', 'Reject', update_modified=False)
     doc.db_set('reason', reason, update_modified=False)
