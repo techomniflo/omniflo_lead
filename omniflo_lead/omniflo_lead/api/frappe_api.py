@@ -139,7 +139,11 @@ def unit_sold():
 def image_api():
 	values={"brand":frappe.request.args["brand"]}
 	image_with_customer_name=frappe.db.sql("""select distinct(ald.image),ald.status as status,al.customer,ald.creation as image_date from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code where ali.current_available_qty > 0 and i.brand=%(brand)s and ald.image is not null order by ald.creation desc;""",values=values,as_dict=True)
-	return image_with_customer_name
+	list_of_approve_image=[]
+	for i in image_with_customer_name:
+		if i['status']=="Approve":
+			list_of_approve_image.append(i)
+	return list_of_approve_image
 
 
 # it gives time series gmv of audit log+sales invoice
