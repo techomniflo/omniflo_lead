@@ -1,0 +1,19 @@
+
+<div class="row main">
+		<!-- <div class="col-xs-8"> </div> -->
+		
+
+		<div class="col-xs-8">
+			<img id="myimg" height="auto" width="auto" src="{{ image }}">
+		</div>
+		<div class="col-xs-4" >
+			<!-- This shows the data of image -->
+			<!-- {% for brand in frappe.get_list("brand",fields=["name"]) %} -->
+			<div class="col-xs-12"> <b>Store Name</b><span id="Customer">:  {{ customer }}</span></div>
+			<div class="col-xs-12"> <b>Picture Type</b><span id="Picture_Type">:  {{ picture_type }}</span></div>
+			<div class="col-xs-12"> <b>Date and Time</b><span id="date_and_time">: {{ date_and_time }} </span></div>
+			<div class="col-xs-12"> <b>Clicked By</b><span id="clicked_by">: {{ full_name}}</span></div>
+			<!-- {% endfor %} -->
+	 
+		</div>
+	</div>
