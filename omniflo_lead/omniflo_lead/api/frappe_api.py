@@ -214,7 +214,7 @@ def time_series_gmv():
 						if k not in sales_dictionary[i][j]:
 							sales_dictionary[i][j][k]=audit_dictionary[i][j][k]
 						else:
-							sales_dictionary[i][j][k][0]=sales_dictionary[i][j][k][0]+audit_dictionary[i][j][k][0]
+							sales_dictionary[i][j][k][0]=audit_dictionary[i][j][k][0]
 
 
 	# below that we sort the sales_dictionary according to time
