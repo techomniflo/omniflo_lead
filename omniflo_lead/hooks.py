@@ -14,7 +14,7 @@ app_license = "MIT"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/omniflo_lead/css/omniflo_lead.css"
-# app_include_js = "/assets/omniflo_lead/js/omniflo_lead.js"
+app_include_js = "/assets/omniflo_lead/stock_reconsillation.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/omniflo_lead/css/omniflo_lead.css"
@@ -32,6 +32,7 @@ app_license = "MIT"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js={"Stock Reconciliation": "public/js/stock_reconsillation.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
