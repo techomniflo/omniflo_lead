@@ -109,7 +109,7 @@ def total_units_sold():
 	return total_unit_sold_gmv
 
 
-#It gives you total no. of items billed from engine
+#It gives you total no. of unit sold to end customer (bill quantity-store-quantity)
 @frappe.whitelist()
 def unit_sold():
 	values={"brand":frappe.request.args["brand"]}
