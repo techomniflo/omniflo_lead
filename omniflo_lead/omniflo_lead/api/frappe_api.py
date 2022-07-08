@@ -2,6 +2,8 @@ import frappe
 import json
 import time
 import datetime
+import copy
+from collections import defaultdict
 
 #Gives total no live store of perticular brand -> int(number)
 @frappe.whitelist()
@@ -144,7 +146,7 @@ def image_api():
 
 # it gives time series gmv of audit log+sales invoice
 @frappe.whitelist()
-def time_series_gmv():
+def test_time_series_gmv():
 	values={"brand":frappe.request.args["brand"]}
 	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 				where i.brand=%(brand)s and al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
@@ -231,3 +233,112 @@ def time_series_gmv():
 	for j in timestamp_list:
 		new_dictionary[j]=sales_dictionary[j]
 	return new_dictionary
+
+
+@frappe.whitelist()
+def test_time_series_gmv():
+	values={"brand":frappe.request.args["brand"]}
+	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
+				where i.brand=%(brand)s and al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
+	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+				where i.brand=%(brand)s and si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",values=values,as_dict=True)
+
+	#This function gives list of unique date
+	def get_date(data):
+		list_of_date=[]
+		i=0
+		while i<len(data):
+			al_date=data[i]['date']
+			if al_date in list_of_date:
+				i+=1
+				continue
+			else:
+				list_of_date.append(al_date)
+				i+=1
+		return list_of_date
+
+
+
+	def crate_dict_for_give_date(date,x):
+		customer_dict={}
+		date_date=time.strptime(date,"%d-%m-%y")
+		for i in range(len(x)):
+			doctype_date=time.strptime(x[i]['date'],"%d-%m-%y")
+			if date_date==doctype_date:
+				customer=x[i]['customer']
+				item_name=x[i]['item_name']
+				qty=x[i]['qty']
+				mrp=x[i]['mrp']
+				if customer not in customer_dict:
+					customer_dict[customer]={item_name:[qty,mrp]}
+				else:
+					if item_name not in customer_dict[customer]:
+						customer_dict[customer][item_name]=[qty,mrp]
+		print(customer_dict)
+		return customer_dict
+
+	def get_dictionary_with_date(data):
+		di={}
+		list_of_date=get_date(data)
+		for i,date in enumerate(list_of_date):
+			di[date]=crate_dict_for_give_date(date,data)
+		return di
+	audit_dictionary=get_dictionary_with_date(audit_data)
+	sales_dictionary=get_dictionary_with_date(sales_data)
+
+
+	
+	def merge_items(items1, items2):
+		items1 = copy.deepcopy(items1)
+		"""
+		Add all the items from items2 into items1
+		items example: {
+			"Peanut Butter 200g": [2.0, "299"],
+			"Salted Almond 200g": [2.0, "399"],
+			"Hazelnut Cocoa 200g": [2.0, "499"]
+		}
+		"""
+		for item in items2:
+			if item not in items1:
+				items1[item] = items2[item]
+			else:
+				items1[item][0] += items2[item][0]
+		return items1
+
+	def merge_times(audit_dictionary, sales_dictionary):
+		dates = list(audit_dictionary) + list(sales_dictionary)
+		dates = list(set(dates))
+		dates.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
+
+		final_result = {}
+
+		previous_quantities = defaultdict(dict) # customer -> item
+
+		for date in dates:
+			audit_cust = audit_dictionary.get(date, {})
+			sales_cust = sales_dictionary.get(date, {})
+
+			customers = set()
+			customers.update(audit_cust)
+			customers.update(sales_cust)
+
+			current_date_data = {}
+			for customer in customers:
+
+				audit_cust_data = audit_cust.get(customer, {})
+				sales_cust_data = copy.deepcopy(sales_cust.get(customer, {}))
+
+				# If same item on same day, only take audit data
+				for item in audit_cust_data:
+					if item in sales_cust_data:
+						del sales_cust_data[item]
+
+				previous_quantities[customer] = merge_items(previous_quantities[customer], audit_cust_data)
+				previous_quantities[customer] = merge_items(previous_quantities[customer], sales_cust_data)
+
+				current_date_data[customer] = copy.deepcopy(previous_quantities[customer])
+
+			final_result[date] = current_date_data
+
+		return final_result
+	return merge_times(audit_dictionary,sales_dictionary)
