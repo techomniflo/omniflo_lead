@@ -184,7 +184,6 @@ def time_series_gmv():
 				else:
 					if item_name not in customer_dict[customer]:
 						customer_dict[customer][item_name]=[qty,mrp]
-		print(customer_dict)
 		return customer_dict
 
 	def get_dictionary_with_date(data):
@@ -227,7 +226,6 @@ def time_series_gmv():
 	for j in range(len(timestamp_list)):
 		convert = datetime.datetime.fromtimestamp(timestamp_list[j])
 		timestamp_list[j]=convert.strftime("%d-%m-%y")
-	print(timestamp_list)
 	# new_dictionary contain sorted data according to time
 	new_dictionary={}
 	for j in timestamp_list:
@@ -274,7 +272,6 @@ def time_series_gmv_data():
 				else:
 					if item_name not in customer_dict[customer]:
 						customer_dict[customer][item_name]=[qty,mrp]
-		print(customer_dict)
 		return customer_dict
 
 	def get_dictionary_with_date(data):
@@ -286,59 +283,74 @@ def time_series_gmv_data():
 	audit_dictionary=get_dictionary_with_date(audit_data)
 	sales_dictionary=get_dictionary_with_date(sales_data)
 
+	final_time_dictionary={}
 
+	def update_time(date,dic):
+		final_time_dictionary[date]=dic
 
-	def merge_items(items1, items2):
-		items1 = copy.deepcopy(items1)
-		"""
-		Add all the items from items2 into items1
-		items example: {
-			"Peanut Butter 200g": [2.0, "299"],
-			"Salted Almond 200g": [2.0, "399"],
-			"Hazelnut Cocoa 200g": [2.0, "499"]
-		}
-		"""
-		for item in items2:
-			if item not in items1:
-				items1[item] = items2[item]
+	
+	def update_customer(dictionary,date,customer,is_add):
+		customer_of_dictionary=[]
+		for a in list(dictionary[date].keys()):
+			# a refers to customer
+			customer_of_dictionary.append(a)
+			if a not in customer:
+				customer[a]=dictionary[date][a]
+				continue
 			else:
-				items1[item][0] += items2[item][0]
-		return items1
+				if is_add==False:
+					customer[a]=dictionary[date][a]
+				else:
+					#here b refers to items 
+					for b in list(dictionary[date][a].keys()):
+						if b not in customer[a]:
+							customer[a][b]=dictionary[date][a][b]
+						else:
+							customer[a][b][0]=dictionary[date][a][b][0]+customer[a][b][0]
 
-	def merge_times(audit_dictionary, sales_dictionary):
-		dates = list(audit_dictionary) + list(sales_dictionary)
-		dates = list(set(dates))
-		dates.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
+		new_di={}
+		customer_copy=copy.deepcopy(customer)
+		for cu in customer_of_dictionary:
+			new_di[cu]=customer_copy[cu]
+		update_time(date,new_di)
+		
+		customer=copy.deepcopy(customer_copy)
+		return customer
+		
+	
+	
+	def merge_dictionary():
+		
+		customer={}
+		i=0
+		j=0
+		audit_dictionary_date=list(audit_dictionary.keys())
+		sales_dictionary_date=list(sales_dictionary.keys())
 
-		final_result = {}
+		while i<len(audit_dictionary_date) and j<len(sales_dictionary_date):
+			if datetime.datetime.strptime(audit_dictionary_date[i], "%d-%m-%y") < datetime.datetime.strptime(sales_dictionary_date[j],"%d-%m-%y"):
+				date=audit_dictionary_date[i]
+				customer=update_customer(audit_dictionary,date,customer,is_add=False)
+				i=i+1
+			elif datetime.datetime.strptime(audit_dictionary_date[i], "%d-%m-%y") > datetime.datetime.strptime(sales_dictionary_date[j],"%d-%m-%y"):
+				date=sales_dictionary_date[j]
+				customer=update_customer(sales_dictionary,date,customer,is_add=True)
+				j=j+1
+			else:
+				date=audit_dictionary_date[i]
+				customer=update_customer(audit_dictionary,date,customer,is_add=False)
+				i=i+1
+				j=j+1
+		if j<len(sales_dictionary_date):
+			while j<len(sales_dictionary_date):
+				date=sales_dictionary_date[j]
+				customer=update_customer(sales_dictionary,date,customer,is_add=True)
+				j=j+1
+		else:
+			while i<len(audit_dictionary_date):
+				date=audit_dictionary_date[i]
+				customer=update_customer(audit_dictionary,date,customer,is_add=False)
+				i=i+1
 
-		previous_quantities = defaultdict(dict) # customer -> item
-
-		for date in dates:
-			audit_cust = audit_dictionary.get(date, {})
-			sales_cust = sales_dictionary.get(date, {})
-
-			customers = set()
-			customers.update(audit_cust)
-			customers.update(sales_cust)
-
-			current_date_data = {}
-			for customer in customers:
-
-				audit_cust_data = audit_cust.get(customer, {})
-				sales_cust_data = copy.deepcopy(sales_cust.get(customer, {}))
-
-				# If same item on same day, only take audit data
-				for item in audit_cust_data:
-					if item in sales_cust_data:
-						del sales_cust_data[item]
-
-				previous_quantities[customer] = merge_items(previous_quantities[customer], audit_cust_data)
-				previous_quantities[customer] = merge_items(previous_quantities[customer], sales_cust_data)
-
-				current_date_data[customer] = copy.deepcopy(previous_quantities[customer])
-
-			final_result[date] = current_date_data
-
-		return final_result
-	return merge_times(audit_dictionary,sales_dictionary)
+	merge_dictionary()
+	return final_time_dictionary
