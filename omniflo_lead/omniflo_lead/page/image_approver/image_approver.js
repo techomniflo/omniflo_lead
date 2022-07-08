@@ -99,7 +99,7 @@ let get_reason = function(wrapper,data){
 var on_click_submit = function (wrapper,data){
 	reason=""
 	counter=false
-	var type_of_reason=['Blurry_Photo','Improper_Angle',"Shelf_Not_in_Focus","Other_products_on_the_Shelf","Hygiene_Issues","Object_Cutoff","Irrelevant_Photo","Wrong_Orientation"]	
+	var type_of_reason=['Poor_Store','People_in_frame','Blurry_Photo','Improper_Angle',"Shelf_Not_in_Focus","Other_products_on_the_Shelf",'Poor_Placement',"Hygiene_Issues","Object_Cutoff","Irrelevant_Photo","Wrong_Orientation"]	
 	type_of_reason.forEach(function(item,count) {
 		if ($('#'+item).is(":checked")){
 			if (counter){

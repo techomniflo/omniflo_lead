@@ -111,7 +111,11 @@ doc_events = {
     },
 	"File":{
 		"after_insert": "omniflo_lead.omniflo_lead.doctype_events.file.file_upload_to_s3"
+	},
+	"Purchase Receipt":{
+	"on_submit":"omniflo_lead.omniflo_lead.doctype_events.purchase_receipt.on_submit"
 	}
+
 }
 
 # Scheduled Tasks
