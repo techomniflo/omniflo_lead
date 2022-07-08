@@ -25,7 +25,7 @@ def total_live_store():
 def stores_lives():
 	values={"brand":frappe.request.args["brand"]}
 	brand_with_store_name=frappe.db.sql("""select
-	    it.brand,cb.customer
+	    it.brand,(select c.customer_name from `tabCustomer` as c where c.name=cb.customer)as customer
 	from 
 	    `tabCustomer Bin`  as cb
 	    join  `tabItem`as it on cb.item_code = it.item_code
@@ -138,21 +138,17 @@ def unit_sold():
 @frappe.whitelist()
 def image_api():
 	values={"brand":frappe.request.args["brand"]}
-	image_with_customer_name=frappe.db.sql("""select distinct(ald.image),ald.status as status,al.customer,ald.creation as image_date from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code where ali.current_available_qty > 0 and i.brand=%(brand)s and ald.image is not null order by ald.creation desc;""",values=values,as_dict=True)
-	list_of_approve_image=[]
-	for i in image_with_customer_name:
-		if i['status']=="Approve":
-			list_of_approve_image.append(i)
-	return list_of_approve_image
+	image_with_customer_name=frappe.db.sql("""select distinct(ald.image),ald.status as status,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ald.creation as image_date from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code where ali.current_available_qty > 0 and i.brand=%(brand)s and ald.image is not null and ald.status='Approve' order by ald.creation desc;""",values=values,as_dict=True)
+	return image_with_customer_name
 
 
 # it gives time series gmv of audit log+sales invoice
 @frappe.whitelist()
 def time_series_gmv():
 	values={"brand":frappe.request.args["brand"]}
-	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,al.customer,ali.current_available_qty as qty,ali.item_name,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
+	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 				where i.brand=%(brand)s order by al.posting_date;""",values=values,as_dict=True)
-	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,si.customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
 				where i.brand=%(brand)s and si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",values=values,as_dict=True)
 
 	#This function gives list of unique date
