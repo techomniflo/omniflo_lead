@@ -146,7 +146,7 @@ def image_api():
 
 # it gives time series gmv of audit log+sales invoice
 @frappe.whitelist()
-def test_time_series_gmv():
+def time_series_gmv():
 	values={"brand":frappe.request.args["brand"]}
 	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 				where i.brand=%(brand)s and al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
@@ -236,7 +236,7 @@ def test_time_series_gmv():
 
 
 @frappe.whitelist()
-def test_time_series_gmv():
+def time_series_gmv_data():
 	values={"brand":frappe.request.args["brand"]}
 	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 				where i.brand=%(brand)s and al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
@@ -287,7 +287,7 @@ def test_time_series_gmv():
 	sales_dictionary=get_dictionary_with_date(sales_data)
 
 
-	
+
 	def merge_items(items1, items2):
 		items1 = copy.deepcopy(items1)
 		"""
