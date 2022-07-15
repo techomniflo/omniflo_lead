@@ -94,6 +94,9 @@ doctype_js={"Stock Reconciliation": "public/js/stock_reconsillation.js"}
 # override_doctype_class = {
 # 	"ToDo": "custom_app.overrides.CustomToDo"
 # }
+override_doctype_class = {
+	"Stock Reconciliation": "omniflo_lead.omniflo_lead.doctype_class_override.stock_reconsillation.StockReconciliation"
+}
 
 # Document Events
 # ---------------
