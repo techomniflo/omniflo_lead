@@ -14,7 +14,7 @@ def total_live_store():
 	from 
 	    `tabCustomer Bin`  as cb
 	    join  `tabItem`as it on cb.item_code = it.item_code
-	where brand!="" and brand!="Test" and cb.customer!="" and cb.available_qty!=0 and it.brand=%(brand)s
+	where brand!="" and brand!="Test" and cb.customer!="" and cb.available_qty>0 and it.brand=%(brand)s
 	group by it.brand,cb.customer
 	order by
 	    it.brand,cb.customer) as total_customer
