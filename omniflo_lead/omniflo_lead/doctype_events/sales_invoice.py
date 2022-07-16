@@ -25,7 +25,7 @@ def on_cancel(doc,event):
             customer_bin = frappe.get_doc('Customer Bin', customer_bin)
             qty=customer_bin.available_qty
             if qty-item.stock_qty<0:
-                customer_bin.delete()
+                customer_bin.available_qty=0
             else:
                 customer_bin.available_qty -= item.stock_qty
                 customer_bin.stock_uom = item.stock_uom
