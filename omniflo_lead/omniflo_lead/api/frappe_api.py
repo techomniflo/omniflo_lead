@@ -247,8 +247,8 @@ def time_series_gmv_data():
 				customer=update_customer(sales_dictionary,date,customer,is_add=True)
 				j=j+1
 			else:
-				date=audit_dictionary_date[i]
-				customer=update_customer(audit_dictionary,date,customer,is_add=False)
+				date=sales_dictionary_date[j]
+				customer=update_customer(sales_dictionary,date,customer,is_add=True)
 				i=i+1
 				j=j+1
 		if j<len(sales_dictionary_date):
