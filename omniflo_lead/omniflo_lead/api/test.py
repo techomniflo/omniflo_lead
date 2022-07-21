@@ -229,7 +229,38 @@ def test_time_series_gmv_data():
 				i=i+1
 
 	merge_dictionary()
-	return final_time_dictionary
+	merged_dictionary=final_time_dictionary
+	sales=[]
+	date=list(merged_dictionary.keys())
+
+	for i in range(1,len(date)):
+		previous=date[i-1]
+		current=date[i]
+		customers=merged_dictionary[current]
+		for customer in list(customers.keys()):
+			if customer in merged_dictionary[previous]:
+				items=merged_dictionary[current][customer]
+				for item in list(items.keys()):
+					if item in merged_dictionary[previous][customer]:
+						if merged_dictionary[current][customer][item][0]!=merged_dictionary[previous][customer][item][0]:
+							difference=merged_dictionary[previous][customer][item][0]-merged_dictionary[current][customer][item][0]
+							sales.append([current,customer,item,difference])
+	sales_on_dates={}
+	sales_on_customer={}
+	count=0
+	for i in sales:
+		if i[3]>0:
+			if i[1] not in sales_on_customer:
+				sales_on_customer[i[1]]=i[3]
+			else:
+				sales_on_customer[i[1]]=sales_on_customer[i[1]]+i[3]
+
+			if i[0] not in sales_on_dates:
+				sales_on_dates[i[0]]=i[3]
+			else:
+				sales_on_dates[i[0]]=sales_on_dates[i[0]]+i[3]
+			count+=i[3]
+	return [{"Total":count},sales_on_customer,sales_on_dates]
 
 
 
