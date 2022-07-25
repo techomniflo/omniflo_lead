@@ -192,7 +192,7 @@ def time_series_gmv_data():
 			di[date]=crate_dict_for_give_date(date,data)
 		return di
 
-	def merge_sales_and_return(sale_data,return_data):
+	def merge_sales_and_return(sales_data,return_data):
 		for date in list(return_data.keys()):
 			if date in sales_data:
 				for customer in list(return_data[date].keys()):

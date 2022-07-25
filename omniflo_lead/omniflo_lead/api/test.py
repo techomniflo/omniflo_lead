@@ -14,6 +14,7 @@ def returned():
 
 @frappe.whitelist()
 def returned_data():
+	values={"brand":frappe.request.args["brand"]}
 	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
 				where i.brand=%(brand)s and si.`status` = 'Return';""",values=values,as_dict=True)
 
@@ -218,7 +219,7 @@ def test_time_series_gmv_data():
 		return di
 	
 
-	def merge_sales_and_return(sale_data,return_data):
+	def merge_sales_and_return(sales_data,return_data):
 		for date in list(return_data.keys()):
 			if date in sales_data:
 				for customer in list(return_data[date].keys()):
