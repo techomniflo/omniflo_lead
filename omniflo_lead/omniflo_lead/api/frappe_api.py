@@ -150,7 +150,8 @@ def time_series_gmv_data():
 				where i.brand=%(brand)s and al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
 	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
 				where i.brand=%(brand)s and si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",values=values,as_dict=True)
-
+	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+				where i.brand=%(brand)s and si.`status` = 'Return' order by date;""",values=values,as_dict=True)
 	#This function gives list of unique date
 	def get_date(data):
 		list_of_date=[]
@@ -190,8 +191,26 @@ def time_series_gmv_data():
 		for i,date in enumerate(list_of_date):
 			di[date]=crate_dict_for_give_date(date,data)
 		return di
+
+	def merge_sales_and_return(sale_data,return_data):
+		for date in list(return_data.keys()):
+			if date in sales_data:
+				for customer in list(return_data[date].keys()):
+					if customer in sales_data[date]:
+						for item in list(return_data[date][customer].keys()):
+							if item in sales_data[date][customer]:
+								difference=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
+								if difference <= 0:
+									sales_data[date][customer].pop(item)
+									if len(list(sales_data[date][customer].keys()))<=0:
+										sales_data[date].pop(customer)
+									if len(list(sales_data[date].keys()))<=0:
+										sales_data.pop(date)
+								else:
+									sales_data[date][customer][item][0]=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
+		return sales_data
 	audit_dictionary=get_dictionary_with_date(audit_data)
-	sales_dictionary=get_dictionary_with_date(sales_data)
+	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data),get_dictionary_with_date(return_data))
 
 	final_time_dictionary={}
 
