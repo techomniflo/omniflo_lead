@@ -6,6 +6,63 @@ import copy
 from collections import defaultdict
 
 @frappe.whitelist()
+def returned():
+	values={"brand":frappe.request.args["brand"]}
+	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+				where i.brand=%(brand)s and si.`status` = 'Return';""",values=values,as_dict=True)
+	return return_data
+
+@frappe.whitelist()
+def returned_data():
+	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+				where i.brand=%(brand)s and si.`status` = 'Return';""",values=values,as_dict=True)
+
+	#This function gives list of unique date
+	def get_date(data):
+		list_of_date=[]
+		i=0
+		while i<len(data):
+			al_date=data[i]['date']
+			if al_date in list_of_date:
+				i+=1
+				continue
+			else:
+				list_of_date.append(al_date)
+				i+=1
+		return list_of_date
+
+
+
+	def crate_dict_for_give_date(date,x):
+		customer_dict={}
+		date_date=time.strptime(date,"%d-%m-%y")
+		for i in range(len(x)):
+			doctype_date=time.strptime(x[i]['date'],"%d-%m-%y")
+			if date_date==doctype_date:
+				customer=x[i]['customer']
+				item_name=x[i]['item_name']
+				qty=x[i]['qty']
+				mrp=x[i]['mrp']
+				if customer not in customer_dict:
+					customer_dict[customer]={item_name:[qty,mrp]}
+				else:
+					if item_name not in customer_dict[customer]:
+						customer_dict[customer][item_name]=[qty,mrp]
+		print(customer_dict)
+		return customer_dict
+
+	def get_dictionary_with_date(data):
+		di={}
+		list_of_date=get_date(data)
+		for i,date in enumerate(list_of_date):
+			di[date]=crate_dict_for_give_date(date,data)
+		return di
+	return_dictionary=get_dictionary_with_date(return_data)
+	return return_dictionary
+
+
+
+@frappe.whitelist()
 def audit():
 	values={"brand":frappe.request.args["brand"]}
 	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
@@ -117,6 +174,9 @@ def test_time_series_gmv_data():
 	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
 				where i.brand=%(brand)s and si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",values=values,as_dict=True)
 
+	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+				where i.brand=%(brand)s and si.`status` = 'Return' order by date;""",values=values,as_dict=True)
+
 	#This function gives list of unique date
 	def get_date(data):
 		list_of_date=[]
@@ -156,8 +216,27 @@ def test_time_series_gmv_data():
 		for i,date in enumerate(list_of_date):
 			di[date]=crate_dict_for_give_date(date,data)
 		return di
+	
+
+	def merge_sales_and_return(sale_data,return_data):
+		for date in list(return_data.keys()):
+			if date in sales_data:
+				for customer in list(return_data[date].keys()):
+					if customer in sales_data[date]:
+						for item in list(return_data[date][customer].keys()):
+							if item in sales_data[date][customer]:
+								difference=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
+								if difference <= 0:
+									sales_data[date][customer].pop(item)
+									if len(list(sales_data[date][customer].keys()))<=0:
+										sales_data[date].pop(customer)
+									if len(list(sales_data[date].keys()))<=0:
+										sales_data.pop(date)
+								else:
+									sales_data[date][customer][item][0]=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
+		return sales_data
 	audit_dictionary=get_dictionary_with_date(audit_data)
-	sales_dictionary=get_dictionary_with_date(sales_data)
+	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data),get_dictionary_with_date(return_data))
 
 	final_time_dictionary={}
 
