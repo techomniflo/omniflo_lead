@@ -11,6 +11,7 @@ class VisitLog(Document):
 		customer.customer_status=self.status
 		customer.save(ignore_permissions=True)
 
+
 		#adding latitude and longitude to customer
 		try:
 			customer_doc = frappe.get_doc('Customer', self.customer)
