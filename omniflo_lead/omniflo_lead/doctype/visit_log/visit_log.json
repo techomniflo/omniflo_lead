@@ -53,7 +53,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Follow Up\nOn-boarded\nLive\nRejected\nHold\nLive\nNot Interested\nClosed"
+   "options": "Follow Up\nOn-boarded\nLive\nRejected\nHold\nLive\nNot Interested"
   },
   {
    "fieldname": "reason",
