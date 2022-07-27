@@ -7,6 +7,8 @@ frappe.ui.form.on('Audit Log', {
 		hide_add_row(frm);
 	 },
 	get_current_items(frm){
+		cur_frm.clear_table("items");
+		cur_frm.refresh_field('items');
 		frappe.call({
 			doc : frm.doc,
 			method : 'fetch_items',
