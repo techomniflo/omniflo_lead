@@ -8,8 +8,9 @@ class VisitLog(Document):
 	def on_submit(self):
 		# adding status to customer
 		customer=frappe.get_doc('Customer',self.customer)
-		customer.customer_status=self.status
-		customer.save(ignore_permissions=True)
+		if customer.customer_status!=self.status:
+			customer.customer_status=self.status
+			customer.save(ignore_permissions=True)
 
 
 		#adding latitude and longitude to customer
