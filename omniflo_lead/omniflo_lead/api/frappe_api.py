@@ -168,7 +168,7 @@ def time_series_gmv_data():
 
 
 
-	def crate_dict_for_give_date(date,x):
+	def crate_dict_for_give_date(date,x,is_add):
 		customer_dict={}
 		date_date=time.strptime(date,"%d-%m-%y")
 		for i in range(len(x)):
@@ -183,13 +183,16 @@ def time_series_gmv_data():
 				else:
 					if item_name not in customer_dict[customer]:
 						customer_dict[customer][item_name]=[qty,mrp]
+					else:
+						if is_add==True:
+							customer_dict[customer][item_name][0]+=qty
 		return customer_dict
 
-	def get_dictionary_with_date(data):
+	def get_dictionary_with_date(data,is_add):
 		di={}
 		list_of_date=get_date(data)
 		for i,date in enumerate(list_of_date):
-			di[date]=crate_dict_for_give_date(date,data)
+			di[date]=crate_dict_for_give_date(date,data,is_add)
 		return di
 
 	def merge_sales_and_return(sales_data,return_data):
@@ -209,8 +212,8 @@ def time_series_gmv_data():
 								else:
 									sales_data[date][customer][item][0]=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
 		return sales_data
-	audit_dictionary=get_dictionary_with_date(audit_data)
-	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data),get_dictionary_with_date(return_data))
+	audit_dictionary=get_dictionary_with_date(audit_data,is_add=False)
+	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data,is_add=True),get_dictionary_with_date(return_data,is_add=True))
 
 	final_time_dictionary={}
 
