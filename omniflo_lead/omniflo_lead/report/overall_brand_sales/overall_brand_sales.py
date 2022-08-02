@@ -26,15 +26,11 @@ def Date_wise_sale():
 	#This function gives list of unique date
 	def get_date(data):
 		list_of_date=[]
-		i=0
-		while i<len(data):
-			al_date=data[i]['date']
-			if al_date in list_of_date:
-				i+=1
-				continue
-			else:
-				list_of_date.append(al_date)
-				i+=1
+		for i in data:
+			list_of_date.append(i['date'])
+		list_of_date=set(list_of_date)
+		list_of_date=list(list_of_date)
+		list_of_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
 		return list_of_date
 
 
@@ -61,7 +57,7 @@ def Date_wise_sale():
 							customer_dict[customer][item_name][0]+=qty
 		return customer_dict
 
-	def get_dictionary_with_date(data,is_add=None):
+	def get_dictionary_with_date(data,is_add):
 		di={}
 		list_of_date=get_date(data)
 		for i,date in enumerate(list_of_date):
@@ -177,10 +173,7 @@ def Date_wise_sale():
 						if merged_dictionary[current][customer][item][0]!=merged_dictionary[previous][customer][item][0]:
 							difference=merged_dictionary[previous][customer][item][0]-merged_dictionary[current][customer][item][0]
 							sales.append([current,customer,item,difference,merged_dictionary[current][customer][item][1],merged_dictionary[current][customer][item][2]])
-	sales_on_dates={}
-	sales_on_customer={}
-	sales_on_items={}
-	count=0
+							
 	list_of_sales=[]
 	for i in sales:
 		if i[3]>0:
