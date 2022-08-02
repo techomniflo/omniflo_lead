@@ -29,7 +29,7 @@ class AuditLog(Document):
 		except:
 			pass
 
-		self.send_mail_if_sales_not_match()
+		# self.send_mail_if_sales_not_match()
 	def send_mail_if_sales_not_match(self):
 		msg=[]
 		is_send_mail=False

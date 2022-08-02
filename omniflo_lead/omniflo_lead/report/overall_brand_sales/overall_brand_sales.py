@@ -1,29 +1,21 @@
 # Copyright (c) 2022, Omniflo and contributors
 # For license information, please see license.txt
 
-import frappe
-import json
-import time
-import datetime
-import copy
-from collections import defaultdict
+# import frappe
 
 
 def execute(filters=None):
-
-	columns=["customer","brand","item_name","Bill_Qty","Store_Qty","sales_from_invoices:","sales_from_gmv"]
-	
-	return columns,comparison_data_of_invoice_and_gmv()
-
+	columns=["Date","Customer","Item_Name","QTY","Brand","Mrp"]
+	return columns, Date_wise_sale()
 @frappe.whitelist()
-def comparison_data_of_invoice_and_gmv():
+def Date_wise_sale():
 	values={}
-	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.brand from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
+	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.brand,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 				where al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
-	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.brand from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.brand,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
 				where si.`status` != 'Cancelled' and si.`status`!="Draft" and si.`status` != 'Return' order by si.posting_date;""",values=values,as_dict=True)
 
-	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.brand from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.brand,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
 				where si.`status` = 'Return' order by date;""",values=values,as_dict=True)
 
 	#This function gives list of unique date
@@ -52,11 +44,12 @@ def comparison_data_of_invoice_and_gmv():
 				item_name=x[i]['item_name']
 				qty=x[i]['qty']
 				brand=x[i]['brand']
+				mrp=x[i]['mrp']
 				if customer not in customer_dict:
-					customer_dict[customer]={item_name:[qty,brand]}
+					customer_dict[customer]={item_name:[qty,brand,mrp]}
 				else:
 					if item_name not in customer_dict[customer]:
-						customer_dict[customer][item_name]=[qty,brand]
+						customer_dict[customer][item_name]=[qty,brand,mrp]
 					
 					else:
 						if is_add==True:
@@ -91,6 +84,7 @@ def comparison_data_of_invoice_and_gmv():
 	audit_dictionary=get_dictionary_with_date(audit_data,is_add=False)
 	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data,is_add=True),get_dictionary_with_date(return_data,is_add=True))
 	final_time_dictionary={}
+
 
 	def update_time(date,dic):
 		final_time_dictionary[date]=dic
@@ -162,6 +156,7 @@ def comparison_data_of_invoice_and_gmv():
 
 	merge_dictionary()
 	merged_dictionary=final_time_dictionary
+	
 	sales=[]
 	date=list(merged_dictionary.keys())
 
@@ -176,57 +171,13 @@ def comparison_data_of_invoice_and_gmv():
 					if item in merged_dictionary[previous][customer]:
 						if merged_dictionary[current][customer][item][0]!=merged_dictionary[previous][customer][item][0]:
 							difference=merged_dictionary[previous][customer][item][0]-merged_dictionary[current][customer][item][0]
-							sales.append([current,customer,item,difference,merged_dictionary[current][customer][item][1]])
+							sales.append([current,customer,item,difference,merged_dictionary[current][customer][item][1],merged_dictionary[current][customer][item][2]])
 	sales_on_dates={}
 	sales_on_customer={}
 	sales_on_items={}
 	count=0
+	list_of_sales=[]
 	for i in sales:
 		if i[3]>0:
-			if i[0] not in sales_on_dates:
-				sales_on_dates[i[0]]={i[2]:i[3]}
-			else:
-				if i[2] not in sales_on_dates[i[0]]:
-					sales_on_dates[i[0]][i[2]]=i[3]
-				else:
-					sales_on_dates[i[0]][i[2]]=sales_on_dates[i[0]][i[2]]+i[3]
-
-			if i[1] not in sales_on_customer:
-				sales_on_customer[i[1]]={i[2]:i[3]}
-			else:
-				if i[2] not in sales_on_customer[i[1]]:
-					sales_on_customer[i[1]][i[2]]=i[3]
-				else:
-					sales_on_customer[i[1]][i[2]]=sales_on_customer[i[1]][i[2]]+i[3]
-
-
-			if i[2] not in sales_on_items:
-				sales_on_items[i[2]]=i[3]
-			else:
-				sales_on_items[i[2]]=sales_on_items[i[2]]+i[3]
-			count+=i[3]
-	#return sales_on_customer
-	sales_from_invoices=frappe.db.sql("""select si.customer_name as customer,i.brand,i.item_name,(sum(sii.qty)) as Bill_Qty,(select available_qty from `tabCustomer Bin` as cb join `tabItem` as ii on cb.item_code=ii.item_code where cb.customer=si.customer and ii.item_code=i.item_code) as Store_Qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where si.company="Omnipresent Services" and si.status!='Cancelled' and si.status!="Draft" group by i.brand,si.customer,i.item_name;""",as_dict=True)
-	#return sales_from_invoices
-	sales_comparision_data=[]
-	for i in sales_from_invoices:
-		temp=[]
-		temp.append(i['customer'])
-		if i['brand']==None or i['brand']=='null':
-			temp.append("Null")
-		else:
-			temp.append(i['brand'])
-		temp.append(i['item_name'])
-		temp.append(i['Bill_Qty'])
-		temp.append(i['Store_Qty'])
-		temp.append(i['Bill_Qty']-i['Store_Qty'])
-		if i['customer'] in sales_on_customer:
-			if i['item_name'] in sales_on_customer[i['customer']]:
-				temp.append(sales_on_customer[i['customer']][i['item_name']])
-			else:
-				temp.append('none')
-		else:
-			temp.append('none')
-		sales_comparision_data.append(temp)
-	return sales_comparision_data
-		
+			list_of_sales.append(i)
+	return list_of_sales
