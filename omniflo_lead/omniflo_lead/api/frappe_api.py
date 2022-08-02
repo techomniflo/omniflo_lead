@@ -258,7 +258,8 @@ def time_series_gmv_data():
 		j=0
 		audit_dictionary_date=list(audit_dictionary.keys())
 		sales_dictionary_date=list(sales_dictionary.keys())
-
+		sales_dictionary_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
+		audit_dictionary_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
 		while i<len(audit_dictionary_date) and j<len(sales_dictionary_date):
 			if datetime.datetime.strptime(audit_dictionary_date[i], "%d-%m-%y") < datetime.datetime.strptime(sales_dictionary_date[j],"%d-%m-%y"):
 				date=audit_dictionary_date[i]
