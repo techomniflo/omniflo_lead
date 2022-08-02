@@ -6,148 +6,25 @@ import json
 import time
 import datetime
 import copy
-from frappe.model.document import Document
-
-class AuditLog(Document):
-	def validate(self):
-		pass
-
-	def before_save(self):
-		pass
-
-	def on_submit(self):
+from collections import defaultdict
 
 
-		self.update_bin()
-		try:
-			customer_doc = frappe.get_doc('Customer', self.customer)
-			if not customer_doc.latitude:
-				customer_doc.latitude = self.latitude
-			if not customer_doc.longitude:
-				customer_doc.longitude = self.longitude
-			customer_doc.save()
-		except:
-			pass
+def execute(filters=None):
 
-		self.send_mail_if_sales_not_match()
-	def send_mail_if_sales_not_match(self):
-		msg=[]
-		is_send_mail=False
-		if is_ignored_customer(self.customer):
-			is_send_mail=False
-		elif is_get_difference_on_item(self.customer)!=False:
-			msg.append(is_get_difference_on_item(self.customer))
-			msg.append(total_sales_from_gmv(self.customer))
-			is_send_mail=True
-		if is_send_mail:
-			message=json.dumps(msg, indent = 4)
-			recipients=["raghav@omniflo.in","operations@omniflo.in","gourav.saini@omniflo"]
-			title="Check audit for "+str(self.customer)
-			sendmail(self,[recipients],message,title)
-		return
+	columns=["customer","brand","item_name","Bill_Qty","Store_Qty","sales_from_invoices:","sales_from_gmv"]
+	
+	return columns,comparison_data_of_invoice_and_gmv()
 
-	def update_bin(self):
-		for item in self.items:
-			customer_bin = frappe.db.get_value('Customer Bin', {'customer': self.customer, 'item_code': item.item_code})
-			if not customer_bin:
-				customer_bin = frappe.new_doc('Customer Bin')
-				customer_bin.customer = self.customer
-				customer_bin.item_code = item.item_code
-				customer_bin.available_qty = item.current_available_qty
-				customer_bin.save(ignore_permissions = True)
-				continue
-			else:
-				customer_bin = frappe.get_doc('Customer Bin', customer_bin)
-				customer_bin.available_qty = item.current_available_qty
-				customer_bin.save(ignore_permissions = True)
-
-	def on_cancel(self):
-		audit_last_doc=frappe.get_last_doc('Audit Log',{'customer': self.customer})
-		if not audit_last_doc:
-			pass
-		else:
-			if audit_last_doc.name==self.name:
-				for item in audit_last_doc.items:
-					customer_bin = frappe.db.get_value('Customer Bin', {'customer':self.customer, 'item_code': item.item_code})
-					if not customer_bin:
-						customer_bin = frappe.new_doc('Customer Bin')
-						customer_bin.customer = audit_last_doc.customer
-						customer_bin.item_code = item.item_code
-						customer_bin.available_qty = item.last_visit_qty
-						customer_bin.save(ignore_permissions = True)
-					else:
-						customer_bin = frappe.get_doc('Customer Bin', customer_bin)
-						customer_bin.available_qty = item.last_visit_qty
-						customer_bin.save(ignore_permissions = True)
- 
-	@frappe.whitelist()
-	def fetch_items(self):
-		bin_items = frappe.get_all('Customer Bin', filters = {'customer' : self.customer}, fields =['name'])
-		current_items = []
-		if self.get('items'):
-			current_items = [item.item_code for item in self.get('items')]
-		for item in bin_items:
-			customer_bin = frappe.get_doc('Customer Bin', item['name'])
-			if customer_bin.item_code in current_items:
-				continue
-
-			item_doc = frappe.get_doc('Item', customer_bin.item_code)
-			self.append('items',
-						{'item_code' : customer_bin.item_code , 
-						'item_name' : item_doc.item_name,
-						'last_visit_qty': customer_bin.available_qty, 
-						'current_available_qty' : customer_bin.available_qty})
-
-def sendmail(doc,recipients,msg,title,attachments=None):
-	email_args = {
-		'recipients':recipients,
-		'message':msg,
-		'subject':title,
-		'reference_doctype':doc.doctype,
-		'reference_name':doc.name
-	}
-
-	if attachments:email_args['attachments']=attachments
-
-	#send mail
-	frappe.enqueue(method=frappe.sendmail,queue='short',timeout=300,is_async=True,**email_args)
-
-def is_get_difference_on_item(customer):
-	values={'customer':customer}
-	difference_on_item=["difference_found_on_items"]
-	sales_from_gmv=total_sales_from_gmv(customer)[3]
-	item_sale_dictionary=frappe.db.sql("""select i.item_name,(sum(sii.qty)) as Bill_Qty,(select available_qty from `tabCustomer Bin` as cb join `tabItem` as ii on cb.item_code=ii.item_code where cb.customer=si.customer and ii.item_code=i.item_code) as Store_qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where si.company="Omnipresent Services" and si.status!='Cancelled' and si.status!="Draft" and si.customer=%(customer)s group by i.brand,si.customer,i.item_name;""",values=values,as_dict=True)
-
-	for i in item_sale_dictionary:
-		if i["item_name"] in sales_from_gmv:
-			difference=i["Bill_Qty"]-i["Store_qty"]
-			if difference!=sales_from_gmv[i["item_name"]]:
-				msg={}
-				msg["item_name"]=i["item_name"]
-				msg["Sales_from_Billing"]=difference
-				msg["Sales_from_gmv"]=sales_from_gmv[i["item_name"]]
-				msg["difference"]=difference-sales_from_gmv[i["item_name"]]
-				difference_on_item.append(msg)
-	if len(difference_on_item)>1:
-		return difference_on_item
-	else:
-		return False
-def is_ignored_customer(customer):
-	values={"customer":customer}
-	data=frappe.db.sql("""select distinct si.customer from `tabSales Invoice` as si where si.status!="Draft" and si.status!="Cancelled" and si.company="Omnipresent Services" and si.customer=%(customer)s ;""",values=values,as_list=True)
-	return len(data)!=1
-
-
- 
-def total_sales_from_gmv(customer):
-	values={"customer":customer}
+@frappe.whitelist()
+def comparison_data_of_invoice_and_gmv():
+	values={}
 	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.brand from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
-				where al.customer=%(customer)s and al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
+				where al.docstatus=1 order by al.posting_date;""",as_dict=True)
 	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.brand from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
-				where si.customer=%(customer)s and si.`status` != 'Cancelled' and si.`status`!="Draft" and si.`status` != 'Return' order by si.posting_date;""",values=values,as_dict=True)
+				where si.`status` != 'Cancelled' and si.`status`!="Draft" and si.`status` != 'Return' order by si.posting_date;""",as_dict=True)
 
 	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.brand from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
-				where si.customer=%(customer)s and si.`status` = 'Return' order by date;""",values=values,as_dict=True)
+				where si.`status` = 'Return' order by date;""",as_dict=True)
 
 	#This function gives list of unique date
 	def get_date(data):
@@ -171,7 +48,7 @@ def total_sales_from_gmv(customer):
 		for i in range(len(x)):
 			doctype_date=time.strptime(x[i]['date'],"%d-%m-%y")
 			if date_date==doctype_date:
-				customer=x[i]['brand']
+				customer=x[i]['customer']
 				item_name=x[i]['item_name']
 				qty=x[i]['qty']
 				brand=x[i]['brand']
@@ -299,9 +176,9 @@ def total_sales_from_gmv(customer):
 					if item in merged_dictionary[previous][customer]:
 						if merged_dictionary[current][customer][item][0]!=merged_dictionary[previous][customer][item][0]:
 							difference=merged_dictionary[previous][customer][item][0]-merged_dictionary[current][customer][item][0]
-							sales.append([current,customer,item,difference])
+							sales.append([current,customer,item,difference,merged_dictionary[current][customer][item][1]])
 	sales_on_dates={}
-	sales_on_brand={}
+	sales_on_customer={}
 	sales_on_items={}
 	count=0
 	for i in sales:
@@ -314,17 +191,42 @@ def total_sales_from_gmv(customer):
 				else:
 					sales_on_dates[i[0]][i[2]]=sales_on_dates[i[0]][i[2]]+i[3]
 
-			if i[1] not in sales_on_brand:
-				sales_on_brand[i[1]]={i[2]:i[3]}
+			if i[1] not in sales_on_customer:
+				sales_on_customer[i[1]]={i[2]:i[3]}
 			else:
-				if i[2] not in sales_on_brand[i[1]]:
-					sales_on_brand[i[1]][i[2]]=i[3]
+				if i[2] not in sales_on_customer[i[1]]:
+					sales_on_customer[i[1]][i[2]]=i[3]
 				else:
-					sales_on_brand[i[1]][i[2]]=sales_on_brand[i[1]][i[2]]+i[3]
+					sales_on_customer[i[1]][i[2]]=sales_on_customer[i[1]][i[2]]+i[3]
+
+
 			if i[2] not in sales_on_items:
 				sales_on_items[i[2]]=i[3]
 			else:
 				sales_on_items[i[2]]=sales_on_items[i[2]]+i[3]
 			count+=i[3]
-		
-	return [{"Total":count},sales_on_brand,sales_on_dates,sales_on_items]
+	#return sales_on_customer
+	sales_from_invoices=frappe.db.sql("""select si.customer_name as customer,i.brand,i.item_name,(sum(sii.qty)) as Bill_Qty,(select available_qty from `tabCustomer Bin` as cb join `tabItem` as ii on cb.item_code=ii.item_code where cb.customer=si.customer and ii.item_code=i.item_code) as Store_Qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where si.company="Omnipresent Services" and si.status!='Cancelled' and si.status!="Draft" group by i.brand,si.customer,i.item_name;""",as_dict=True)
+	#return sales_from_invoices
+	sales_comparision_data=[]
+	for i in sales_from_invoices:
+		temp=[]
+		temp.append(i['customer'])
+		if i['brand']==None or i['brand']=='null':
+			temp.append("Null")
+		else:
+			temp.append(i['brand'])
+		temp.append(i['item_name'])
+		temp.append(i['Bill_Qty'])
+		temp.append(i['Store_Qty'])
+		temp.append(i['Bill_Qty']-i['Store_Qty'])
+		if i['customer'] in sales_on_customer:
+			if i['item_name'] in sales_on_customer[i['customer']]:
+				temp.append(sales_on_customer[i['customer']][i['item_name']])
+			else:
+				temp.append('none')
+		else:
+			temp.append('none')
+		sales_comparision_data.append(temp)
+	return sales_comparision_data
+	
