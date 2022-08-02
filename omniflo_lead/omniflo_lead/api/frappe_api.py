@@ -155,15 +155,11 @@ def time_series_gmv_data():
 	#This function gives list of unique date
 	def get_date(data):
 		list_of_date=[]
-		i=0
-		while i<len(data):
-			al_date=data[i]['date']
-			if al_date in list_of_date:
-				i+=1
-				continue
-			else:
-				list_of_date.append(al_date)
-				i+=1
+		for i in data:
+			list_of_date.append(i['date'])
+		list_of_date=set(list_of_date)
+		list_of_date=list(list_of_date)
+		list_of_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
 		return list_of_date
 
 

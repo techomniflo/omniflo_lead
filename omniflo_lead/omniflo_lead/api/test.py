@@ -5,9 +5,13 @@ import datetime
 import copy
 from collections import defaultdict
 
+
+
+
+
 @frappe.whitelist()
-def total_sales_from_gmv_for_customer(customer):
-	values={"brand":frappe.request.args["customer"]}
+def total_sales_for_customer():
+	values={"customer":frappe.request.args["customer"]}
 	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.brand from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 				where al.customer=%(customer)s and al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
 	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.brand from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
@@ -19,19 +23,13 @@ def total_sales_from_gmv_for_customer(customer):
 	#This function gives list of unique date
 	def get_date(data):
 		list_of_date=[]
-		i=0
-		while i<len(data):
-			al_date=data[i]['date']
-			if al_date in list_of_date:
-				i+=1
-				continue
-			else:
-				list_of_date.append(al_date)
-				i+=1
+		for i in data:
+			list_of_date.append(i['date'])
+		list_of_date=set(list_of_date)
+		list_of_date=list(list_of_date)
+		list_of_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
 		return list_of_date
-
-
-
+		
 	def crate_dict_for_give_date(date,x,is_add):
 		customer_dict={}
 		date_date=time.strptime(date,"%d-%m-%y")
@@ -179,7 +177,7 @@ def total_sales_from_gmv_for_customer(customer):
 				if i[2] not in sales_on_dates[i[0]]:
 					sales_on_dates[i[0]][i[2]]=i[3]
 				else:
-					sales_on_dates[i[0]][i[2]]=sales_on_dates[i[1]][i[2]]+i[3]
+					sales_on_dates[i[0]][i[2]]=sales_on_dates[i[0]][i[2]]+i[3]
 
 			if i[1] not in sales_on_brand:
 				sales_on_brand[i[1]]={i[2]:i[3]}
@@ -265,16 +263,13 @@ def audit():
 	#This function gives list of unique date
 	def get_date(data):
 		list_of_date=[]
-		i=0
-		while i<len(data):
-			al_date=data[i]['date']
-			if al_date in list_of_date:
-				i+=1
-				continue
-			else:
-				list_of_date.append(al_date)
-				i+=1
+		for i in data:
+			list_of_date.append(i['date'])
+		list_of_date=set(list_of_date)
+		list_of_date=list(list_of_date)
+		list_of_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
 		return list_of_date
+		
 
 
 
@@ -317,15 +312,11 @@ def sales():
 	#This function gives list of unique date
 	def get_date(data):
 		list_of_date=[]
-		i=0
-		while i<len(data):
-			al_date=data[i]['date']
-			if al_date in list_of_date:
-				i+=1
-				continue
-			else:
-				list_of_date.append(al_date)
-				i+=1
+		for i in data:
+			list_of_date.append(i['date'])
+		list_of_date=set(list_of_date)
+		list_of_date=list(list_of_date)
+		list_of_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
 		return list_of_date
 
 
@@ -372,20 +363,16 @@ def test_time_series_gmv_data():
 	#This function gives list of unique date
 	def get_date(data):
 		list_of_date=[]
-		i=0
-		while i<len(data):
-			al_date=data[i]['date']
-			if al_date in list_of_date:
-				i+=1
-				continue
-			else:
-				list_of_date.append(al_date)
-				i+=1
+		for i in data:
+			list_of_date.append(i['date'])
+		list_of_date=set(list_of_date)
+		list_of_date=list(list_of_date)
+		list_of_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
 		return list_of_date
 
 
 
-	def crate_dict_for_give_date(date,x):
+	def crate_dict_for_give_date(date,x,is_add):
 		customer_dict={}
 		date_date=time.strptime(date,"%d-%m-%y")
 		for i in range(len(x)):
@@ -400,15 +387,17 @@ def test_time_series_gmv_data():
 				else:
 					if item_name not in customer_dict[customer]:
 						customer_dict[customer][item_name]=[qty,mrp]
+					else:
+						if is_add==True:
+							customer_dict[customer][item_name][0]+=qty
 		return customer_dict
 
-	def get_dictionary_with_date(data):
+	def get_dictionary_with_date(data,is_add):
 		di={}
 		list_of_date=get_date(data)
 		for i,date in enumerate(list_of_date):
-			di[date]=crate_dict_for_give_date(date,data)
+			di[date]=crate_dict_for_give_date(date,data,is_add)
 		return di
-	
 
 	def merge_sales_and_return(sales_data,return_data):
 		for date in list(return_data.keys()):
@@ -427,8 +416,8 @@ def test_time_series_gmv_data():
 								else:
 									sales_data[date][customer][item][0]=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
 		return sales_data
-	audit_dictionary=get_dictionary_with_date(audit_data)
-	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data),get_dictionary_with_date(return_data))
+	audit_dictionary=get_dictionary_with_date(audit_data,is_add=False)
+	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data,is_add=True),get_dictionary_with_date(return_data,is_add=True))
 
 	final_time_dictionary={}
 
@@ -493,7 +482,7 @@ def test_time_series_gmv_data():
 				date=sales_dictionary_date[j]
 				customer=update_customer(sales_dictionary,date,customer,is_add=True)
 				j=j+1
-		else:
+		if i<len(sales_dictionary_date):
 			while i<len(audit_dictionary_date):
 				date=audit_dictionary_date[i]
 				customer=update_customer(audit_dictionary,date,customer,is_add=False)
