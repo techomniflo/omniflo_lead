@@ -84,98 +84,66 @@ def Date_wise_sale():
 		return sales_data
 	audit_dictionary=get_dictionary_with_date(audit_data,is_add=False)
 	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data,is_add=True),get_dictionary_with_date(return_data,is_add=True))
-	final_time_dictionary={}
+	sales_invoice=copy.deepcopy(sales_dictionary)
+	audit_invoice=copy.deepcopy(audit_dictionary)
+	dates=list(sales_invoice.keys())+list(audit_invoice.keys())
+	dates=list(set(dates))
 
-
-	def update_time(date,dic):
-		final_time_dictionary[date]=dic
-
-	
-	def update_customer(dictionary,date,customer,is_add):
-		customer_of_dictionary=[]
-		for a in list(dictionary[date].keys()):
-			# a refers to customer
-			customer_of_dictionary.append(a)
-			if a not in customer:
-				customer[a]=dictionary[date][a]
+	dates.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
+	final_dictionary={}
+	previous_data={}
+	for i in dates:
+		merged_customer={}
+		sales_data=sales_invoice.get(i,{})
+		audit_data=audit_invoice.get(i,{})
+		sales_customer=list(sales_data.keys())
+		audit_customer=list(audit_data.keys())
+		for customer in sales_customer:
+			if customer not in previous_data:
+				previous_data[customer]=sales_data[customer]
 				continue
-			else:
-				if is_add==False:
-					customer[a]=dictionary[date][a]
-				else:
-					#here b refers to items 
-					for b in list(dictionary[date][a].keys()):
-						if b not in customer[a]:
-							customer[a][b]=dictionary[date][a][b]
-						else:
-							customer[a][b][0]=dictionary[date][a][b][0]+customer[a][b][0]
-
-		new_di={}
-		customer_copy=copy.deepcopy(customer)
-		# for cu in customer_of_dictionary:
-		# 	new_di[cu]=customer_copy[cu]
-		update_time(date,customer_copy)
-		
-		customer=copy.deepcopy(customer_copy)
-		return customer
-		
-	
-	
-	def merge_dictionary():
-		
-		customer={}
-		i=0
-		j=0
-		audit_dictionary_date=list(audit_dictionary.keys())
-		sales_dictionary_date=list(sales_dictionary.keys())
-		sales_dictionary_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
-		audit_dictionary_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
-		while i<len(audit_dictionary_date) and j<len(sales_dictionary_date):
-			if datetime.datetime.strptime(audit_dictionary_date[i], "%d-%m-%y") < datetime.datetime.strptime(sales_dictionary_date[j],"%d-%m-%y"):
-				date=audit_dictionary_date[i]
-				customer=update_customer(audit_dictionary,date,customer,is_add=False)
-				i=i+1
-			elif datetime.datetime.strptime(audit_dictionary_date[i], "%d-%m-%y") > datetime.datetime.strptime(sales_dictionary_date[j],"%d-%m-%y"):
-				date=sales_dictionary_date[j]
-				customer=update_customer(sales_dictionary,date,customer,is_add=True)
-				j=j+1
-			else:
-				date=audit_dictionary_date[i]
-				customer=update_customer(audit_dictionary,date,customer,is_add=False)
-				i=i+1
-				j=j+1
-		if j<len(sales_dictionary_date):
-			while j<len(sales_dictionary_date):
-				date=sales_dictionary_date[j]
-				customer=update_customer(sales_dictionary,date,customer,is_add=True)
-				j=j+1
-		else:
-			while i<len(audit_dictionary_date):
-				date=audit_dictionary_date[i]
-				customer=update_customer(audit_dictionary,date,customer,is_add=False)
-				i=i+1
-
-	merge_dictionary()
-	merged_dictionary=final_time_dictionary
-	
+			elif customer in previous_data:
+				items=sales_data[customer]
+				for item in items.keys():
+					if item not in previous_data[customer]:
+						previous_data[customer][item]=sales_data[customer][item]
+					else:
+						previous_data[customer][item][0]+=sales_data[customer][item][0]
+		for customer in audit_customer:
+			if customer not in previous_data:
+				previous_data[customer]=audit_data[customer]
+				continue
+			if customer in sales_customer:
+				pass
+			if customer not in sales_customer:
+				items=audit_data[customer]
+				for item in items.keys():
+					previous_data[customer][item]=audit_data[customer][item]
+		both_customer=list(set(sales_customer+audit_customer))
+		for customer in both_customer:
+			merged_customer[customer]=copy.deepcopy(previous_data[customer])
+		final_dictionary[i]=merged_customer
+	#pprint.pprint(final_dictionary)
+	dates=list(final_dictionary.keys())
+	dates.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
+	previous={}
 	sales=[]
-	date=list(merged_dictionary.keys())
-
-	for i in range(1,len(date)):
-		previous=date[i-1]
-		current=date[i]
-		customers=merged_dictionary[current]
-		for customer in list(customers.keys()):
-			if customer in merged_dictionary[previous]:
-				items=merged_dictionary[current][customer]
-				for item in list(items.keys()):
-					if item in merged_dictionary[previous][customer]:
-						if merged_dictionary[current][customer][item][0]!=merged_dictionary[previous][customer][item][0]:
-							difference=merged_dictionary[previous][customer][item][0]-merged_dictionary[current][customer][item][0]
-							sales.append([current,customer,item,difference,merged_dictionary[current][customer][item][1],merged_dictionary[current][customer][item][2]])
-							
-	list_of_sales=[]
-	for i in sales:
-		if i[3]>0:
-			list_of_sales.append(i)
-	return list_of_sales
+	for i in dates:
+		customers=list(final_dictionary[i].keys())
+		for customer in customers:
+			if customer in previous:
+				items_in_final=list(final_dictionary[i][customer].keys())
+				for item in items_in_final:
+					if item in previous[customer]:
+						temp=[]
+						temp.append(i)
+						temp.append(customer)
+						temp.append(item)
+						if (previous[customer][item][0]-final_dictionary[i][customer][item][0])>0:
+							temp.append(previous[customer][item][0]-final_dictionary[i][customer][item][0])
+							temp.append(final_dictionary[i][customer][item][1])
+							temp.append(final_dictionary[i][customer][item][1])
+							sales.append(temp)
+					previous[customer][item]=final_dictionary[i][customer][item]
+			previous[customer]=copy.deepcopy(final_dictionary[i][customer])
+	return sales
