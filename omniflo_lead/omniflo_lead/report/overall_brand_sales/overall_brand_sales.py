@@ -15,13 +15,10 @@ def execute(filters=None):
 @frappe.whitelist()
 def Date_wise_sale():
 	values={}
-	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.brand,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
+	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,i.item_name,i.brand,i.mrp,i.item_code from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 				where al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
-	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.brand,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
-				where si.`status` != 'Cancelled' and si.`status`!="Draft" and si.`status` != 'Return' order by si.posting_date;""",values=values,as_dict=True)
-
-	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.brand,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
-				where si.`status` = 'Return' order by date;""",values=values,as_dict=True)
+	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,i.item_name,i.brand,i.mrp,i.item_code from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+				where si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",values=values,as_dict=True)
 
 	#This function gives list of unique date
 	def get_date(data):
@@ -63,87 +60,69 @@ def Date_wise_sale():
 		for i,date in enumerate(list_of_date):
 			di[date]=crate_dict_for_give_date(date,data,is_add)
 		return di
-	
 
-	def merge_sales_and_return(sales_data,return_data):
-		for date in list(return_data.keys()):
-			if date in sales_data:
-				for customer in list(return_data[date].keys()):
-					if customer in sales_data[date]:
-						for item in list(return_data[date][customer].keys()):
-							if item in sales_data[date][customer]:
-								difference=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
-								if difference <= 0:
-									sales_data[date][customer].pop(item)
-									if len(list(sales_data[date][customer].keys()))<=0:
-										sales_data[date].pop(customer)
-									if len(list(sales_data[date].keys()))<=0:
-										sales_data.pop(date)
-								else:
-									sales_data[date][customer][item][0]=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
-		return sales_data
-	audit_dictionary=get_dictionary_with_date(audit_data,is_add=False)
-	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data,is_add=True),get_dictionary_with_date(return_data,is_add=True))
-	sales_invoice=copy.deepcopy(sales_dictionary)
-	audit_invoice=copy.deepcopy(audit_dictionary)
-	dates=list(sales_invoice.keys())+list(audit_invoice.keys())
-	dates=list(set(dates))
+	audit=get_dictionary_with_date(audit_data,is_add=False)
+	sales=get_dictionary_with_date(sales_data,is_add=True)
+	start_date=list(sales.keys())
+	start=datetime.datetime.strptime(start_date[0],"%d-%m-%y")
+	cumulative_sales={}
+	cumulative_billed_with_date={}
+	end=datetime.datetime.now()
+	while start<=end:
+		i=start.strftime("%d-%m-%y")
+		if i in sales:
+			customers=list(sales[i].keys())
+			for customer in customers:
+				if customer not in cumulative_sales:
+					cumulative_sales[customer]=sales[i][customer]
+				else:
+					items=list(sales[i][customer].keys())
 
-	dates.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
-	final_dictionary={}
-	previous_data={}
-	for i in dates:
-		merged_customer={}
-		sales_data=sales_invoice.get(i,{})
-		audit_data=audit_invoice.get(i,{})
-		sales_customer=list(sales_data.keys())
-		audit_customer=list(audit_data.keys())
-		for customer in sales_customer:
-			if customer not in previous_data:
-				previous_data[customer]=sales_data[customer]
-				continue
-			elif customer in previous_data:
-				items=sales_data[customer]
-				for item in items.keys():
-					if item not in previous_data[customer]:
-						previous_data[customer][item]=sales_data[customer][item]
-					else:
-						previous_data[customer][item][0]+=sales_data[customer][item][0]
-		for customer in audit_customer:
-			if customer not in previous_data:
-				previous_data[customer]=audit_data[customer]
-				continue
-			if customer in sales_customer:
-				pass
-			if customer not in sales_customer:
-				items=audit_data[customer]
-				for item in items.keys():
-					previous_data[customer][item]=audit_data[customer][item]
-		both_customer=list(set(sales_customer+audit_customer))
-		for customer in both_customer:
-			merged_customer[customer]=copy.deepcopy(previous_data[customer])
-		final_dictionary[i]=merged_customer
-	#pprint.pprint(final_dictionary)
-	dates=list(final_dictionary.keys())
-	dates.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
-	previous={}
+					for item in items:
+						if item not in cumulative_sales[customer]:
+							cumulative_sales[customer][item]=sales[i][customer][item]
+						else:
+							cumulative_sales[customer][item][0]+=sales[i][customer][item][0]
+		start=start+datetime.timedelta(days=1)
+		cumulative_billed_with_date[i]=copy.deepcopy(cumulative_sales)
+	# pprint.pprint(cumulative_sales_with_date)
+	cumulative_sales_with_date={}
+	for i in audit.keys():
+		if i in cumulative_billed_with_date:
+			customers=audit[i].keys()
+			for customer in customers:
+				if customer in cumulative_billed_with_date[i]:
+					items=audit[i][customer].keys()
+					for item in items:
+						if item in cumulative_billed_with_date[i][customer]:
+							if i not in cumulative_sales_with_date:
+								cumulative_sales_with_date[i]={customer:{item:audit[i][customer][item]}}
+							if customer not in cumulative_sales_with_date[i]:
+								cumulative_sales_with_date[i][customer]={item:audit[i][customer][item]}
+							if item not in cumulative_sales_with_date[i][customer]:
+								cumulative_sales_with_date[i][customer][item]=copy.deepcopy(audit[i][customer][item])
+							cumulative_sales_with_date[i][customer][item][0]=cumulative_billed_with_date[i][customer][item][0] - audit[i][customer][item][0]
+	sales_with_date={}
+	sales_recorder={}
+	count=0
 	sales=[]
-	for i in dates:
-		customers=list(final_dictionary[i].keys())
+	for i in cumulative_sales_with_date.keys():
+		customers=list(cumulative_sales_with_date[i].keys())
 		for customer in customers:
-			if customer in previous:
-				items_in_final=list(final_dictionary[i][customer].keys())
-				for item in items_in_final:
-					if item in previous[customer]:
-						temp=[]
-						temp.append(i)
-						temp.append(customer)
-						temp.append(item)
-						if (previous[customer][item][0]-final_dictionary[i][customer][item][0])>0:
-							temp.append(previous[customer][item][0]-final_dictionary[i][customer][item][0])
-							temp.append(final_dictionary[i][customer][item][1])
-							temp.append(final_dictionary[i][customer][item][1])
-							sales.append(temp)
-					previous[customer][item]=final_dictionary[i][customer][item]
-			previous[customer]=copy.deepcopy(final_dictionary[i][customer])
+			items=list(cumulative_sales_with_date[i][customer].keys())
+			for item in items:
+				if customer not in sales_recorder:
+					sales_recorder[customer] = {item:copy.deepcopy(cumulative_sales_with_date[i][customer][item])}
+					sales_recorder[customer][item][0]=0
+				if item not in sales_recorder[customer]:
+					sales_recorder[customer][item] = copy.deepcopy(cumulative_sales_with_date[i][customer][item])
+					sales_recorder[customer][item][0]=0
+				if (cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]) > 0:
+					diff=cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]
+					sales.append([i,customer,item,diff,cumulative_sales_with_date[i][customer][item][1],cumulative_sales_with_date[i][customer][item][2]])
+					
+
+				count+=cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]
+				sales_recorder[customer][item] = copy.deepcopy(cumulative_sales_with_date[i][customer][item])
+
 	return sales
