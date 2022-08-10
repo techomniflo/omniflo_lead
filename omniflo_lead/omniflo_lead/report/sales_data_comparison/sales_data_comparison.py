@@ -53,6 +53,8 @@ def comparison_data_of_invoice_and_gmv():
 					else:
 						if is_add==True:
 							customer_dict[customer][item_name][0]+=qty
+						if is_add==False:
+							customer_dict[customer][item_name][0]=qty
 		return customer_dict
 
 	def get_dictionary_with_date(data,is_add):
