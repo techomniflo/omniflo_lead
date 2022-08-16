@@ -1,0 +1,32 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2022-08-16 17:52:57.749200",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "stamped_invoices"
+ ],
+ "fields": [
+  {
+   "fieldname": "stamped_invoices",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Stamped Invoices"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-08-16 17:52:57.749200",
+ "modified_by": "Administrator",
+ "module": "Omniflo Lead",
+ "name": "Delivery Confirmation Receipt Items",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
