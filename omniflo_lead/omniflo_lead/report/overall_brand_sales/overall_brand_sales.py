@@ -19,7 +19,7 @@ def Date_wise_sale():
 				where al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
 	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,i.item_name,i.brand,i.mrp,i.item_code from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
 				where si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",values=values,as_dict=True)
-
+	
 	#This function gives list of unique date
 	def get_date(data):
 		list_of_date=[]
