@@ -27,7 +27,7 @@ GROUP BY `TabItem`.`brand`
 ORDER BY `TabItem`.`brand` ASC""",as_dict=True)
 	brand_store_live={}
 	for i in live_store:
-		brand_store_live[i[0]]=i[1]
+		brand_store_live[i['brand']]=i['count']
 	
 	sales = Date_wise_sale()
 	month_wise_sale={}
