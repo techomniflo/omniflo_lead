@@ -119,7 +119,7 @@ def Date_wise_sale():
 				if item not in sales_recorder[customer]:
 					sales_recorder[customer][item] = copy.deepcopy(cumulative_sales_with_date[i][customer][item])
 					sales_recorder[customer][item][0]=0
-				if (cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]) > 0:
+				if (cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]) != 0:
 					diff=cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]
 					sales.append([i,customer,item,diff,cumulative_sales_with_date[i][customer][item][1],cumulative_sales_with_date[i][customer][item][2]])
 					
