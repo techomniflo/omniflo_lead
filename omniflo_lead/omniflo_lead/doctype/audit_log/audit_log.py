@@ -67,18 +67,12 @@ class AuditLog(Document):
  
 	@frappe.whitelist()
 	def fetch_items(self):
-		bin_items = frappe.get_all('Customer Bin', filters = {'customer' : self.customer}, fields =['name'])
-		current_items = []
-		if self.get('items'):
-			current_items = [item.item_code for item in self.get('items')]
-		for item in bin_items:
-			customer_bin = frappe.get_doc('Customer Bin', item['name'])
-			if customer_bin.item_code in current_items:
-				continue
-
-			item_doc = frappe.get_doc('Item', customer_bin.item_code)
+		items_list=frappe.db.sql("""select i.brand,cb.item_code,i.item_name,cb.available_qty from `tabCustomer Bin` as cb left join `tabItem` as i on i.item_code=cb.item_code where cb.customer=%(customer)s order by i.brand""",values={'customer':self.customer},as_list=True)
+		items_list.sort(key=lambda x: (x[3]==0,x[0],x[2]))
+		for item in items_list:
 			self.append('items',
-						{'item_code' : customer_bin.item_code , 
-						'item_name' : item_doc.item_name,
-						'last_visit_qty': customer_bin.available_qty, 
-						'current_available_qty' : customer_bin.available_qty})
+						{'item_code' : item[1], 
+						'item_name' : item[2],
+						'last_visit_qty': item[3],
+						'brand': item[0],
+						'current_available_qty' : item[3]})
