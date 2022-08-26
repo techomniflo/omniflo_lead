@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2022-08-25 12:44:18.497604",
  "doctype": "DocType",
@@ -89,7 +90,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-25 13:32:17.762213",
+ "modified": "2022-08-26 15:38:33.336165",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Planogram",
@@ -104,6 +105,7 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "select": 1,
    "share": 1,
    "write": 1
   }
