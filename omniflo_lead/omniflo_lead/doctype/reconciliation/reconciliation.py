@@ -4,7 +4,7 @@
 import frappe
 from frappe.model.document import Document
 
-class Reconsillation(Document):
+class Reconciliation(Document):
 
 	def before_save(self):
 		for item in self.items:
