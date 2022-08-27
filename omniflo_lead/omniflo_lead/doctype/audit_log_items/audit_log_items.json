@@ -1,68 +1,75 @@
 {
-    "actions": [],
-    "allow_rename": 1,
-    "creation": "2022-03-25 23:58:26.411957",
-    "doctype": "DocType",
-    "editable_grid": 1,
-    "engine": "InnoDB",
-    "field_order": [
-     "item_name",
-     "item_code",
-     "brand",
-     "last_visit_qty",
-     "damage_qty",
-     "current_available_qty"
-    ],
-    "fields": [
-     {
-      "fieldname": "item_code",
-      "fieldtype": "Link",
-      "in_list_view": 1,
-      "label": "Item Code",
-      "options": "Item"
-     },
-     {
-      "fieldname": "last_visit_qty",
-      "fieldtype": "Float",
-      "in_list_view": 1,
-      "label": "Last Visit Qty"
-     },
-     {
-      "fieldname": "current_available_qty",
-      "fieldtype": "Float",
-      "in_list_view": 1,
-      "label": "Current Available Qty"
-     },
-     {
-      "fetch_from": "item_code.item_name",
-      "fieldname": "item_name",
-      "fieldtype": "Data",
-      "in_list_view": 1,
-      "label": "Item Name",
-      "read_only": 1
-     },
-     {
-      "fieldname": "damage_qty",
-      "fieldtype": "Float",
-      "label": "Damage Qty"
-     },
-     {
-      "fieldname": "brand",
-      "fieldtype": "Data",
-      "in_list_view": 1,
-      "label": "Brand"
-     }
-    ],
-    "index_web_pages_for_search": 1,
-    "istable": 1,
-    "links": [],
-    "modified": "2022-08-22 20:14:25.009490",
-    "modified_by": "Administrator",
-    "module": "Omniflo Lead",
-    "name": "Audit Log Items",
-    "owner": "Administrator",
-    "permissions": [],
-    "sort_field": "modified",
-    "sort_order": "DESC",
-    "states": []
-   }
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-03-25 23:58:26.411957",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "brand",
+  "item_name",
+  "last_visit_qty",
+  "damage_qty",
+  "current_available_qty",
+  "item_code"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "width": "0"
+  },
+  {
+   "columns": 1,
+   "fieldname": "last_visit_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Last Visit Qty"
+  },
+  {
+   "columns": 2,
+   "fieldname": "current_available_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Current Available Qty"
+  },
+  {
+   "columns": 3,
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name",
+   "read_only": 1,
+   "width": "3"
+  },
+  {
+   "columns": 1,
+   "fieldname": "damage_qty",
+   "fieldtype": "Float",
+   "label": "Damage Qty"
+  },
+  {
+   "columns": 1,
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Brand"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-08-27 15:15:33.885078",
+ "modified_by": "Administrator",
+ "module": "Omniflo Lead",
+ "name": "Audit Log Items",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

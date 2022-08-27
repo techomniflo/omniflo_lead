@@ -6,9 +6,9 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "default_warehouse",
   "company",
   "posting_date",
-  "default_warehouse",
   "stock_details_section",
   "items",
   "section_break_6",
@@ -17,18 +17,26 @@
  ],
  "fields": [
   {
+   "fetch_from": "default_warehouse.company",
    "fieldname": "company",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Company",
-   "options": "Company",
-   "reqd": 1
+   "options": "Company"
   },
   {
    "fieldname": "posting_date",
    "fieldtype": "Datetime",
    "in_list_view": 1,
    "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Warehouse",
+   "options": "Warehouse",
    "reqd": 1
   },
   {
@@ -40,7 +48,7 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "Reconsillation Items"
+   "options": "Reconciliation Items"
   },
   {
    "fieldname": "section_break_6",
@@ -56,26 +64,18 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Reconsillation",
+   "options": "Reconciliation",
    "print_hide": 1,
    "read_only": 1
-  },
-  {
-   "fieldname": "default_warehouse",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Default Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-07-25 12:35:55.492158",
+ "modified": "2022-08-27 15:46:36.013604",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
- "name": "Reconsillation",
+ "name": "Reconciliation",
  "owner": "Administrator",
  "permissions": [
   {

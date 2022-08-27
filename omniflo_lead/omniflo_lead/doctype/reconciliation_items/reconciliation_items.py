@@ -4,5 +4,5 @@
 # import frappe
 from frappe.model.document import Document
 
-class ReconsillationItems(Document):
+class ReconciliationItems(Document):
 	pass
