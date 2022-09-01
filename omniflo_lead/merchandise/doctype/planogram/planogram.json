@@ -16,6 +16,8 @@
   "shelf_name",
   "max_rows",
   "section_break_9",
+  "planogram_cohort",
+  "section_break_11",
   "items",
   "shelf_preview"
  ],
@@ -80,17 +82,28 @@
   },
   {
    "fieldname": "section_break_9",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Cohort Section"
   },
   {
    "fieldname": "shelf_preview",
    "fieldtype": "HTML",
    "label": "Shelf Preview"
+  },
+  {
+   "fieldname": "planogram_cohort",
+   "fieldtype": "Table",
+   "label": "Planogram Cohort ",
+   "options": "Planogram Cohort Adder"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-26 15:38:33.336165",
+ "modified": "2022-09-01 12:41:54.156166",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Planogram",
