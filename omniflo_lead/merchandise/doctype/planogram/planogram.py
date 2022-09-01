@@ -57,8 +57,10 @@ class Planogram(Document):
 		return "\n\n\n\n"
 
 	@frappe.whitelist()
-	def add_cohort(self,row,column,cohort):
-		print(self.max_rows)
+	def add_cohort(self):
+		row=self.row
+		column=self.column
+		cohort=self.cohort
 		cohort_items=frappe.db.sql(""" select item_code from `tabCohort Items` where parent = %(cohort)s
 		""",values={'cohort':cohort},as_list=True)
 		for item_code in cohort_items:

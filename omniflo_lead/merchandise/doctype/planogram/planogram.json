@@ -16,7 +16,13 @@
   "shelf_name",
   "max_rows",
   "section_break_9",
-  "planogram_cohort",
+  "row",
+  "column_break_11",
+  "column",
+  "column_break_13",
+  "cohort",
+  "column_break_15",
+  "add",
   "section_break_11",
   "items",
   "shelf_preview"
@@ -91,19 +97,46 @@
    "label": "Shelf Preview"
   },
   {
-   "fieldname": "planogram_cohort",
-   "fieldtype": "Table",
-   "label": "Planogram Cohort ",
-   "options": "Planogram Cohort Adder"
-  },
-  {
    "fieldname": "section_break_11",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "row",
+   "fieldtype": "Data",
+   "label": "row"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column",
+   "fieldtype": "Data",
+   "label": "Column"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cohort",
+   "fieldtype": "Link",
+   "label": "Cohort",
+   "options": "Cohort"
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "add",
+   "fieldtype": "Button",
+   "label": "Add"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-01 12:41:54.156166",
+ "modified": "2022-09-01 17:31:23.250550",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Planogram",
