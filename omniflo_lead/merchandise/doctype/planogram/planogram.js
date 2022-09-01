@@ -28,3 +28,34 @@ frappe.ui.form.on('Planogram Items',{
 		
 	}
 });
+
+frappe.ui.form.on('Planogram Cohort Adder',{
+	row:function(frm,cdt,cdn){
+		var d=locals[cdt][cdn];
+		var max_rows=parseInt(cur_frm.fields_dict["max_rows"]["value"])
+		if (d.row==0){
+			frappe.throw("Can't Set row to 0")
+		}
+		if (d.row>max_rows){
+			frappe.throw("You are setting row above the limit of Max Rows")
+		}
+		
+	},
+	add:function(frm,cdt,cdn){
+	var d=locals[cdt][cdn];
+	frappe.call({
+		doc : frm.doc,
+		method : 'add_cohort',
+		args: {
+			row:d.row,
+			column:d.column,
+			cohort:d.cohort
+		},
+		freeze : true,
+		freeze_message : 'Getting All Items'
+	}).then((res) => {
+		refresh_field('items');
+		refresh_field('shelf_preview');
+	})
+}
+});

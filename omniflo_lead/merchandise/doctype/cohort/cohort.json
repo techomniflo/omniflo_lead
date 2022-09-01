@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:cohort_code",
+ "creation": "2022-08-30 16:27:14.938634",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cohort_code",
+  "cohort_name",
+  "section_break_3",
+  "items"
+ ],
+ "fields": [
+  {
+   "fieldname": "cohort_code",
+   "fieldtype": "Data",
+   "label": "Cohort Code",
+   "unique": 1
+  },
+  {
+   "fieldname": "cohort_name",
+   "fieldtype": "Data",
+   "label": "Cohort Name"
+  },
+  {
+   "fieldname": "section_break_3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Cohort Items"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-08-30 16:27:50.624114",
+ "modified_by": "Administrator",
+ "module": "Merchandise",
+ "name": "Cohort",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
