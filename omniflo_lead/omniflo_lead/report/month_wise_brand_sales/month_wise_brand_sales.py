@@ -42,6 +42,9 @@ ORDER BY `TabItem`.`brand` ASC""",as_dict=True)
 	return_value=[]
 	for month in list(month_wise_sale.keys()):
 		for brand in list(month_wise_sale[month].keys()):
-			temp=[month[0:2],month[3:],brand,month_wise_sale[month][brand],brand_store_live[brand]]
+			if brand not in brand_store_live:
+				temp=[month[0:2],month[3:],brand,month_wise_sale[month][brand],0]
+			else:
+				temp=[month[0:2],month[3:],brand,month_wise_sale[month][brand],brand_store_live[brand]]
 			return_value.append(temp)
 	return return_value

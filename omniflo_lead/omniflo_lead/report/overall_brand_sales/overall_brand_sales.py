@@ -10,7 +10,7 @@ import copy
 from collections import defaultdict
 
 def execute(filters=None):
-	columns=["Date","Customer","Item_Name","QTY","Brand","Mrp"]
+	columns=["Date","Customer","Item_Name","QTY","Brand","Mrp","GMV"]
 	return columns, Date_wise_sale()
 @frappe.whitelist()
 def Date_wise_sale():
@@ -121,7 +121,8 @@ def Date_wise_sale():
 					sales_recorder[customer][item][0]=0
 				if (cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]) != 0:
 					diff=cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]
-					sales.append([i,customer,item,diff,cumulative_sales_with_date[i][customer][item][1],cumulative_sales_with_date[i][customer][item][2]])
+					mrp=int(cumulative_sales_with_date[i][customer][item][2])
+					sales.append([i,customer,item,diff,cumulative_sales_with_date[i][customer][item][1],mrp,diff*mrp])
 					
 
 				count+=cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]
