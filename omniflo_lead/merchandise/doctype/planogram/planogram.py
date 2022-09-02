@@ -61,16 +61,17 @@ class Planogram(Document):
 		row=self.row
 		column=self.column
 		cohort=self.cohort
-		cohort_items=frappe.db.sql(""" select item_code from `tabCohort Items` where parent = %(cohort)s
+		cohort_items=frappe.db.sql(""" select item_code,qty from `tabCohort Items` where parent = %(cohort)s
 		""",values={'cohort':cohort},as_list=True)
-		for item_code in cohort_items:
-			item_name,brand=frappe.db.sql("""select item_name,brand from `tabItem` where item_code=%(item_code)s""",values={'item_code':item_code[0]},as_list=True)[0]
+		for item in cohort_items:
+			item_name,brand=frappe.db.sql("""select item_name,brand from `tabItem` where item_code=%(item_code)s order by brand,item_name""",values={'item_code':item[0]},as_list=True)[0]
 			self.append('items',{
 				'row':int(row),
 				'column':int(column),
-				'item_code':item_code[0],
+				'item_code':item[0],
 				'item_name':item_name,
-				'brand':brand
+				'brand':brand,
+				'qty':item[1]
 
 			})
 
