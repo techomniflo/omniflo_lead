@@ -61,7 +61,7 @@ class Planogram(Document):
 		row=self.row
 		column=self.column
 		cohort=self.cohort
-		cohort_items=frappe.db.sql(""" select item_code,qty from `tabCohort Items` where parent = %(cohort)s
+		cohort_items=frappe.db.sql(""" select item_code,qty from `tabCohort Items` where parent = %(cohort)s order by qty,item_code
 		""",values={'cohort':cohort},as_list=True)
 		for item in cohort_items:
 			item_name,brand=frappe.db.sql("""select item_name,brand from `tabItem` where item_code=%(item_code)s order by brand,item_name""",values={'item_code':item[0]},as_list=True)[0]
