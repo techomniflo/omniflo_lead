@@ -120,7 +120,7 @@ def comparison_data_of_invoice_and_gmv():
 					sales_recorder[customer][item] = copy.deepcopy(cumulative_sales_with_date[i][customer][item])
 					sales_recorder[customer][item][0]=0
 
-				if (cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]) > 0:
+				if (cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]) != 0:
 					diff=cumulative_sales_with_date[i][customer][item][0]-sales_recorder[customer][item][0]
 					sales.append([i,customer,item,diff,cumulative_sales_with_date[i][customer][item][1],cumulative_sales_with_date[i][customer][item][2]])
 
