@@ -159,5 +159,5 @@ def comparison_data_of_invoice_and_gmv():
 			temp.append(0)
 		temp.append(temp[-2]-temp[-1])
 		sales_comparision_data.append(temp)
-	sales_comparision_data.sort(lambda x:(x[7],x[0],x[1]))
+	sales_comparision_data.sort(key = lambda x: (x[7],x[0],x[1]))
 	return sales_comparision_data
