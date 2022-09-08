@@ -10,15 +10,7 @@
   "promoter_id",
   "first_name",
   "last_name",
-  "full_name",
-  "mobile_no",
-  "column_break_5",
-  "mobile_no_2",
-  "section_break_7",
-  "address",
-  "section_break_9",
-  "aadhar",
-  "pancard"
+  "full_name"
  ],
  "fields": [
   {
@@ -42,43 +34,6 @@
    "label": "Last Name"
   },
   {
-   "fieldname": "mobile_no",
-   "fieldtype": "Phone",
-   "label": "Mobile No."
-  },
-  {
-   "fieldname": "column_break_5",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "mobile_no_2",
-   "fieldtype": "Phone",
-   "label": "Mobile No. 2"
-  },
-  {
-   "fieldname": "section_break_7",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "address",
-   "fieldtype": "Small Text",
-   "label": "Address"
-  },
-  {
-   "fieldname": "section_break_9",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "aadhar",
-   "fieldtype": "Attach Image",
-   "label": "Aadhar"
-  },
-  {
-   "fieldname": "pancard",
-   "fieldtype": "Attach Image",
-   "label": "Pancard"
-  },
-  {
    "fieldname": "full_name",
    "fieldtype": "Data",
    "label": "Full Name",
@@ -87,7 +42,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-08 16:33:05.603468",
+ "modified": "2022-09-08 18:33:49.812218",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter",
