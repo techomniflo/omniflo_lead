@@ -5,4 +5,6 @@
 from frappe.model.document import Document
 
 class Promoter(Document):
-	pass
+	def on_save(self):
+		self.full_name=self.first_name+" "+self.last_name
+		
