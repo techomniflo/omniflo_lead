@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2022-09-08 17:18:26.945645",
+ "modified": "2022-09-08 18:14:01.214346",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-logs",
@@ -48,18 +48,6 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "promoter_name",
-   "fieldtype": "Data",
-   "hidden": 0,
-   "label": "Promoter Name",
-   "max_length": 0,
-   "max_value": 0,
-   "read_only": 0,
-   "reqd": 0,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
    "fieldname": "customer",
    "fieldtype": "Link",
    "hidden": 0,
@@ -67,18 +55,6 @@
    "max_length": 0,
    "max_value": 0,
    "options": "Customer",
-   "read_only": 0,
-   "reqd": 0,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
-   "fieldname": "customer_name",
-   "fieldtype": "Data",
-   "hidden": 0,
-   "label": "Customer Name",
-   "max_length": 0,
-   "max_value": 0,
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
