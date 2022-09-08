@@ -1,0 +1,113 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-09-08 16:35:37.439438",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "promoter",
+  "column_break_2",
+  "promoter_name",
+  "section_break_4",
+  "customer",
+  "column_break_6",
+  "customer_name",
+  "section_break_8",
+  "customer_speak_today",
+  "selfie",
+  "latitude",
+  "longitude"
+ ],
+ "fields": [
+  {
+   "fieldname": "promoter",
+   "fieldtype": "Link",
+   "label": "Promoter",
+   "options": "Promoter"
+  },
+  {
+   "fetch_from": "promoter.full_name",
+   "fieldname": "promoter_name",
+   "fieldtype": "Data",
+   "label": "Promoter Name"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "customer_speak_today",
+   "fieldtype": "Int",
+   "label": "Customer Speak Today",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Latitude",
+   "read_only": 1
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Longitude",
+   "read_only": 1
+  },
+  {
+   "fieldname": "selfie",
+   "fieldtype": "Attach Image",
+   "label": "Selfie"
+  },
+  {
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-09-08 17:44:43.241233",
+ "modified_by": "Administrator",
+ "module": "Merchandise",
+ "name": "Promoter Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
