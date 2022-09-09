@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2022-09-09 14:28:45.436695",
+ "modified": "2022-09-09 15:41:23.622570",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-logs",
@@ -61,10 +61,10 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "customer_speak_today",
+   "fieldname": "customers_interacted_with_today",
    "fieldtype": "Int",
    "hidden": 0,
-   "label": "Customer Speak Today",
+   "label": "Customers interacted with today",
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
@@ -80,7 +80,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
-   "reqd": 0,
+   "reqd": 1,
    "show_in_filter": 0
   },
   {
@@ -92,7 +92,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
-   "reqd": 0,
+   "reqd": 1,
    "show_in_filter": 0
   }
  ]
