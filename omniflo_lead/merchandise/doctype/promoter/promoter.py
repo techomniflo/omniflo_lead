@@ -1,10 +1,11 @@
 # Copyright (c) 2022, Omniflo and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
 from frappe.model.document import Document
 
 class Promoter(Document):
-	def on_save(self):
-		self.full_name=self.first_name+" "+self.last_name
-		
+	def after_insert(self):
+		doc=frappe.get_doc('Promoter',self.name)
+		doc.full_name=doc.first_name+" "+doc.last_name
+		doc.save(ignore_permissions = True)		
