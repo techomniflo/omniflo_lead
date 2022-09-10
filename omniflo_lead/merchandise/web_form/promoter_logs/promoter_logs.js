@@ -1,6 +1,6 @@
 frappe.ready(function() {
 	// bind events here
-	getLocation()
+	// getLocation()
 	function getLocation() {
 		if (navigator.geolocation) {
 		 navigator.geolocation.getCurrentPosition(showPosition);
