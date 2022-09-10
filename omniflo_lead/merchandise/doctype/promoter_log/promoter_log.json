@@ -31,6 +31,8 @@
    "fetch_from": "promoter.full_name",
    "fieldname": "promoter_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Promoter Name"
   },
   {
@@ -44,6 +46,8 @@
   {
    "fieldname": "customer",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer",
    "options": "Customer"
   },
@@ -93,7 +97,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-10 16:28:29.312962",
+ "modified": "2022-09-10 16:47:48.284577",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Log",
