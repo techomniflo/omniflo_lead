@@ -16,6 +16,7 @@
   "section_break_8",
   "customers_interacted_with_today",
   "selfie",
+  "image_preview",
   "latitude",
   "longitude"
  ],
@@ -82,11 +83,17 @@
    "fieldtype": "Int",
    "label": "Customers interacted with today",
    "non_negative": 1
+  },
+  {
+   "fieldname": "image_preview",
+   "fieldtype": "Image",
+   "label": "Image Preview",
+   "options": "selfie"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-09 15:38:23.245277",
+ "modified": "2022-09-10 16:28:29.312962",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Log",
