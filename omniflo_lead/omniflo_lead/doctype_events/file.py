@@ -173,7 +173,7 @@ class S3Operations(object):
 		return url
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def file_upload_to_s3(doc, method):
 	"""
 	check and upload files to s3. the path check and
@@ -181,8 +181,8 @@ def file_upload_to_s3(doc, method):
 	s3_upload = S3Operations()
 	path = doc.file_url
 	site_path = frappe.utils.get_site_path()
-	parent_doctype = doc.attached_to_doctype
-	parent_name = doc.attached_to_name
+	parent_doctype = str(doc.attached_to_doctype)
+	parent_name = str(doc.attached_to_name)
 	ignore_s3_upload_for_doctype = frappe.local.conf.get('ignore_s3_upload_for_doctype') or ['Data Import']
 	if parent_doctype not in ignore_s3_upload_for_doctype:
 		if not doc.is_private:
@@ -206,7 +206,9 @@ def file_upload_to_s3(doc, method):
 			file_url, 'Home/Attachments', 'Home/Attachments', key, doc.name))
 		
 		doc.file_url = file_url
-		
+		if parent_doctype=='None':
+			frappe.db.commit()
+			return
 		if parent_doctype and frappe.get_meta(parent_doctype).get('image_field'):
 			frappe.db.set_value(parent_doctype, parent_name, frappe.get_meta(parent_doctype).get('image_field'), file_url)
 
