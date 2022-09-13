@@ -14,7 +14,9 @@
   "column_break_6",
   "customer_name",
   "section_break_8",
-  "customers_interacted_with_today",
+  "customers_interacted",
+  "focus_brands_sale_value",
+  "total_sale_value",
   "selfie",
   "image_preview",
   "latitude",
@@ -83,21 +85,33 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "customers_interacted_with_today",
-   "fieldtype": "Int",
-   "label": "Customers interacted with today",
-   "non_negative": 1
-  },
-  {
    "fieldname": "image_preview",
    "fieldtype": "Image",
    "label": "Image Preview",
    "options": "selfie"
+  },
+  {
+   "fieldname": "customers_interacted",
+   "fieldtype": "Int",
+   "label": "Customers interacted",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "focus_brands_sale_value",
+   "fieldtype": "Int",
+   "label": "Focus Brands Sale Value",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "total_sale_value",
+   "fieldtype": "Int",
+   "label": "Total Sale Value",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-10 16:47:48.284577",
+ "modified": "2022-09-13 14:37:45.400015",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Log",

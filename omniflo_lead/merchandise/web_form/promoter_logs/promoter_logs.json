@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2022-09-10 16:30:35.851905",
+ "modified": "2022-09-13 14:39:07.343239",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-logs",
@@ -61,14 +61,14 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "customers_interacted_with_today",
+   "fieldname": "customers_interacted",
    "fieldtype": "Int",
    "hidden": 0,
-   "label": "Customers interacted with today",
+   "label": "Customers interacted",
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
-   "reqd": 1,
+   "reqd": 0,
    "show_in_filter": 0
   },
   {
@@ -80,7 +80,31 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
-   "reqd": 1,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "focus_brands_sale_value",
+   "fieldtype": "Int",
+   "hidden": 0,
+   "label": "Focus Brands Sale Value",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "total_sale_value",
+   "fieldtype": "Int",
+   "hidden": 0,
+   "label": "Total Sale Value",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
    "show_in_filter": 0
   },
   {
