@@ -62,3 +62,13 @@ def stores_gmv_with_first_billing_date():
     si.customer) as meta
 """,as_dict=True)
     return return_value
+
+@frappe.whitelist()
+def item_list():
+    rv=frappe.db.sql("""select i.item_code,i.item_name,i.brand from `tabItem` as i where i.name!='Platform Services' and i.name!='test item' and i.brand is not null;""",as_dict=True)
+    return rv
+
+@frapppe.whitelist()
+def customer_list():
+    rv=frappe.db.sql("""select c.name,c.customer_name from `tabCustomer` as c where c.name in (select si.customer from `tabSales Invoice` as si where si.customer=c.name and si.company='Omnipresent Services') and c.customer_status!='Closed';""")
+    return rv
