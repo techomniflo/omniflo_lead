@@ -65,7 +65,7 @@ def stores_gmv_with_first_billing_date():
 
 @frappe.whitelist()
 def item_list():
-    rv=frappe.db.sql("""select i.item_code,i.item_name,i.brand from `tabItem` as i where i.name!='Platform Services' and i.name!='test item' and i.brand is not null;""",as_dict=True)
+    rv=frappe.db.sql("""select i.item_code,i.item_name,i.brand,i.mrp from `tabItem` as i where i.name!='Platform Services' and i.name!='test item' and i.brand is not null;""",as_dict=True)
     return rv
 
 @frappe.whitelist()
