@@ -76,6 +76,6 @@ def mtd_sales():
 	return_value=[]
 	for i in customer_details:
 		if i[0] in customer_curr_month_sale:
-			return_value.append([i[0],customer_curr_month_sale[0],i[1],i[2],i[3]])
+			return_value.append([i[0],customer_curr_month_sale[i[0]],i[1],i[2],i[3]])
 	return return_value
 	
