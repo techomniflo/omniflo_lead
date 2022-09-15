@@ -9,7 +9,8 @@ from omniflo_lead.omniflo_lead.report.overall_brand_sales.overall_brand_sales im
 def execute(filters=None):
 	columns =["mm-yy","MTD Sales","GMV Sales","Billing Date","Agent Name"]
 	return columns ,mtd_sales()
- 
+
+@frappe.whitelist()
 def mtd_sales():
 	sales=Date_wise_sale()
 	sales.sort(key=lambda x: (datetime.datetime.strptime(x[0], "%d-%m-%y")),reverse=True)
@@ -75,6 +76,6 @@ def mtd_sales():
 	return_value=[]
 	for i in customer_details:
 		if i[0] in customer_curr_month_sale:
-			return_value.append([i[0],customer_curr_month_sale[0],i[1],i[2],i[3]])
+			return_value.append([i[0],customer_curr_month_sale[i[0]],i[1],i[2],i[3]])
 	return return_value
 	
