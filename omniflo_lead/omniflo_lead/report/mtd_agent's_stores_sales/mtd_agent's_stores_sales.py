@@ -7,7 +7,7 @@ from omniflo_lead.omniflo_lead.report.mtd_customer_sales.mtd_customer_sales impo
 
 def execute(filters=None):
 	columns=["Agent Name","MTD Sales","Overall Sales","Number of Stores"]
-	return columns,
+	return columns,mtd_agent_sales()
 
 def mtd_agent_sales():
 	sales_data=mtd_sales()
