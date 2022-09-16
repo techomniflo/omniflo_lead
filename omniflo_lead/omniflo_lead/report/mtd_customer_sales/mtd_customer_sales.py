@@ -27,7 +27,7 @@ def mtd_sales():
 			break
 	
 	customer_details=frappe.db.sql("""select meta.customer_name,meta.Bill_Amount-meta.Store_Available_Qty_Amount as GMV_Sales,meta.Billing_Date,meta.manager_name from (select 
-    si.customer_name,
+    (select C.customer_name from `tabCustomer` as C where C.name=si.customer) as customer_name,
     (
         select 
         min(kk.posting_date) 
