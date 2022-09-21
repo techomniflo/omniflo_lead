@@ -52,7 +52,7 @@ class DiscountSheetGenerator(Document):
 				"difference":i.difference,
 				"offer_percentage":i.offer_percentage
 			})
-		if self.invoices:
+		if hasattr(self, 'invoices'):
 			for invoices in self.invoices:
 				sales_invoices.add(invoices.invoice_name)
 		self.invoices={}
