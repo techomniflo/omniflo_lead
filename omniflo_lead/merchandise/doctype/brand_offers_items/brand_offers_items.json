@@ -46,40 +46,44 @@
    "columns": 1,
    "fetch_from": "item_code.mrp",
    "fieldname": "mrp",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Mrp"
+   "label": "MRP",
+   "precision": "2"
   },
   {
    "columns": 1,
    "fieldname": "offer_price",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Offer Price"
+   "label": "Offer Price",
+   "precision": "2"
   },
   {
    "columns": 2,
    "fieldname": "difference",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Difference"
+   "label": "Difference",
+   "precision": "2"
   },
   {
    "columns": 1,
    "fieldname": "offer_percentage",
-   "fieldtype": "Data",
+   "fieldtype": "Percent",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Offer percentage(%)"
+   "label": "Offer percentage(%)",
+   "precision": "2"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-09-21 15:36:44.029568",
+ "modified": "2022-09-21 15:59:20.876382",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Brand Offers Items",
