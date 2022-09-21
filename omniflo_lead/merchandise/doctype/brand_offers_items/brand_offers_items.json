@@ -44,6 +44,7 @@
   },
   {
    "columns": 1,
+   "fetch_from": "item_code.mrp",
    "fieldname": "mrp",
    "fieldtype": "Data",
    "in_list_view": 1,
