@@ -11,11 +11,12 @@ class DiscountSheetGenerator(Document):
 		values={"customer":self.customer,"brand_offer":brand_offer}
 		fetch_data=frappe.db.sql("""
 		select
-		bo.item_code,bo.item_name,bo.brand,bo.mrp,bo.offer_price,bo.difference,bo.offer_percentage
+		bo.item_code,bo.item_name,bo.brand,bo.mrp,bo.offer_price,bo.difference,bo.offer_percentage,meta.name
 		from 
 		`tabBrand Offers Items` as bo 
 		inner join (
-			select 
+			select
+			si.name,
 			i.item_code, 
 			i.item_name, 
 			i.brand, 
@@ -39,7 +40,9 @@ class DiscountSheetGenerator(Document):
 			i.item_name
 		) as meta on meta.item_code = bo.item_code
 		where bo.parent=%(brand_offer)s """,values=values,as_dict=True)
+		sales_invoices=set()
 		for i in fetch_data:
+			sales_invoices.add(i.name)
 			self.append('items',{
 				"item_code":i.item_code,
 				"item_name":i.item_name,
@@ -48,4 +51,13 @@ class DiscountSheetGenerator(Document):
 				"offer_price":i.offer_price,
 				"difference":i.difference,
 				"offer_percentage":i.offer_percentage
+			})
+		if self.invoices:
+			for invoices in self.invoices:
+				sales_invoices.add(invoices.invoice_name)
+		self.invoices={}
+		sales_invoices=list(sales_invoices)
+		for invoice_name in sales_invoices:
+			self.append("invoices",{
+				"invoice_name":invoice_name
 			})

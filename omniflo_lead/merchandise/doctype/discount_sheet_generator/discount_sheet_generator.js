@@ -20,6 +20,7 @@ frappe.ui.form.on('Discount Sheet Generator', {
 				freeze_message : 'Getting All Items'
 			}).then((res) => {
 					refresh_field('items');	
+					refresh_field('invoices')
 			})
 		});
 	}
