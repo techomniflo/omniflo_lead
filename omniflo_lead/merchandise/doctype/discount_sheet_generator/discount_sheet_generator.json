@@ -80,7 +80,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-22 11:43:06.988415",
+ "modified": "2022-09-23 12:34:17.885734",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Discount Sheet Generator",
@@ -102,5 +102,8 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }
