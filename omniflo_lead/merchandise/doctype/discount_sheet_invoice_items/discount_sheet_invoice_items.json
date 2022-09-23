@@ -12,6 +12,8 @@
   {
    "fieldname": "invoice_name",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Invoice Name",
    "options": "Sales Invoice"
   }
@@ -19,7 +21,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-09-21 18:12:01.955979",
+ "modified": "2022-09-23 13:18:17.710775",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Discount Sheet Invoice Items",
