@@ -36,7 +36,7 @@ def on_submit(doc, event):
     file_doc = frappe.db.get_value('File', {'attached_to_doctype': 'Sales Invoice', 'attached_to_name': doc.name})
     if file_doc:
         file_doc=frappe.get_doc("File",file_doc)
-        doc.file_url=file_doc.qr_code_url
+        doc.qr_code_url=file_doc.file_url
 
 
 def on_cancel(doc,event):
@@ -55,7 +55,7 @@ def on_cancel(doc,event):
                 customer_bin.save(ignore_permissions = True)
 
 def create_qr_code(self):
-    if self.status!='Return':
+    if self.status!='Return' and self.company=='Omnipresent Services':
         try:
             qrcode_as_png(customer=self.customer,invoiceNo=self.name,amount=self.rounded_total,gstin=self.customer_gstin)
         except:
