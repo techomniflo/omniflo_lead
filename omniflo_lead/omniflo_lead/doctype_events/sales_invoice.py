@@ -31,12 +31,6 @@ def on_submit(doc, event):
                 customer_bin.available_qty=0
             customer_bin.stock_uom = item.stock_uom
             customer_bin.save(ignore_permissions = True)
-    
-    create_qr_code(doc)
-    file_doc = frappe.db.get_value('File', {'attached_to_doctype': 'Sales Invoice', 'attached_to_name': doc.name})
-    if file_doc:
-        file_doc=frappe.get_doc("File",file_doc)
-        doc.qr_code_url=file_doc.file_url
 
 
 def on_cancel(doc,event):
@@ -53,6 +47,13 @@ def on_cancel(doc,event):
                 customer_bin.available_qty -= item.stock_qty
                 customer_bin.stock_uom = item.stock_uom
                 customer_bin.save(ignore_permissions = True)
+
+def before_submit(doc,method):
+    create_qr_code(doc)
+    file_doc = frappe.db.get_value('File', {'attached_to_doctype': 'Sales Invoice', 'attached_to_name': doc.name})
+    if file_doc:
+        file_doc=frappe.get_doc("File",file_doc)
+        doc.qr_code_url=file_doc.file_url
 
 def create_qr_code(self):
     if self.status!='Return' and self.company=='Omnipresent Services':
@@ -74,18 +75,26 @@ def qrcode_as_png(customer,invoiceNo,amount,email=None,contact=None,gstin=None,n
     url = qrcreate(qr_code_url)
     png_file_name = docname + '_qr_code' + frappe.generate_hash(length=20)
     png_file_name = '{}.png'.format(png_file_name)
-    _file = frappe.get_doc({
-		"doctype": "File",
-		"file_name": png_file_name,
-		"attached_to_doctype": doctype,
-		"attached_to_name": invoiceNo,
-        "attached_to_field":docname,
-		"content": base64.b64decode(url.png_as_base64_str(scale=3, module_color=(0, 0, 0, 255), background=(255, 255, 255, 255), quiet_zone=4))
-    })
-    _file.save()
     
-    frappe.db.commit()
-    file_upload_to_s3(doc=_file,method=None)
+    file_doc = frappe.new_doc('File')
+    file_doc.file_name = png_file_name
+    file_doc.attached_to_doctype=doctype
+    file_doc.attached_to_name=invoiceNo
+    file_doc.attached_to_field=docname
+    file_doc.content=base64.b64decode(url.png_as_base64_str(scale=3, module_color=(0, 0, 0, 255), background=(255, 255, 255, 255), quiet_zone=4))
+    file_doc.save(ignore_permissions=True)
+    # _file = frappe.get_doc({
+	# 	"doctype": "File",
+	# 	"file_name": png_file_name,
+	# 	"attached_to_doctype": doctype,
+	# 	"attached_to_name": invoiceNo,
+    #     "attached_to_field":docname,
+	# 	"content": base64.b64decode(url.png_as_base64_str(scale=3, module_color=(0, 0, 0, 255), background=(255, 255, 255, 255), quiet_zone=4))
+    # })
+    # _file.save()
+    
+    # frappe.db.commit()
+    # file_upload_to_s3(doc=_file,method=None)
 
     return
 
