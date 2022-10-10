@@ -11,13 +11,15 @@
   "customer",
   "name1",
   "column_break_4",
+  "sub_type",
+  "territory",
   "address",
   "section_break_6",
+  "link",
   "image_url",
   "rating",
   "review_count",
   "website",
-  "territory",
   "column_break_12",
   "latitude",
   "longitude",
@@ -32,22 +34,6 @@
    "label": "Customer",
    "options": "Customer",
    "unique": 1
-  },
-  {
-   "fieldname": "territory",
-   "fieldtype": "Date",
-   "label": "Territory",
-   "options": "Territory"
-  },
-  {
-   "fieldname": "latitude",
-   "fieldtype": "Data",
-   "label": "Latitude"
-  },
-  {
-   "fieldname": "longitude",
-   "fieldtype": "Data",
-   "label": "Longitude"
   },
   {
    "fieldname": "section_break_1",
@@ -101,11 +87,36 @@
   {
    "fieldname": "column_break_12",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "sub_type",
+   "fieldtype": "Data",
+   "label": "Sub Type"
+  },
+  {
+   "fieldname": "link",
+   "fieldtype": "Data",
+   "label": "Link"
+  },
+  {
+   "fieldname": "territory",
+   "fieldtype": "Data",
+   "label": "Territory"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-04 11:34:02.761862",
+ "modified": "2022-10-10 13:19:20.448239",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Profile",
