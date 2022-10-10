@@ -1,7 +1,7 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
- "autoname": "field:customer",
  "creation": "2021-12-06 19:37:38.065424",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -9,62 +9,35 @@
  "field_order": [
   "section_break_1",
   "customer",
-  "sales_person",
+  "name1",
   "column_break_4",
+  "address",
+  "section_break_6",
+  "image_url",
+  "rating",
+  "review_count",
+  "website",
   "territory",
-  "shop_type",
-  "section_break_7",
-  "status",
-  "onboarding_date",
-  "email_id",
-  "mobile_number",
-  "rental_amount",
+  "column_break_12",
   "latitude",
   "longitude",
-  "accuracy",
-  "qr_code"
+  "persqprice"
  ],
  "fields": [
   {
    "fieldname": "customer",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer",
    "options": "Customer",
    "unique": 1
   },
   {
-   "fieldname": "shop_type",
-   "fieldtype": "Data",
-   "label": "Shop Type"
-  },
-  {
    "fieldname": "territory",
-   "fieldtype": "Link",
+   "fieldtype": "Date",
    "label": "Territory",
    "options": "Territory"
-  },
-  {
-   "fieldname": "sales_person",
-   "fieldtype": "Link",
-   "label": "Sales Person",
-   "options": "Sales Person"
-  },
-  {
-   "fetch_from": "customer.email_id",
-   "fieldname": "email_id",
-   "fieldtype": "Data",
-   "label": "Email ID"
-  },
-  {
-   "fetch_from": "customer.mobile_no",
-   "fieldname": "mobile_number",
-   "fieldtype": "Data",
-   "label": "Mobile Number"
-  },
-  {
-   "fieldname": "onboarding_date",
-   "fieldtype": "Date",
-   "label": "Onboarding Date"
   },
   {
    "fieldname": "latitude",
@@ -77,17 +50,6 @@
    "label": "Longitude"
   },
   {
-   "fieldname": "accuracy",
-   "fieldtype": "Data",
-   "label": "Accuracy"
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "Lead\nFollow Up\nConverted\nLive\nRejected\nHold"
-  },
-  {
    "fieldname": "section_break_1",
    "fieldtype": "Section Break"
   },
@@ -96,23 +58,54 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_7",
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "name"
+  },
+  {
+   "fieldname": "image_url",
+   "fieldtype": "Data",
+   "label": "image url"
+  },
+  {
+   "fieldname": "rating",
+   "fieldtype": "Float",
+   "label": "Rating"
+  },
+  {
+   "fieldname": "review_count",
+   "fieldtype": "Float",
+   "label": "Review Count"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "website",
+   "fieldtype": "Data",
+   "label": "Website"
+  },
+  {
+   "fieldname": "persqprice",
+   "fieldtype": "Data",
+   "label": "persqprice"
+  },
+  {
+   "fieldname": "section_break_6",
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "qr_code",
-   "fieldtype": "Attach Image",
-   "label": "QR Code"
-  },
-  {
-   "fieldname": "rental_amount",
-   "fieldtype": "Currency",
-   "label": "Rental Amount"
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-12-10 17:32:03.374810",
+ "modified": "2022-10-04 11:34:02.761862",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Profile",
@@ -169,5 +162,7 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }
