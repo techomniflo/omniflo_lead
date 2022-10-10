@@ -52,7 +52,7 @@
   },
   {
    "fieldname": "image_url",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "image url"
   },
   {
@@ -105,7 +105,7 @@
   },
   {
    "fieldname": "link",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Link"
   },
   {
@@ -116,7 +116,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-10 13:19:20.448239",
+ "modified": "2022-10-10 13:32:04.269381",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Profile",
