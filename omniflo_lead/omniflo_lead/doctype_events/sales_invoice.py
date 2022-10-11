@@ -83,19 +83,7 @@ def qrcode_as_png(customer,invoiceNo,amount,email=None,contact=None,gstin=None,n
     file_doc.attached_to_field=docname
     file_doc.content=base64.b64decode(url.png_as_base64_str(scale=3, module_color=(0, 0, 0, 255), background=(255, 255, 255, 255), quiet_zone=4))
     file_doc.save(ignore_permissions=True)
-    # _file = frappe.get_doc({
-	# 	"doctype": "File",
-	# 	"file_name": png_file_name,
-	# 	"attached_to_doctype": doctype,
-	# 	"attached_to_name": invoiceNo,
-    #     "attached_to_field":docname,
-	# 	"content": base64.b64decode(url.png_as_base64_str(scale=3, module_color=(0, 0, 0, 255), background=(255, 255, 255, 255), quiet_zone=4))
-    # })
-    # _file.save()
     
-    # frappe.db.commit()
-    # file_upload_to_s3(doc=_file,method=None)
-
     return
 
 
@@ -104,7 +92,7 @@ def createQR(name, invoiceNo, amount, email=None, contact=None, gstin=None, note
     amount = amount * 100  #convert paise to rs
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Basic cnpwX2xpdmVfZFN5dVFVeUxYVzJtU1g6UjRDM0kzbVNNNmlmTWJBVG9tc3BYQkJt'
+        'Authorization': frappe.conf.razorpay_authorization
         }
     def createCustomer(name, email="", contact="",gstin="",notes={}):
         url = "https://api.razorpay.com/v1/customers"
