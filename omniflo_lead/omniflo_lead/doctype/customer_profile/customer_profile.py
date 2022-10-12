@@ -26,6 +26,7 @@ def create_customer(**kwargs):
 		if not customer:
 			return f"Not Found {kwargs['customer']}"
 		customer_profile=frappe.new_doc("Customer Profile")
+		customer_profile.customer=kwargs["customer"]
 
 	if "name" in kwargs:
 		customer_profile.name1=kwargs["name"]
