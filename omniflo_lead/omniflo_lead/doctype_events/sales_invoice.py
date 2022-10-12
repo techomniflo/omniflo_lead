@@ -49,6 +49,10 @@ def on_cancel(doc,event):
                 customer_bin.save(ignore_permissions = True)
 
 def before_submit(doc,method):
+    if hasattr(doc,'is_return'):
+        if doc.is_return:
+            doc.qr_code_url=""
+            return
     create_qr_code(doc)
     file_doc = frappe.db.get_value('File', {'attached_to_doctype': 'Sales Invoice', 'attached_to_name': doc.name})
     if file_doc:
