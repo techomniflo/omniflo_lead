@@ -76,3 +76,15 @@ class AuditLog(Document):
 						'last_visit_qty': item[3],
 						'brand': item[0],
 						'current_available_qty' : item[3]})
+	@frappe.whitelist()
+	def fetch_difference_item(self):
+		difference=3
+		message="""Please recheck with the store for the following items   """
+		is_difference_found=False
+		for item in self.items:
+			if difference<=item.last_visit_qty-item.current_available_qty:
+				is_difference_found=True
+				message+=f"\n   # {item.item_name} ,   "
+		if is_difference_found:
+			return message
+		return ""

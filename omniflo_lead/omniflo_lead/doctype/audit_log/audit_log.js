@@ -6,6 +6,31 @@ frappe.ui.form.on('Audit Log', {
 		getLocation(frm);
 		hide_add_row(frm);
 	 },
+	 validate(frm){
+		return new Promise(function(resolve, reject){
+			frappe.call({
+				doc : frm.doc,
+				method : 'fetch_difference_item',
+				freeze : true,
+				freeze_message : 'Getting All Items'
+			}).then((res) => {
+				if (res.message!=""){
+					frappe.confirm(
+						res.message,
+						function() {
+							var negative = 'frappe.validated = false';
+							resolve(negative);
+						},
+						function() {
+							reject();
+						}
+					)
+					
+				}
+					
+			})
+		})
+	 },
 	get_current_items(frm){
 		cur_frm.clear_table("items");
 		cur_frm.refresh_field('items');
