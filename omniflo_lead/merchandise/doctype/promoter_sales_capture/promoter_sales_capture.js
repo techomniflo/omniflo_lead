@@ -3,8 +3,6 @@
 
 frappe.ui.form.on('Promoter Sales Capture', {
 	brand: function(frm) {
-		frappe.msgprint(frm.doc.brand)
-		// frappe.db.get_list("Item",filters={"brand":"Oatey"},fields=['item_name'])
 
 		frappe.db.get_list('Item', {
 			filters: {

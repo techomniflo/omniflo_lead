@@ -10,6 +10,7 @@
   "customer",
   "brand",
   "item_name",
+  "qty",
   "shelf_photo"
  ],
  "fields": [
@@ -48,11 +49,19 @@
    "fieldname": "shelf_photo",
    "fieldtype": "Attach Image",
    "label": "Shelf Photo"
+  },
+  {
+   "default": "1",
+   "fieldname": "qty",
+   "fieldtype": "Int",
+   "label": "QTY",
+   "non_negative": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-13 19:07:33.861778",
+ "modified": "2022-10-14 12:55:03.281536",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Sales Capture",
