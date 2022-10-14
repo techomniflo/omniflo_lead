@@ -40,7 +40,7 @@
   },
   {
    "fieldname": "item_name",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Item Name",
    "reqd": 1
@@ -61,7 +61,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-14 12:55:03.281536",
+ "modified": "2022-10-14 16:08:24.480350",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Sales Capture",
