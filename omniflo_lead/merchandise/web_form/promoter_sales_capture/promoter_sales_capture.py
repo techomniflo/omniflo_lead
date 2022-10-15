@@ -5,7 +5,7 @@ def get_context(context):
 	# do your magic here
 	pass
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def fetch_item(brand):
     values={"brand":brand}
     return frappe.db.sql("""select item_name from `tabItem` where brand=%(brand)s""",values=values,as_dict=True)
