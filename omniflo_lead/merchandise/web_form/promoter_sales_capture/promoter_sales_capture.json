@@ -8,7 +8,7 @@
  "allow_print": 0,
  "amount": 0.0,
  "amount_based_on_field": 0,
- "apply_document_permissions": 0,
+ "apply_document_permissions": 1,
  "button_label": "Save",
  "creation": "2022-10-13 19:51:08.492884",
  "currency": "INR",
@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2022-10-14 12:54:02.806296",
+ "modified": "2022-10-15 16:41:01.287085",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-sales-capture",
@@ -31,6 +31,9 @@
  "show_attachments": 0,
  "show_list": 0,
  "show_sidebar": 0,
+ "success_message": "Thank You For Submitting",
+ "success_title": "Thanks",
+ "success_url": "",
  "title": "Promoter Sales Capture",
  "web_form_fields": [
   {
@@ -109,5 +112,6 @@
    "reqd": 0,
    "show_in_filter": 0
   }
- ]
+ ],
+ "website_sidebar": ""
 }
