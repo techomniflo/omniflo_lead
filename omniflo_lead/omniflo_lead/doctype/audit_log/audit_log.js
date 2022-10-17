@@ -14,7 +14,7 @@ frappe.ui.form.on('Audit Log', {
 				freeze : true,
 				freeze_message : 'Getting All Items'
 			}).then((res) => {
-				if (res.message!=""){
+				if (res.message!="False"){
 					frappe.confirm(
 						res.message,
 						function() {
