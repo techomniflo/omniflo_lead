@@ -87,4 +87,4 @@ class AuditLog(Document):
 				message+=f"\n   # {item.item_name} ,   "
 		if is_difference_found:
 			return message
-		return ""
+		return "False"
