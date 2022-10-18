@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2022-10-15 16:41:01.287085",
+ "modified": "2022-10-18 18:47:17.947388",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-sales-capture",
@@ -52,12 +52,12 @@
   {
    "allow_read_on_all_link_options": 0,
    "fieldname": "customer",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "hidden": 0,
    "label": "Customer",
    "max_length": 0,
    "max_value": 0,
-   "options": "Customer",
+   "options": "",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0
