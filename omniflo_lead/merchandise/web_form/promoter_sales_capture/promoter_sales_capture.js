@@ -15,7 +15,7 @@ frappe.ready(function() {
 			
 			if (validate==true ) {
 				frappe.web_form.save()
-			frappe.web_form.empty()
+			frappe.web_form.page.empty()
 			$("<h1>Your Response has been Submitted</h1>").appendTo(frappe.web_form.page)
 			}
 	}

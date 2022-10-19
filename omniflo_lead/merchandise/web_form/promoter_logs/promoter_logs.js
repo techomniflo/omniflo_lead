@@ -27,17 +27,22 @@ frappe.ready(function() {
 	}
 	function on_save_event(){
 		var validate=frappe.web_form.validate_section()
-			if (frappe.web_form.hasOwnProperty("latitude")==false || frappe.web_form.hasOwnProperty("longitude")==false){
+		var validate_geo=false
+			if (frappe.web_form.doc.latitude && frappe.web_form.doc.longitude){
+				validate_geo=true
+				
+			}
+			else{
 				frappe.msgprint({
 					title: "Message",
 				  message: "<ul><li>latitude</li> <li> longitude </li><ul>",
 				  indicator: "orange"
 				  })
 			}
-			if (validate==true && frappe.web_form.doc.hasOwnProperty("latitude")==true && frappe.web_form.doc.hasOwnProperty("longitude")==true ) {
+			if (validate==true && validate_geo==true) {
 				frappe.web_form.save()
-			frappe.web_form.empty()
-			$("<h1>Your Response has been Submitted</h1>").appendTo(frappe.web_form.page)
+				frappe.web_form.page.empty()
+				$("<h1>Your Response has been Submitted</h1>").appendTo(frappe.web_form.page)
 			}
 	}
 	  frappe.web_form.after_load = () => {
