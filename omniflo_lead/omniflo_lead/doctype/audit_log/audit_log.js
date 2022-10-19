@@ -27,6 +27,9 @@ frappe.ui.form.on('Audit Log', {
 					)
 					
 				}
+				else{
+					resolve();
+				}
 					
 			})
 		})
