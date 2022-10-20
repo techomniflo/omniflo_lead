@@ -372,3 +372,8 @@ def gmv_sales_date_wise():
 		if i[2] not in sales_on_date[i[0]][i[1]]:
 			sales_on_date[i[0]][i[1]][i[2]]=[i[3],i[4]]
 	return sales_on_date
+
+@frappe.whitelist()
+def warehouse_quantity():
+	values={"brand":frappe.request.args["brand"]}
+	return frappe.db.sql("""select i.item_name,i.item_code,b.actual_qty as qty from `tabBin` as b join `tabItem` as i on i.item_code=b.item_code where b.warehouse="Kormangala WareHouse - OS" and i.brand=%(brand)s""",values=values,as_dict=True)
