@@ -381,4 +381,4 @@ def warehouse_quantity():
 @frappe.whitelist()
 def deployed_quantity():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select * from (select (select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer_name,i.item_name,sii.item_code,(sum(sii.qty)) as deployed_qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code join `tabCustomer` as c on c.name=si.customer where si.company="Omnipresent Services" and si.status!='Cancelled' and si.status!="Draft" and c.customer_status!="Closed"  and i.brand=%(brand)s group by si.customer,i.item_name) as meta where meta.deployed_qty!=0 """,values=values,as_dict=True)
+	return frappe.db.sql("""select (select s.customer_name from `tabCustomer` as s where s.name=cb.customer) as customer_name ,i.item_name,i.item_code,cb.available_qty as qty from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0 """,values=values,as_dict=True)
