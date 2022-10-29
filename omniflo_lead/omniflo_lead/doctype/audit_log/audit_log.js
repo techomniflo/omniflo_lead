@@ -65,7 +65,7 @@ function showPosition(position) {
   }
 
 function hide_add_row(frm) {
-	cur_frm.fields_dict['items'].grid.wrapper.find('.grid-add-row').hide();
+	cur_frm.fields_dict['items'].grid.wrapper.find('.grid-add-row').remove();
 }
 frappe.ui.form.on('Audit Log Items', {
 	
