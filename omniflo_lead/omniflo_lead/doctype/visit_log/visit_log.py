@@ -8,7 +8,7 @@ class VisitLog(Document):
 	def on_submit(self):
 		# adding status to customer
 		customer=frappe.get_doc('Customer',self.customer)
-		if customer.customer_status!=self.status:
+		if customer.customer_status!='Live' and customer.customer_status!='Closed' and customer.customer_status!=self.status:
 			customer.customer_status=self.status
 			customer.save(ignore_permissions=True)
 
