@@ -23,7 +23,21 @@
   "column_break_12",
   "latitude",
   "longitude",
-  "persqprice"
+  "persqprice",
+  "section_break_18",
+  "type",
+  "store_timings",
+  "daily_footfall",
+  "in_society",
+  "delivery",
+  "landmarks",
+  "column_break_25",
+  "area",
+  "number_of_aisles_inside_the_store",
+  "number_of_floors",
+  "average_order_value",
+  "brand_present",
+  "locality_area"
  ],
  "fields": [
   {
@@ -112,11 +126,79 @@
    "fieldname": "territory",
    "fieldtype": "Data",
    "label": "Territory"
+  },
+  {
+   "fieldname": "brand_present",
+   "fieldtype": "Code",
+   "label": "Brand Present"
+  },
+  {
+   "fieldname": "number_of_aisles_inside_the_store",
+   "fieldtype": "Float",
+   "label": "Number of Aisles inside the store"
+  },
+  {
+   "fieldname": "number_of_floors",
+   "fieldtype": "Float",
+   "label": "Number of Floors"
+  },
+  {
+   "fieldname": "average_order_value",
+   "fieldtype": "Float",
+   "label": "Average Order Value"
+  },
+  {
+   "fieldname": "locality_area",
+   "fieldtype": "Data",
+   "label": "Locality Area"
+  },
+  {
+   "fieldname": "store_timings",
+   "fieldtype": "Data",
+   "label": "Store Timings"
+  },
+  {
+   "fieldname": "daily_footfall",
+   "fieldtype": "Int",
+   "label": "Daily Footfall"
+  },
+  {
+   "fieldname": "in_society",
+   "fieldtype": "Data",
+   "label": "In Society?"
+  },
+  {
+   "fieldname": "delivery",
+   "fieldtype": "Data",
+   "label": "Delivery"
+  },
+  {
+   "fieldname": "landmarks",
+   "fieldtype": "Data",
+   "label": "Landmarks"
+  },
+  {
+   "fieldname": "section_break_18",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "label": "Type"
+  },
+  {
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Float",
+   "label": "Area (sq. ft.)"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-10 13:32:04.269381",
+ "modified": "2022-11-14 12:41:27.127932",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Profile",
