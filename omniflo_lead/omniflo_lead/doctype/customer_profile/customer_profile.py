@@ -50,7 +50,35 @@ def create_customer(**kwargs):
 		customer_profile.review_count=float(kwargs["review_count"])
 	if "territory" in kwargs:
 		customer_profile.territory=kwargs["territory"]
+	if "type" in kwargs:
+		customer_profile.type=kwargs["type"]
+	if "store_timings" in kwargs:
+		customer_profile.store_timings=kwargs["store_timings"]
+	if "daily_footfall" in kwargs:
+		customer_profile.daily_footfall=kwargs["daily_footfall"]
+	if "in_society" in kwargs:
+		customer_profile.in_society=kwargs["in_society"]
+	if "delivery" in kwargs:
+		customer_profile.delivery=kwargs["delivery"]
+	if "landmarks" in kwargs:
+		customer_profile.landmarks=kwargs["landmarks"]
+	if "area" in kwargs:
+		customer_profile.area=kwargs["area"]
+	if "number_of_aisles_inside_the_store" in kwargs:
+		customer_profile.number_of_aisles_inside_the_store=kwargs["number_of_aisles_inside_the_store"]
+	if "number_of_floors" in kwargs:
+		customer_profile.number_of_floors=kwargs["number_of_floors"]
+	if "average_order_value" in kwargs:
+		customer_profile.average_order_value=kwargs["average_order_value"]
+	if "brand_present" in kwargs:
+		customer_profile.brand_present=kwargs["brand_present"]
+	if "locality_area" in kwargs:
+		customer_profile.locality_area=kwargs["locality_area"]
 	customer_profile.save(ignore_permissions = True)
 	frappe.db.commit()
 	return customer_profile
+
+@frappe.whitelist(allow_guest=True)
+def customer_data():
+	return frappe.db.sql("""select * from `tabCustomer Profile` as cp""",as_dict=True)
 	
