@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2022-10-18 18:56:36.407992",
+ "modified": "2022-11-17 14:09:53.644027",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-sales-capture",
@@ -96,7 +96,7 @@
    "label": "QTY",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 1,
+   "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -108,6 +108,19 @@
    "label": "Shelf Photo",
    "max_length": 0,
    "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Item Code",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
