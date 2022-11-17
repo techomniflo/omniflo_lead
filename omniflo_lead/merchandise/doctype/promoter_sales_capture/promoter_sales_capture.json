@@ -10,6 +10,7 @@
   "customer",
   "brand",
   "item_name",
+  "item_code",
   "qty",
   "shelf_photo"
  ],
@@ -57,11 +58,17 @@
    "label": "QTY",
    "non_negative": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-14 16:08:24.480350",
+ "modified": "2022-11-17 13:28:09.840799",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Sales Capture",
