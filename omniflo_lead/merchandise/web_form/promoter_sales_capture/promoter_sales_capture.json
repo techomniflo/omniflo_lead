@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2022-11-17 14:09:53.644027",
+ "modified": "2022-11-19 13:24:32.858000",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-sales-capture",
@@ -123,6 +123,44 @@
    "options": "",
    "read_only": 0,
    "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "",
+   "fieldtype": "Section Break",
+   "hidden": 0,
+   "max_length": 0,
+   "max_value": 0,
+   "options": "",
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "hidden": 0,
+   "label": "Gender",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "Male\nFemale",
+   "read_only": 0,
+   "reqd": 1,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "age",
+   "fieldtype": "Select",
+   "hidden": 0,
+   "label": "Age",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "00 - 10\n10 - 20\n20 - 25\n25 - 30\n30 - 35\n35 - 40\n40 - 50\n50 - 60\n60+",
+   "read_only": 0,
+   "reqd": 1,
    "show_in_filter": 0
   }
  ],
