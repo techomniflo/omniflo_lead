@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:store_name",
+ "creation": "2022-11-19 15:36:03.206960",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "store_name",
+  "address_line_1",
+  "address_line2",
+  "terittory",
+  "area",
+  "pincode",
+  "phone_no",
+  "e_mail"
+ ],
+ "fields": [
+  {
+   "fieldname": "store_name",
+   "fieldtype": "Data",
+   "label": "Store Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "address_line_1",
+   "fieldtype": "Data",
+   "label": "Address Line 1"
+  },
+  {
+   "fieldname": "address_line2",
+   "fieldtype": "Data",
+   "label": "Address Line2"
+  },
+  {
+   "fieldname": "terittory",
+   "fieldtype": "Data",
+   "label": "Terittory"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Data",
+   "label": "Area"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pincode"
+  },
+  {
+   "fieldname": "phone_no",
+   "fieldtype": "Int",
+   "label": "Phone no"
+  },
+  {
+   "fieldname": "e_mail",
+   "fieldtype": "Data",
+   "label": "E Mail"
+  }
+ ],
+ "icon": "fa fa-user",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-11-21 18:32:19.522716",
+ "modified_by": "Administrator",
+ "module": "Omniflo Lead",
+ "name": "Store",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "store_name,area",
+ "show_name_in_global_search": 1,
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "store_name"
+}
