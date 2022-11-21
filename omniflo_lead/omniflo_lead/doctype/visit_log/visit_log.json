@@ -27,7 +27,7 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer"
+   "options": "Store"
   },
   {
    "fieldname": "visited_by",
@@ -114,7 +114,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-04-19 09:13:59.826363",
+ "modified": "2022-11-21 18:31:10.158111",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Visit Log",
@@ -174,5 +174,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }
