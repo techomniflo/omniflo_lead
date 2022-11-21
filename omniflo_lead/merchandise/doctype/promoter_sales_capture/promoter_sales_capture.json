@@ -77,12 +77,13 @@
    "fieldname": "age",
    "fieldtype": "Select",
    "label": "Age",
-   "options": "00 - 10\n10 - 20\n20 - 25\n25 - 30\n30 - 35\n35 - 40\n40 - 50\n50 - 60\n60+"
+   "options": "00 - 10\n10 - 20\n20 - 25\n25 - 30\n30 - 35\n35 - 40\n40 - 50\n50 - 60\n60+",
+   "translatable": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-19 13:22:20.362495",
+ "modified": "2022-11-21 12:12:39.782742",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Sales Capture",
