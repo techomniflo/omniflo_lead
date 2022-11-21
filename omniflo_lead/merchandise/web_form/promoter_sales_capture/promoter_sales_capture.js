@@ -58,7 +58,8 @@ frappe.ready(function() {
 		frappe.web_form.add_button("Save","button",on_save_event)
 		save_button=$('button:contains("Save")')
 		save_button.css({"background-color":"Blue","color":"white"})
-
+		$("[data-fieldname='gender']").find('label').append(' / ಗ್ರಾಹಕ ಲಿಂಗ')
+		$("[data-fieldname='age']").find('label').append(' / ಗ್ರಾಹಕ ವಯಸ್ಸು')
 		get_live_customer()
 
 		frappe.web_form.on('brand', setting_value_item_name )
