@@ -371,7 +371,7 @@ def deployed_quantity():
 @frappe.whitelist()
 def customer_profile():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select cp.customer,(select c.customer_name from `tabCustomer` as c where c.name=cp.customer) as customer_name,cp.sub_type,cp.address,cp.link as map_link,cp.image_url,cp.rating,cp.review_count,cp.store_timings,cp.daily_footfall,cp.delivery,cp.number_of_aisles_inside_the_store as asile,cp.number_of_floors,cp.average_order_value,cp.brand_present,cp.locality_area from `tabCustomer Profile` as cp where cp.customer in (select distinct cb.customer from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0)""",values=values,as_dict=True)
+	return frappe.db.sql("""select cp.customer,(select c.customer_name from `tabCustomer` as c where c.name=cp.customer) as customer_name,cp.sub_type,cp.address,cp.link as map_link,cp.image_url,cp.latitude,cp.longitude,cp.rating,cp.review_count,cp.store_timings,cp.daily_footfall,cp.delivery,cp.number_of_aisles_inside_the_store as asile,cp.number_of_floors,cp.average_order_value,cp.brand_present,cp.locality_area from `tabCustomer Profile` as cp where cp.customer in (select distinct cb.customer from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0)""",values=values,as_dict=True)
 
 @frappe.whitelist()
 def calculate_gmv():
