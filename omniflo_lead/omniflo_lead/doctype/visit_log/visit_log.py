@@ -6,13 +6,4 @@ from frappe.model.document import Document
 
 class VisitLog(Document):
 	def on_submit(self):
-		#adding latitude and longitude to customer
-		# try:
-		# 	customer_doc = frappe.get_doc('Customer', self.customer)
-		# 	if not customer_doc.latitude:
-		# 		customer_doc.latitude = self.latitude
-		# 	if not customer_doc.longitude:
-		# 		customer_doc.longitude = self.longitude
-		# 	customer_doc.save()
-		# except:
-			pass
+		pass

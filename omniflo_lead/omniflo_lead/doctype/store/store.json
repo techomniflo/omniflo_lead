@@ -16,7 +16,10 @@
   "area",
   "pincode",
   "phone_no",
-  "e_mail"
+  "e_mail",
+  "latitude",
+  "longitude",
+  "link"
  ],
  "fields": [
   {
@@ -59,12 +62,27 @@
    "fieldname": "e_mail",
    "fieldtype": "Data",
    "label": "E Mail"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "link",
+   "fieldtype": "Long Text",
+   "label": "Link"
   }
  ],
  "icon": "fa fa-user",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-21 18:32:19.522716",
+ "modified": "2022-11-21 19:01:56.510006",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Store",

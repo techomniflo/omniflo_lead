@@ -1,7 +1,6 @@
 # Copyright (c) 2022, Omniflo and contributors
 # For license information, please see license.txt
 
-# import frappe
 import frappe
 import requests
 import pprint
@@ -19,14 +18,10 @@ def process_data():
 	items = set()
 	stores = set()
 	def process_promoter():
-		promoter_data=frappe.db.sql("""select psc.brand,psc.customer,psc.qty,psc.creation as date,psc.item_name,(select i.name from `tabItem` as i where i.item_name=psc.item_name and i.brand=psc.brand and psc.brand!='Nutriorg' and name is not null) as item_code from `tabPromoter Sales Capture` as psc  where psc.brand!="Nutriorg" group by date(psc.creation),psc.customer,psc.item_name""",as_dict=True)
+		promoter_data=frappe.db.sql("""select psc.customer,psc.brand,psc.qty,psc.creation as date,psc.item_code,psc.item_name  from `tabPromoter Sales Capture` as psc where psc.item_code is not null  order by psc.creation""",as_dict=True)
 		entries = promoter_data
 		#{'brand': 'Brawny Bear', 'customer': 'bangalore-rice-traders', 'date': '2022-10-20 22:40:14.433979', 'item_name': 'Date Sugar 200g', 'item_code': 'OMNI-ITM-BBR-078', 'qty': 2.0}
 		for entry in entries:
-			# try:
-			# 	dt = parser.parse(entry['date'])
-			# except:
-				# frappe.msgprint(json.dumps(entry['date'],default=str))
 			entry['event_type']='promoter'
 			entry['dt'] = entry['date']
 			tx.append(entry)
@@ -34,7 +29,7 @@ def process_data():
 
 	def process_invoice():
 		sales_data=frappe.db.sql("""select ADDTIME(CONVERT(si.posting_date, DATETIME), si.posting_time) as date,i.brand,si.customer as customer,sii.qty,i.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
-				where si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",as_dict=True)
+				where si.`status` != 'Cancelled' and si.`status`!="Draft" and si.company='Omnipresent Services' order by si.posting_date;""",as_dict=True)
 		entries = sales_data
 		#{'date': '2022-05-30 15:34:34', 'brand': 'Spice Story', 'customer': 'Royal villas super market', 'qty': 2.0, 'item_name': 'Schezwan Chutney', 'mrp': '125'}
 		for entry in entries:
@@ -46,9 +41,7 @@ def process_data():
 			stores.add(entry['customer'])
 
 	def process_audit():
-		# headers={"Authorization":"Token 0d7714235220ffb:681cc4ece6e4700"}
-		# url="http://engine-staging-1011.omniflo.in/api/method/omniflo_lead.omniflo_lead.api.frappe_api.audit_data"
-		# headers={"Authorization":"Token 0d7714235220ffb:681cc4ece6e4700"}
+
 		audit_data=frappe.db.sql("""select al.posting_date as date,al.customer,ali.current_available_qty as qty,i.item_name,i.mrp,i.brand from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 				where al.docstatus=1 order by al.posting_date;""",as_dict=True)
 		entries =audit_data
@@ -84,6 +77,8 @@ def stock_position():
 				current_qty = qty + stock[customer][brand][item][-1]['current_qty']
 				billed_qty = qty + stock[customer][brand][item][-1]['billed_qty']
 				cumulative_sales = billed_qty - current_qty
+				if current_qty < 0:
+					cumulative_sales = billed_qty
 				stock[customer][brand][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales,'event_type': 'invoice'})
 		
 		if tx['event_type'] == 'audit' :
@@ -133,7 +128,7 @@ def calculate_sales():
 				item = stock[customer][brand][sku]
 				min_possible_sales = item[-1]['cumulative_sales']
 				for i in range(len(item)-1, 0, -1): #python reverse loop until second last element
-					if min_possible_sales > item[i-1]['cumulative_sales'] and min_possible_sales > 0:
+					if min_possible_sales > item[i-1]['cumulative_sales'] and min_possible_sales > 0 and item[i-1]['cumulative_sales']>=0:
 						sales = min_possible_sales - item[i-1]['cumulative_sales']
 						min_possible_sales = item[i-1]['cumulative_sales']
 						date, event_type = item[i]['date'], item[i]['event_type']

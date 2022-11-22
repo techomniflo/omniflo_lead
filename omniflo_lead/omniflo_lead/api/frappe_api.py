@@ -26,22 +26,7 @@ def total_live_store():
 @frappe.whitelist()
 def stores_lives():
 	values={"brand":frappe.request.args["brand"]}
-	brand_with_store_name=frappe.db.sql("""select
-	    it.brand,(select c.customer_name from `tabCustomer` as c where c.name=cb.customer)as customer
-	from 
-	    `tabCustomer Bin`  as cb
-	    join  `tabItem`as it on cb.item_code = it.item_code
-	where brand!="" and brand!="Test" and cb.customer!="" and cb.available_qty>0 and it.brand=%(brand)s
-	group by brand,customer
-	order by
-	    it.brand,cb.customer""",values=values)
-	di={}
-	for i in brand_with_store_name:
-		if i[0] not in di:
-			di[i[0]]=[i[1]]
-		else:
-			di[i[0]].append(i[1])
-	return di
+	return frappe.db.sql(""" select distinct cb.customer,(select c.customer_name from `tabCustomer` as c where c.name=cb.customer) as customer_name from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0 """,values=values,as_dict=True)
 
 #Gives total no of live inventory for perticular brand
 @frappe.whitelist()
@@ -382,3 +367,160 @@ def warehouse_quantity():
 def deployed_quantity():
 	values={"brand":frappe.request.args["brand"]}
 	return frappe.db.sql("""select (select s.customer_name from `tabCustomer` as s where s.name=cb.customer) as customer_name ,i.item_name,i.item_code,cb.available_qty as qty from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0 """,values=values,as_dict=True)
+
+@frappe.whitelist()
+def customer_profile():
+	values={"brand":frappe.request.args["brand"]}
+	return frappe.db.sql("""select cp.customer,(select c.customer_name from `tabCustomer` as c where c.name=cp.customer) as customer_name,cp.sub_type,cp.address,cp.link as map_link,cp.image_url,cp.rating,cp.review_count,cp.store_timings,cp.daily_footfall,cp.delivery,cp.number_of_aisles_inside_the_store as asile,cp.number_of_floors,cp.average_order_value,cp.brand_present,cp.locality_area from `tabCustomer Profile` as cp where cp.customer in (select distinct cb.customer from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0)""",values=values,as_dict=True)
+
+@frappe.whitelist()
+def calculate_gmv():
+	
+	def process_data():
+		
+		tx = []
+		items = set()
+		stores = set()
+		def process_promoter():
+			values={"brand":frappe.request.args["brand"]}
+			promoter_data=frappe.db.sql("""select psc.customer,psc.brand,psc.qty,psc.creation as date,psc.item_code,psc.item_name  from `tabPromoter Sales Capture` as psc where psc.item_code is not null and psc.brand=%(brand)s  order by psc.creation""",values=values,as_dict=True)
+			entries = promoter_data
+			#{'brand': 'Brawny Bear', 'customer': 'bangalore-rice-traders', 'date': '2022-10-20 22:40:14.433979', 'item_name': 'Date Sugar 200g', 'item_code': 'OMNI-ITM-BBR-078', 'qty': 2.0}
+			for entry in entries:
+				# try:
+				# 	dt = parser.parse(entry['date'])
+				# except:
+					# frappe.msgprint(json.dumps(entry['date'],default=str))
+				entry['event_type']='promoter'
+				entry['dt'] = entry['date']
+				tx.append(entry)
+
+
+		def process_invoice():
+			values={"brand":frappe.request.args["brand"]}
+			sales_data=frappe.db.sql("""select ADDTIME(CONVERT(si.posting_date, DATETIME), si.posting_time) as date,i.brand,si.customer as customer,sii.qty,i.item_name,i.mrp,i.item_code from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+					where si.`status` != 'Cancelled' and si.`status`!="Draft" and i.brand=%(brand)s order by si.posting_date;""",values=values,as_dict=True)
+			entries = sales_data
+			#{'date': '2022-05-30 15:34:34', 'brand': 'Spice Story', 'customer': 'Royal villas super market', 'qty': 2.0, 'item_name': 'Schezwan Chutney', 'mrp': '125'}
+			for entry in entries:
+				dt = entry['date']
+				entry['event_type']='invoice'
+				entry['dt'] = dt
+				tx.append(entry)
+				items.add((entry['brand'], entry['item_name'], float(entry['mrp'])))
+				stores.add(entry['customer'])
+
+		def process_audit():
+			values={"brand":frappe.request.args["brand"]}
+			audit_data=frappe.db.sql("""select al.posting_date as date,al.customer,ali.current_available_qty as qty,i.item_code,i.item_name,i.mrp,i.brand from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
+					where al.docstatus=1 and i.brand=%(brand)s order by al.posting_date;""",values=values,as_dict=True)
+			entries =audit_data
+			#{'date': '2021-11-29 00:00:00', 'customer': 'Nut Berry Akshay Nagar', 'qty': 1.0, 'item_name': 'Rage Coffee 50GMS Chai Latte', 'mrp': '349', 'brand': 'Rage Coffee'}
+			for entry in entries:
+				dt = entry['date']
+				entry['event_type']='audit'
+				entry['dt'] = dt
+				tx.append(entry)
+
+
+		process_promoter()
+		process_invoice()
+		process_audit()
+		tx = sorted(tx, key=lambda d: d['dt']) 
+		return items, stores, tx
+	
+	def stock_position():
+		items, stores, txs = process_data()
+		stock = {}
+		for tx in txs:
+			if tx['event_type'] == 'invoice' :
+				customer, brand, item, qty, date = tx['customer'], tx['brand'], tx['item_code'], tx['qty'], tx['dt']
+				if customer not in stock:
+					stock[customer] = {}
+				if brand not in stock[customer]:
+					stock[customer][brand] = {}
+				if item not in stock[customer][brand]:
+					stock[customer][brand][item] = []
+				if not stock[customer][brand][item]:
+					stock[customer][brand][item].append({'date':date, 'billed_qty': qty, 'current_qty': qty, 'cumulative_sales': 0, 'event_type': 'invoice'})
+				else:
+					current_qty = qty + stock[customer][brand][item][-1]['current_qty']
+					billed_qty = qty + stock[customer][brand][item][-1]['billed_qty']
+					cumulative_sales = billed_qty - current_qty
+					if current_qty < 0:
+						cumulative_sales = billed_qty
+					stock[customer][brand][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales,'event_type': 'invoice'})
+			
+			if tx['event_type'] == 'audit' :
+				customer, brand, item, qty, date = tx['customer'], tx['brand'], tx['item_code'], tx['qty'], tx['dt']
+				if customer not in stock:
+					stock[customer] = {}
+				if brand not in stock[customer]:
+					stock[customer][brand] = {}
+				if item not in stock[customer][brand]:
+					stock[customer][brand][item] = []
+				if not stock[customer][brand][item]:
+					stock[customer][brand][item].append({'date':date, 'billed_qty': 0, 'current_qty': qty, 'cumulative_sales': 0, 'event_type': 'audit'})
+				else:
+					billed_qty = stock[customer][brand][item][-1]['billed_qty']
+					current_qty = qty
+					cumulative_sales = billed_qty - current_qty
+					stock[customer][brand][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty,'cumulative_sales': cumulative_sales, 'event_type': 'audit'})
+			
+			if tx['event_type'] == 'promoter' :
+				customer, brand, item, qty, date = tx['customer'], tx['brand'], tx['item_code'], tx['qty'], tx['dt']
+				
+				if customer not in stock:
+					continue
+				if brand not in stock[customer]:
+					continue
+				if item not in stock[customer][brand]:
+					continue
+				if not stock[customer][brand]:
+					continue
+				else:
+					billed_qty = (stock[customer][brand][item][-1]['billed_qty'])
+					current_qty = (stock[customer][brand][item][-1]['current_qty']) - (qty)
+					cumulative_sales = billed_qty - current_qty
+					stock[customer][brand][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales, 'event_type': 'promoter'})
+		
+		return stock
+
+	
+
+	@frappe.whitelist()      
+	def calculate_sales():
+		stock = stock_position()
+		sale_events = []
+		for customer in stock:
+			for brand in stock[customer]:
+				for sku in stock[customer][brand]:
+					item = stock[customer][brand][sku]
+					min_possible_sales = item[-1]['cumulative_sales']
+					for i in range(len(item)-1, 0, -1): #python reverse loop until second last element
+						if min_possible_sales > item[i-1]['cumulative_sales'] and min_possible_sales > 0 and item[i-1]['cumulative_sales']>=0:
+							sales = min_possible_sales - item[i-1]['cumulative_sales']
+							min_possible_sales = item[i-1]['cumulative_sales']
+							date, event_type = item[i]['date'], item[i]['event_type']
+							sale_events.append((date, customer, sales, sku, brand, event_type))
+		sale_events = sorted(sale_events, key=lambda d: d[0])
+		return sale_events
+		
+	def return_sales():
+		values={"brand":frappe.request.args["brand"]}
+		rv=frappe.db.sql("""select i.item_code,i.item_name,i.mrp from `tabItem` as i where i.brand=%(brand)s""",values=values,as_dict=True)
+		item={}
+		for i in rv:
+			if i['item_code'] not in item:
+				item[i['item_code']]=[i['item_name'],i['mrp']]
+		sale_events=calculate_sales()
+		for i in range(len(sale_events)):
+			sale_events[i]=list(sale_events[i])
+			sale_events[i][0]=sale_events[i][0].strftime("%d-%m-%y")
+			item_code=sale_events[i][3]
+			if item_code in item:
+				sale_events[i].append(item[item_code][0])
+				sale_events[i].append(float(item[item_code][1])*sale_events[i][2])
+			
+		return sale_events
+	return json.loads(json.dumps(return_sales(),default=str))
