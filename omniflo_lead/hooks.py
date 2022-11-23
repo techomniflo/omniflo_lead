@@ -122,13 +122,12 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
 # 	"all": [
 # 		"omniflo_lead.tasks.all"
 # 	],
-# 	"daily": [
-# 		"omniflo_lead.tasks.daily"
-# 	],
+	"cron": {"0 */6 * * *":["omniflo_lead.omniflo_lead.doctype.day_wise_sales.day_wise_sales.day_sales"]
+	}
 # 	"hourly": [
 # 		"omniflo_lead.tasks.hourly"
 # 	],
@@ -138,7 +137,7 @@ doc_events = {
 # 	"monthly": [
 # 		"omniflo_lead.tasks.monthly"
 # 	],
-# }
+}
 
 # Testing
 # -------
