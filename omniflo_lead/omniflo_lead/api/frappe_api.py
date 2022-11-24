@@ -359,6 +359,20 @@ def gmv_sales_date_wise():
 	return sales_on_date
 
 @frappe.whitelist()
+def promoter_data():
+	return frappe.db.sql("""select psc.customer,psc.brand,psc.qty,psc.creation as date,psc.item_code,psc.item_name  from `tabPromoter Sales Capture` as psc where psc.item_code is not null  order by psc.creation""",as_dict=True)
+
+@frappe.whitelist()
+def sales_data():
+	return frappe.db.sql("""select ADDTIME(CONVERT(si.posting_date, DATETIME), si.posting_time) as date,i.brand,si.customer as customer,sii.qty,i.item_name,i.mrp,i.item_code from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+					where si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",as_dict=True)
+
+@frappe.whitelist()
+def audit_data():
+	return frappe.db.sql("""select al.posting_date as date,al.customer,ali.current_available_qty as qty,i.item_code,i.item_name,i.mrp,i.brand from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
+					where al.docstatus=1 order by al.posting_date;""",as_dict=True)
+
+@frappe.whitelist()
 def warehouse_quantity():
 	values={"brand":frappe.request.args["brand"]}
 	return frappe.db.sql("""select i.item_name,i.item_code,b.actual_qty as qty from `tabBin` as b join `tabItem` as i on i.item_code=b.item_code where b.warehouse="Kormangala WareHouse - OS" and i.brand=%(brand)s""",values=values,as_dict=True)
