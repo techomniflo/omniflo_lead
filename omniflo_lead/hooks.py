@@ -126,7 +126,7 @@ scheduler_events = {
 # 	"all": [
 # 		"omniflo_lead.tasks.all"
 # 	],
-	"cron": {"0 */6 * * *":["omniflo_lead.omniflo_lead.doctype.day_wise_sales.day_wise_sales.day_sales"]
+	"cron": {"0 */12 * * *":["omniflo_lead.omniflo_lead.doctype.day_wise_sales.day_wise_sales.day_sales"]
 	}
 # 	"hourly": [
 # 		"omniflo_lead.tasks.hourly"
