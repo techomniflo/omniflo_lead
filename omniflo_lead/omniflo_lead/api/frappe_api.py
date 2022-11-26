@@ -358,16 +358,16 @@ def gmv_sales_date_wise():
 			sales_on_date[i[0]][i[1]][i[2]]=[i[3],i[4]]
 	return sales_on_date
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def promoter_data():
 	return frappe.db.sql("""select psc.customer,psc.brand,psc.qty,psc.creation as date,psc.item_code,psc.item_name  from `tabPromoter Sales Capture` as psc where psc.item_code is not null  order by psc.creation""",as_dict=True)
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def sales_data():
 	return frappe.db.sql("""select ADDTIME(CONVERT(si.posting_date, DATETIME), si.posting_time) as date,i.brand,si.customer as customer,sii.qty,i.item_name,i.mrp,i.item_code from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
 					where si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",as_dict=True)
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def audit_data():
 	return frappe.db.sql("""select al.posting_date as date,al.customer,ali.current_available_qty as qty,i.item_code,i.item_name,i.mrp,i.brand from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 					where al.docstatus=1 order by al.posting_date;""",as_dict=True)
