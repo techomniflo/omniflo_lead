@@ -380,7 +380,7 @@ def warehouse_quantity():
 @frappe.whitelist()
 def deployed_quantity():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select (select s.customer_name from `tabCustomer` as s where s.name=cb.customer) as customer_name ,i.item_name,i.item_code,cb.available_qty as qty from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0 """,values=values,as_dict=True)
+	return frappe.db.sql("""select (select s.customer_name from `tabCustomer` as s where s.name=cb.customer) as customer_name,cb.customer ,i.item_name,i.item_code,cb.available_qty as qty from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0 """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def customer_profile():
