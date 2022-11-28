@@ -1,0 +1,133 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-11-28 16:02:11.782900",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "agreement",
+  "asset",
+  "start_date",
+  "end_date",
+  "contract_date",
+  "dimesion",
+  "rows",
+  "plug_point",
+  "in_category_placement",
+  "rent",
+  "margin",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "agreement",
+   "fieldtype": "Attach",
+   "label": "Agreement"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "contract_date",
+   "fieldtype": "Date",
+   "label": "Contract Date"
+  },
+  {
+   "fieldname": "dimesion",
+   "fieldtype": "Data",
+   "label": "Dimesion"
+  },
+  {
+   "fieldname": "rows",
+   "fieldtype": "Int",
+   "label": "Rows"
+  },
+  {
+   "default": "0",
+   "fieldname": "plug_point",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Plug Point"
+  },
+  {
+   "fieldname": "rent",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Rent"
+  },
+  {
+   "fieldname": "margin",
+   "fieldtype": "Float",
+   "label": "Margin"
+  },
+  {
+   "fieldname": "asset",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Asset",
+   "options": "CTU\nFSU\nEnd Cap\nIn Category"
+  },
+  {
+   "default": "0",
+   "fieldname": "in_category_placement",
+   "fieldtype": "Check",
+   "label": "In Category placement"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Customer Terms of Trade",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-11-28 18:06:34.162998",
+ "modified_by": "Administrator",
+ "module": "Omniflo Lead",
+ "name": "Customer Terms of Trade",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "customer,asset,start_date,end_date,rent,margin",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "customer"
+}
