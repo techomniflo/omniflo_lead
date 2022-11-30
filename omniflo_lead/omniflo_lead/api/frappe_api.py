@@ -538,3 +538,14 @@ def calculate_gmv():
 			
 		return sale_events
 	return json.loads(json.dumps(return_sales(),default=str))
+
+
+@frappe.whitelist()
+def age_and_gender():
+	values={"brand":frappe.request.args["brand"]}
+	return frappe.db.sql("""select date(psc.creation) as date,psc.customer,psc.item_code,psc.item_name,psc.gender,psc.age,psc.qty from `tabPromoter Sales Capture` as psc where psc.gender is not null and psc.brand=%(brand)s and psc.item_code is not null ;""")
+
+@frappe.whitelist()
+def calculate_sales_date_wise():
+	values={"brand":frappe.request.args["brand"]}
+	frappe.db.sql("""select date(dws.date) as `date`,dws.customer,dws.qty,dws.item_code,i.brand,dws.sale_from,i.item_name,(i.mrp*dws.qty) as gmv from `tabDay Wise Sales` as dws join `tabItem` as i on i.name=dws.item_code where i.brand=%(brand)s """,values=values,as_list=True)
