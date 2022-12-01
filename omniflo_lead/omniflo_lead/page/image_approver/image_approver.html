@@ -8,6 +8,17 @@
 	</div>
 	<div class="col-xs-4" >
 
+		<div class="col-xs-12" id="Brand-Div">
+			<div class="row">
+				<div class="col-xs-6">
+					{% for item in brand1 %}
+				
+					<label><input type="checkbox"  value={{ item }} id={{ item }} > {{ item }} </label>
+					{% endfor %}
+				</div>
+				
+			</div>
+		</div>
 
 		<!-- This reason div shows check box for reason  -->
 		<div class="col-xs-12" id="reason_div" >
