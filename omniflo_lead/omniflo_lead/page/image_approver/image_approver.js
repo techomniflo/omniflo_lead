@@ -52,6 +52,16 @@ let Next = function(wrapper,data){
 
 // Approve function write status Approve in 'Audit Log Details'
 let approve = function(wrapper,data){
+	var approved_brand=""
+	get_checked=$("#Brand-Div :checkbox:checked")
+	for (let i = 0; i < get_checked.length; i++) {
+		if (i!=get_checked.length-1){
+		approved_brand += get_checked[i].value+","
+	}
+	else{
+		approved_brand += get_checked[i].value
+	}
+		}
 	frappe.call({
      		method:"omniflo_lead.omniflo_lead.page.image_approver.image_approver.approve",
      		freeze:true,
@@ -90,6 +100,7 @@ let on_hold = function(wrapper,data){
 // This function shows reason div and add buttion submit
 let get_reason = function(wrapper,data){
 	$('#reason_div').show()
+	$('#Brand-Div').hide()
 
 	page.add_inner_button('Submit',() => on_click_submit(wrapper,data))
 	
@@ -165,6 +176,7 @@ let callback_return =function (wrapper,data){
 			$(frappe.render_template("image_approver", 
 				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name,brand1:brand1,brand2:brand2})).appendTo(page.body);
 				$("#reason_div").hide();
+				show_brand(brand1,brand2,picture_type)
 				page.remove_inner_button('Submit')
 
 		}
@@ -175,9 +187,27 @@ let callback_return =function (wrapper,data){
 			$(frappe.render_template("image_approver", 
 				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name,brand1:brand1,brand2:brand2})).appendTo(page.body);
 			$("#reason_div").hide();
+			show_brand(brand1,brand2,picture_type)
 			page.remove_inner_button('Submit')
 
 		}
 	}
 }
 
+let show_brand = function(brand1,brand2,picture_type){
+	for (let i = 0; i < brand1.length; i++) {
+		var input="<label><input type='checkbox'  value='"+brand1[i][0]+"' id='"+brand1[i][0]+"' >"+brand1[i][0]+"</label></br>"
+		$('#section1').append(input)
+		if (picture_type=='Shelf' && brand1[i][1]==1){
+			$("#section1 :input:last").prop('checked',true)
+		}
+		
+		} 
+	for (let i = 0; i < brand2.length; i++) {
+		var input="<label><input type='checkbox'  value='"+brand2[i][0]+"' id='"+brand2[i][0]+"' >"+brand2[i][0]+"</label></br>"
+		$('#section2').append(input)
+		if (picture_type=='Shelf' && brand2[i][1]==1){
+			$("#section2 :input:last").prop('checked',true)
+		}
+		}
+}
