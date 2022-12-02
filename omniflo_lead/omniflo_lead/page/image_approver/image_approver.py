@@ -4,6 +4,11 @@ import json
 @frappe.whitelist()
 def get_details():
     detils_of_image=frappe.db.sql("""select ald.name,al.customer,(ald.item_code)as picture_type,ald.parent,ald.modified_by,(`ald`.`status`)as my_status,ald.image,(DATE_FORMAT(ald.creation,'%d-%m-%y %r')) as date_and_time ,u.full_name from `tabAudit Log Details` as ald join `tabAudit Log` as al on ald.parent = al.name join `tabUser` as u on ald.modified_by=u.email where ald.image is not null and Date(ald.creation) > Date('2022-05-05') and (ald.status="" or ald.status='Hold') and ald.item_code='Shelf' order by ald.creation desc;""",as_dict=True)
+    for image in detils_of_image:
+        values={'name':image['parent']}
+        brand_names=frappe.db.sql(""" select distinct i.brand from `tabAudit Log` as al join `tabAudit Log Items` as ald on ald.parent=al.name join `tabItem` as i on i.item_code=ald.item_code where al.name=%(name)s and current_available_qty!=0  """,values=values,as_list=True)
+        image['brand1']=brand_names[:len(brand_names)//2]
+        image['brand2']=brand_names[len(brand_names)//2:]
     return detils_of_image
 
 @frappe.whitelist()
