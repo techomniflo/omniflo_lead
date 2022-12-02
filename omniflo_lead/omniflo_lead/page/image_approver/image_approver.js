@@ -68,7 +68,8 @@ let approve = function(wrapper,data){
      		// freeze_message:_("hello gets call"),
      		args:{
      			data:data,
-     			index:index
+     			index:index,
+				approved_brand:approved_brand
      		},
      		callback: function(r){
      			index=index+1

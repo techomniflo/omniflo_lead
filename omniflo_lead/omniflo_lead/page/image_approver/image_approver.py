@@ -12,11 +12,12 @@ def get_details():
     return detils_of_image
 
 @frappe.whitelist()
-def approve(data,index):
+def approve(data,index,approved_brand):
     data = json.loads(data)
     index=int(index)
     doc=frappe.get_doc("Audit Log Details",data[index]['name'])
     doc.db_set('status', 'Approve', update_modified=False)
+    doc.db_set('approved_brand',approved_brand,update_modified=False)
 
 @frappe.whitelist()
 def reject(data,index,reason):
