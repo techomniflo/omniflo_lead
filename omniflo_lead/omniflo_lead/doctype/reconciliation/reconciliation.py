@@ -32,4 +32,4 @@ class Reconciliation(Document):
 @frappe.whitelist()
 def get_current_qty(item_code,warehouse):
 	item_actual_qty=frappe.db.sql(""" select b.actual_qty as current_qty from `tabBin` as b where b.item_code=%(item_code)s and b.warehouse=%(warehouse)s """,values={'warehouse':warehouse,'item_code':item_code},as_list=True)
-	return item_actual_qty[0]
+	return item_actual_qty[0][0]

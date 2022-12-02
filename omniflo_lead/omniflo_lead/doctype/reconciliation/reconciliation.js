@@ -31,7 +31,7 @@ frappe.ui.form.on('Reconciliation Items',{
 			freeze : true,
 			freeze_message : 'Getting All Items'
 		}).then((res)  => {
-			console.log(res.message)
+			item.current_quantity=res.message
 			refresh_field('items');
 		})
 	}
