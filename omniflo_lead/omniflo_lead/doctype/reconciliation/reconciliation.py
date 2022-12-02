@@ -14,7 +14,7 @@ class Reconciliation(Document):
 	@frappe.whitelist()
 	def fetch_items(self):
 		# bin_items = frappe.get_all('Bin', filters = {'warehouse' : self.default_warehouse}, fields =['name'])
-		bin_items=frappe.db.sql("""select b.name from `tabBin` as b join `tabItem` as i on b.item_code=i.item_code where b.warehouse= order by i.brand""",values=self.default_warehouse,as_dict=True)
+		bin_items=frappe.db.sql("""select b.name from `tabBin` as b join `tabItem` as i on b.item_code=i.item_code where b.warehouse=%(warehouse)s order by i.brand""",values={'warehouse':self.default_warehouse},as_dict=True)
 		current_items = []
 		if self.get('items'):
 			current_items = [item.item_code for item in self.get('items')]
