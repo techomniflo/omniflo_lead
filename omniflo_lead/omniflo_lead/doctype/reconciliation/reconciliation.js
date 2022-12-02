@@ -18,3 +18,21 @@ frappe.ui.form.on('Reconciliation', {
 		})
 	}
 });
+
+frappe.ui.form.on('Reconciliation Items',{
+	item_code(frm, cdt, cdn){
+		let item = locals[cdt][cdn];
+		frappe.call({
+			args:{
+				item_code:item.item_code,
+				warehouse:cur_frm.doc.default_warehouse
+			},
+			method : 'omniflo_lead.omniflo_lead.doctype.reconciliation.reconciliation.get_current_qty',
+			freeze : true,
+			freeze_message : 'Getting All Items'
+		}).then((res)  => {
+			console.log(res.message)
+			refresh_field('items');
+		})
+	}
+});

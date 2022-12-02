@@ -29,3 +29,7 @@ class Reconciliation(Document):
 						'item_name' : item_doc.item_name,
 						'uom':Bin.stock_uom,
 						'current_quantity': Bin.actual_qty })
+
+def get_current_qty(item_code,warehouse):
+	item_actual_qty=frappe.db.sql(""" select b.actual_qty as current_qty from `tabBin` as b where b.item_code=%()s and b.warehouse=%()s """,values={'warehouse':warehouse,'item_code':item_code},as_list=True)
+	return item_actual_qty[0]
