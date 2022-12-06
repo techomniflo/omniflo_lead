@@ -360,16 +360,16 @@ def gmv_sales_date_wise():
 
 @frappe.whitelist(allow_guest=True)
 def promoter_data():
-	return frappe.db.sql("""select psc.customer,psc.brand,psc.qty,psc.creation as date,psc.item_code,psc.item_name  from `tabPromoter Sales Capture` as psc where psc.item_code is not null  order by psc.creation""",as_dict=True)
+	return frappe.db.sql("""select psc.customer,psc.brand,psc.qty,psc.creation as date,psc.item_code,psc.item_name,psc.age,psc.gender  from `tabPromoter Sales Capture` as psc where psc.item_code is not null  order by psc.creation""",as_dict=True)
 
 @frappe.whitelist(allow_guest=True)
 def sales_data():
-	return frappe.db.sql("""select ADDTIME(CONVERT(si.posting_date, DATETIME), si.posting_time) as date,i.brand,si.customer as customer,sii.qty,i.item_name,i.mrp,i.item_code from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
+	return frappe.db.sql("""select ADDTIME(CONVERT(si.posting_date, DATETIME), si.posting_time) as date,i.brand,si.customer as customer,sii.qty,i.item_name,i.mrp,i.item_code,null as age,null as gender from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
 					where si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",as_dict=True)
 
 @frappe.whitelist(allow_guest=True)
 def audit_data():
-	return frappe.db.sql("""select al.posting_date as date,al.customer,ali.current_available_qty as qty,i.item_code,i.item_name,i.mrp,i.brand from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
+	return frappe.db.sql("""select al.posting_date as date,al.customer,ali.current_available_qty as qty,i.item_code,i.item_name,i.mrp,i.brand,null as age,null as gender from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
 					where al.docstatus=1 order by al.posting_date;""",as_dict=True)
 
 @frappe.whitelist()
@@ -548,4 +548,4 @@ def age_and_gender():
 @frappe.whitelist()
 def calculate_sales_date_wise():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select date(dws.date) as `date`,dws.customer,dws.qty,dws.item_code,i.brand,dws.sale_from,i.item_name,(i.mrp*dws.qty) as gmv from `tabDay Wise Sales` as dws join `tabItem` as i on i.name=dws.item_code where i.brand=%(brand)s """,values=values,as_list=True)
+	return frappe.db.sql("""select date(dws.date) as `date`,dws.customer,dws.qty,dws.item_code,i.brand,dws.sale_from,i.item_name,(i.mrp*dws.qty) as gmv,dws.age,dws.gender from `tabDay Wise Sales` as dws join `tabItem` as i on i.name=dws.item_code where i.brand=%(brand)s """,values=values,as_list=True)
