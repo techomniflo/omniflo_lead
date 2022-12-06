@@ -12,6 +12,26 @@ class Planogram(Document):
 				no_of_rows.add(item.row)
 		if len(no_of_rows)>self.max_rows:
 			frappe.throw(f'Rows are greater than {self.max_rows}')
+	def before_save(self):
+		li=[]
+		if self.get('items'):
+			for i in self.items:
+				li.append([i.row,i.column,i.item_code,i.qty,i.brand,i.item_name])
+		li.sort(key=lambda x: (x[0],x[1],x[4],x[5]))
+		self.items=[]
+		tentative_value=0
+		for i in li:
+			doc=frappe.get_doc('Item',i[2])
+			tentative_value=tentative_value+(doc.mrp*i[3])
+			self.append("items",{
+					"row":i[0],
+					"column":i[1],
+					"item_code":i[2],
+					"qty":i[3],
+					"brand":i[4],
+					"item_name":i[5]
+				})
+		self.tentative_value=tentative_value*0.75
 				
 	@frappe.whitelist()
 	def fetch_html(self):
