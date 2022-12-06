@@ -11,7 +11,9 @@
   "brand",
   "qty",
   "item_code",
-  "sale_from"
+  "sale_from",
+  "age",
+  "gender"
  ],
  "fields": [
   {
@@ -43,11 +45,21 @@
    "fieldname": "date",
    "fieldtype": "Data",
    "label": "Date"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "Age"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "Gender"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-24 15:45:34.273120",
+ "modified": "2022-12-06 15:15:55.822977",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Day Wise Sales",
