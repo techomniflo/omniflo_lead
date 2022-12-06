@@ -22,7 +22,7 @@ class Planogram(Document):
 		tentative_value=0
 		for i in li:
 			doc=frappe.get_doc('Item',i[2])
-			tentative_value=tentative_value+(doc.mrp*i[3])
+			tentative_value=tentative_value+(float(doc.mrp)*int(i[3]))
 			self.append("items",{
 					"row":i[0],
 					"column":i[1],
