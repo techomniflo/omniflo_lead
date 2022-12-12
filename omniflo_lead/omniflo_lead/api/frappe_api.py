@@ -124,9 +124,10 @@ def unit_sold():
 # It gives image with customer name
 @frappe.whitelist()
 def image_api():
-	values={"brand":frappe.request.args["brand"]}
-	image_with_customer_name=frappe.db.sql("""select distinct(ald.image),ald.status as status,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ald.creation as image_date from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code where ali.current_available_qty > 0 and i.brand=%(brand)s and ald.image is not null and ald.status='Approve' order by ald.creation desc;""",values=values,as_dict=True)
-	return image_with_customer_name
+	# values={"brand":frappe.request.args["brand"]}
+	# image_with_customer_name=frappe.db.sql("""select distinct(ald.image),ald.status as status,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ald.creation as image_date from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code where ali.current_available_qty > 0 and i.brand=%(brand)s and ald.image is not null and ald.status='Approve' order by ald.creation desc;""",values=values,as_dict=True)
+	values={"brand":'%'+frappe.request.args["brand"]+'%'}
+	return frappe.db.sql(""" select al.posting_date as image_date,al.customer as customer_id,c.customer_name as customer,ald.image,ald.status from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabCustomer` as c on c.name=al.customer where status='Approve' and approved_brand is not null and approved_brand LIKE %(brand)s order by al.posting_date desc """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def time_series_gmv_data():
@@ -385,7 +386,7 @@ def deployed_quantity():
 @frappe.whitelist()
 def customer_profile():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select cp.customer,(select c.customer_name from `tabCustomer` as c where c.name=cp.customer) as customer_name,cp.sub_type,cp.address,cp.link as map_link,cp.image_url,cp.latitude,cp.longitude,cp.rating,cp.review_count,cp.store_timings,cp.daily_footfall,cp.delivery,cp.number_of_aisles_inside_the_store as asile,cp.number_of_floors,cp.average_order_value,cp.brand_present,cp.locality_area from `tabCustomer Profile` as cp where cp.customer in (select distinct cb.customer from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0)""",values=values,as_dict=True)
+	return frappe.db.sql("""select meta.customer,meta.customer_name as customer_name,cp.sub_type,cp.address,cp.link as map_link,cp.image_url,cp.latitude,cp.longitude,cp.rating,cp.review_count,cp.store_timings,cp.daily_footfall,cp.delivery,cp.number_of_aisles_inside_the_store as asile,cp.number_of_floors,cp.average_order_value,cp.brand_present,cp.locality_area from `tabCustomer Profile` as cp right join (select distinct cb.customer,c.customer_name from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code join `tabCustomer` as c on c.name=cb.customer where i.brand=%(brand)s and cb.available_qty!=0) as meta on cp.customer=meta.customer""",values=values,as_dict=True)
 
 @frappe.whitelist()
 def calculate_gmv():
