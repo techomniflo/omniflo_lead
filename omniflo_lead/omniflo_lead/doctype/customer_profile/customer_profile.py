@@ -76,6 +76,8 @@ def create_customer(**kwargs):
 		customer_profile.locality_area=kwargs["locality_area"]
 	if "brand_priority" in kwargs:
 		customer_profile.brand_priority=kwargs["brand_priority"]
+	if "website" in kwargs:
+		customer_profile.website=kwargs['website']
 	customer_profile.save(ignore_permissions = True)
 	frappe.db.commit()
 	return customer_profile
