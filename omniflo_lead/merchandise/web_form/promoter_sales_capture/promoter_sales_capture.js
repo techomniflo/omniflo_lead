@@ -1,34 +1,37 @@
 frappe.ready(function() {
+	var brand_details;
 
 	function setting_value_item_code(){
-		frappe.call({
-			method:"omniflo_lead.merchandise.web_form.promoter_sales_capture.promoter_sales_capture.fetch_item_code",
-			freeze:true,
-			args:{
-				item_name:frappe.web_form.get_value("item_name"),
-				brand:frappe.web_form.get_value("brand")
-			},
-			callback:function(r){
-				frappe.web_form.set_value('item_code',r.message)
-			}
-		})
+
+		var item_name=frappe.web_form.get_value('item_name').split(",")
+		frappe.web_form.set_df_property('item_name','options',item_name[0])
+		frappe.web_form.set_value("item_name",item_name[0])
+		if (item_name[2]){
+			frappe.web_form.set_value("item_code",item_name[2])
+		}
+		console.log(item_name)
+		console.log(item_name[2])
+
 	}
 
 	function setting_value_item_name(){
-		frappe.call({
-			method:"omniflo_lead.merchandise.web_form.promoter_sales_capture.promoter_sales_capture.fetch_item_name",
-			freeze:true,
+		
+		brand=frappe.web_form.get_value("brand")
+		frappe.web_form.set_df_property('item_name','options',brand_details[brand])
 
+	}
+	function setting_brand(){
+		frappe.call({
+			method:"omniflo_lead.merchandise.web_form.promoter_sales_capture.promoter_sales_capture.fetch_billed_details",
+			freeze:true,
 			args:{
-				brand:frappe.web_form.get_value("brand")
+				customer:frappe.web_form.get_value("customer")
 			},
 			callback: function(r){
 				var res=r.message
-				var arr=[]
-			res.forEach(function (item, index) {
-				arr.push([item["item_name"]])
-				});
-				frappe.web_form.set_df_property('item_name', 'options', arr)
+				console.log(res)
+				brand_details=res
+				frappe.web_form.set_df_property('brand', 'options', Object.keys(brand_details))
 			}
 		});
 	}
@@ -61,8 +64,11 @@ frappe.ready(function() {
 		$("[data-fieldname='gender']").find('label').append(' / ಗ್ರಾಹಕ ಲಿಂಗ')
 		$("[data-fieldname='age']").find('label').append(' / ಗ್ರಾಹಕ ವಯಸ್ಸು')
 		get_live_customer()
-
+		$("[data-fieldname='item_name']").find('select').click(function(){
+			frappe.web_form.set_df_property('item_name','options',brand_details[frappe.web_form.get_value('brand')])
+		})
 		frappe.web_form.on('brand', setting_value_item_name )
+		frappe.web_form.on('customer',setting_brand)
 		frappe.web_form.on('item_name',setting_value_item_code)
 		
 	}
