@@ -3,7 +3,8 @@ var index=0;       //global variable
 
 //on load page in frappe page
 frappe.pages['image-approver'].on_page_load = function(wrapper) {
-
+	
+	
      	frappe.call({
      		method:"omniflo_lead.omniflo_lead.page.image_approver.image_approver.get_details",
      		freeze:true,
@@ -31,10 +32,10 @@ MyPage = Class.extend({
 		let $btn2 = page.add_inner_button('Hold', () => on_hold(wrapper,data));
 		let $btn3 = page.add_inner_button('Reject', () => get_reason(wrapper,data));
 
-		
 		$btn3.css({"background-color":"Red","color":"white"});
 		$btn.css({"background-color":"Green","color":"white"});
 		callback_return(wrapper,data)
+		
 		
 	},
 	make: function(wrapper,data) {
@@ -196,6 +197,12 @@ let callback_return =function (wrapper,data){
 }
 
 let show_brand = function(brand1,brand2,picture_type){
+	$("#Unselect").click(function(){
+		$("#Brand-Div :input").prop('checked',false)
+	});
+	$("#Select").click(function(){
+		$("#Brand-Div :input").prop('checked',true)
+	});
 	for (let i = 0; i < brand1.length; i++) {
 		var input="<label><input type='checkbox'  value='"+brand1[i][0]+"' id='"+brand1[i][0]+"' >"+brand1[i][0]+"</label></br>"
 		$('#section1').append(input)
