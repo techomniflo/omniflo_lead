@@ -12,6 +12,7 @@
   "stock_details_section",
   "items",
   "section_break_6",
+  "add_brand",
   "get_items_from_warehouse",
   "amended_from"
  ],
@@ -67,12 +68,17 @@
    "options": "Reconciliation",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "add_brand",
+   "fieldtype": "Button",
+   "label": "Add Brand"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-08-27 15:46:36.013604",
+ "modified": "2022-12-20 15:44:35.514885",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Reconciliation",

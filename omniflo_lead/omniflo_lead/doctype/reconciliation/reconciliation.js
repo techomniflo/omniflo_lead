@@ -5,6 +5,24 @@ frappe.ui.form.on('Reconciliation', {
 	refresh: function(frm) {
 
 	},
+	add_brand: function(frm){
+		const fields = [
+			{fieldtype:"Link", label: __("Brand"), fieldname:"brand",options:"Brand"}
+		];
+		frappe.prompt(fields, function(filters){
+			frappe.call({
+				doc : frm.doc,
+				method : 'fetch_brands_item',
+				freeze : true,
+				args:{
+					brand:filters.brand
+				},
+				freeze_message : 'Getting All Items'
+			}).then((res) => {
+					refresh_field('items');
+			})
+		});
+	},
 	get_items_from_warehouse(frm){
 		frappe.call({
 			doc : frm.doc,
