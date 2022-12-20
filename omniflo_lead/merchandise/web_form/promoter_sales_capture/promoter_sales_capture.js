@@ -7,10 +7,10 @@ frappe.ready(function() {
 		frappe.web_form.set_df_property('item_name','options',item_name[0])
 		frappe.web_form.set_value("item_name",item_name[0])
 		if (item_name[2]){
-			frappe.web_form.set_value("item_code",item_name[2])
+			frappe.web_form.set_value("item_code",item_name[item_name.length-1])
 		}
 		console.log(item_name)
-		console.log(item_name[2])
+		console.log(item_name[item_name.length-1])
 
 	}
 
