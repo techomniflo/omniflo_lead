@@ -6,6 +6,20 @@ from frappe.model.document import Document
 
 class Reconciliation(Document):
 
+	@frappe.whitelist()
+	def fetch_brands_item(self,brand):
+		values={"brand":brand,"warehouse":self.default_warehouse}
+		data=frappe.db.sql("""select i.item_code,i.item_name,b.actual_qty as current_quantity,b.stock_uom  as uom from `tabItem` as i join `tabBin` as b on i.item_code=b.item_code where i.brand=%(brand)s and b.warehouse=%(warehouse)s and i.disabled=0""",values=values,as_dict=True)
+		for i in data:
+			self.append('items',{
+				"item_code":i.item_code,
+				"item_name":i.item_name,
+				"uom":i.uom,
+				"quantity":0,
+				"current_quantity":i.current_quantity
+			})
+
+
 	def before_save(self):
 		for item in self.items:
 			item.difference=item.quantity-item.current_quantity
