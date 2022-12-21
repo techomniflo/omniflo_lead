@@ -47,6 +47,17 @@ frappe.ready(function() {
 			}
 		});
 	}
+	function get_live_promoter(){
+		frappe.call({
+			method:"omniflo_lead.merchandise.web_form.promoter_logs.promoter_logs.live_promoter",
+			freeze:true,
+			callback: function(r){
+				var res=r.message
+				console.log(res)
+				frappe.web_form.set_df_property('promoter', 'options', res)
+			}
+		});
+	}
 	function on_save_event(){
 		var validate=frappe.web_form.validate_section()
 			
@@ -63,6 +74,7 @@ frappe.ready(function() {
 		save_button.css({"background-color":"Blue","color":"white"})
 		$("[data-fieldname='gender']").find('label').append(' / ಗ್ರಾಹಕ ಲಿಂಗ')
 		$("[data-fieldname='age']").find('label').append(' / ಗ್ರಾಹಕ ವಯಸ್ಸು')
+		get_live_promoter()
 		get_live_customer()
 		$("[data-fieldname='item_name']").find('select').click(function(){
 			frappe.web_form.set_df_property('item_name','options',brand_details[frappe.web_form.get_value('brand')])
