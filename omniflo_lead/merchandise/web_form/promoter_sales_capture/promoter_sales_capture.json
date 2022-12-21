@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2022-12-19 16:29:14.487844",
+ "modified": "2022-12-21 16:12:31.220639",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-sales-capture",
@@ -37,17 +37,18 @@
  "title": "Promoter Sales Capture",
  "web_form_fields": [
   {
-   "allow_read_on_all_link_options": 0,
+   "allow_read_on_all_link_options": 1,
+   "depends_on": "",
    "fieldname": "promoter",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "hidden": 0,
    "label": "Promoter",
    "max_length": 0,
    "max_value": 0,
-   "options": "Promoter",
+   "options": "",
    "read_only": 0,
    "reqd": 1,
-   "show_in_filter": 0
+   "show_in_filter": 1
   },
   {
    "allow_read_on_all_link_options": 0,

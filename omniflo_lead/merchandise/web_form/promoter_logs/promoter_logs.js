@@ -25,6 +25,18 @@ frappe.ready(function() {
 			}
 		});
 	}
+	function get_live_promoter(){
+		frappe.call({
+			method:"omniflo_lead.merchandise.web_form.promoter_logs.promoter_logs.live_promoter",
+			freeze:true,
+			callback: function(r){
+				var res=r.message
+				console.log(res)
+				frappe.web_form.set_df_property('promoter', 'options', res)
+			}
+		});
+	}
+
 	function on_save_event(){
 		var validate=frappe.web_form.validate_section()
 		var validate_geo=false
@@ -51,7 +63,7 @@ frappe.ready(function() {
 		save_button=$('button:contains("Save")')
 		save_button.css({"background-color":"Blue","color":"white"})
 
-
+		get_live_promoter()
 		get_live_customer()
 		getLocation()
 	}

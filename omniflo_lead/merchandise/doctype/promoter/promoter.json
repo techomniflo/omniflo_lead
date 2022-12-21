@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "disabled",
   "promoter_id",
   "first_name",
   "last_name",
@@ -37,11 +38,17 @@
    "fieldname": "full_name",
    "fieldtype": "Data",
    "label": "Full Name"
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-08 19:17:55.447143",
+ "modified": "2022-12-21 16:30:28.328703",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter",

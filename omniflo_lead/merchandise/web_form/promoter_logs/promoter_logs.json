@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2022-10-18 13:03:18.835255",
+ "modified": "2022-12-21 16:29:52.608765",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-logs",
@@ -36,12 +36,12 @@
   {
    "allow_read_on_all_link_options": 1,
    "fieldname": "promoter",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "hidden": 0,
    "label": "Promoter",
    "max_length": 0,
    "max_value": 0,
-   "options": "Promoter",
+   "options": "",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0
