@@ -480,6 +480,8 @@ def calculate_gmv():
 					billed_qty = stock[customer][brand][item][-1]['billed_qty']
 					current_qty = qty
 					cumulative_sales = billed_qty - current_qty
+					if current_qty < 0:
+						cumulative_sales = billed_qty
 					stock[customer][brand][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty,'cumulative_sales': cumulative_sales, 'event_type': 'audit'})
 			
 			if tx['event_type'] == 'promoter' :
@@ -497,6 +499,8 @@ def calculate_gmv():
 					billed_qty = (stock[customer][brand][item][-1]['billed_qty'])
 					current_qty = (stock[customer][brand][item][-1]['current_qty']) - (qty)
 					cumulative_sales = billed_qty - current_qty
+					if current_qty < 0:
+						cumulative_sales = billed_qty
 					stock[customer][brand][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales, 'event_type': 'promoter'})
 		
 		return stock
