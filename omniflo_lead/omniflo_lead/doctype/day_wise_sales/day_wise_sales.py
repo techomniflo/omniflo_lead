@@ -104,9 +104,7 @@ def calculate_gmv():
 					cumulative_sales = billed_qty - current_qty
 					if current_qty < 0:
 						cumulative_sales = billed_qty
-						stock[customer][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales,'event_type': 'invoice','age':age,'gender':gender})
-					else:
-						stock[customer][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales,'event_type': 'invoice','age':age,'gender':gender})		
+					stock[customer][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales,'event_type': 'invoice','age':age,'gender':gender})		
 			
 			if tx['event_type'] == 'audit' :
 				customer, brand, item, qty, date ,age ,gender = tx['customer'], tx['brand'], tx['item_code'], tx['qty'], tx['dt'] ,tx['age'] ,tx['gender']
@@ -123,10 +121,8 @@ def calculate_gmv():
 					current_qty = qty
 					cumulative_sales = billed_qty - current_qty
 					if current_qty < 0:
-						cumulative_sales = billed_qty
-						stock[customer][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales,'event_type': 'audit','age':age,'gender':gender})
-					else:
-						stock[customer][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty,'cumulative_sales': cumulative_sales, 'event_type': 'audit','age':age,'gender':gender})
+						cumulative_sales = billed_qty	
+					stock[customer][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty,'cumulative_sales': cumulative_sales, 'event_type': 'audit','age':age,'gender':gender})
 
 			
 			if tx['event_type'] == 'promoter' :
@@ -146,9 +142,7 @@ def calculate_gmv():
 					cumulative_sales = billed_qty - current_qty
 					if current_qty < 0:
 						cumulative_sales = billed_qty
-						stock[customer][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales, 'event_type': 'promoter','age':age,'gender':gender})
-					else:
-						stock[customer][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales, 'event_type': 'promoter','age':age,'gender':gender})
+					stock[customer][item].append({'date':date, 'billed_qty': billed_qty, 'current_qty': current_qty, 'cumulative_sales': cumulative_sales, 'event_type': 'promoter','age':age,'gender':gender})
 		
 		return stock, items
 
