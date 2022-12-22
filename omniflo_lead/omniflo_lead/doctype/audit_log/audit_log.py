@@ -67,7 +67,7 @@ class AuditLog(Document):
  
 	@frappe.whitelist()
 	def fetch_items(self):
-		items_list=frappe.db.sql("""select i.brand,cb.item_code,i.item_name,cb.available_qty from `tabCustomer Bin` as cb left join `tabItem` as i on i.item_code=cb.item_code where cb.customer=%(customer)s order by i.brand""",values={'customer':self.customer},as_list=True)
+		items_list=frappe.db.sql("""select i.brand,cb.item_code,i.item_name,(if (sale.bill_qty is null ,0,sale.bill_qty) ) -(if (sale.sale_qty is null,0,sale.sale_qty)) as 'expected' from `tabCustomer Bin` as cb left join (select si.customer,sii.item_code,(select sum(SII.qty) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent where SI.docstatus=1 and SI.company='Omnipresent Services' and si.customer=SI.customer and sii.item_code=SII.item_code) as bill_qty,(select sum(qty) from `tabDay Wise Sales` as dws where dws.customer=si.customer and dws.item_code=sii.item_code) as sale_qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name where si.docstatus=1 and si.company='Omnipresent Services' group by si.customer,sii.item_code) as sale on sale.item_code=cb.item_code and sale.customer=cb.customer join `tabItem` as i on i.item_code=cb.item_code where cb.customer=%(customer)s order by i.brand""",values={'customer':self.customer},as_list=True)
 		items_list.sort(key=lambda x: (x[3]==0,x[0],x[2]))
 		for item in items_list:
 			self.append('items',
