@@ -91,9 +91,9 @@ doctype_js={"Customer": "public/js/customer.js","Sales Invoice":"public/js/sales
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"Stock Ledger Entry": "omniflo_lead.omniflo_lead.doctype_class_override.stock_ledger_entry.CustomStockLedgerEntry"
+}
 
 # Document Events
 # ---------------
