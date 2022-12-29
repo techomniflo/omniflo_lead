@@ -2,7 +2,7 @@ import frappe
 
 @frappe.whitelist(allow_guest=True)
 def get_live_customer():
-    return frappe.db.sql("""select c.name as customer,c.customer_name from `tabCustomer` as c where c.customer_status='Live' and c.name not in ( select si.customer from `tabSales Invoice` as si where si.company="Omniway Technologies Pvt Ltd" and si.customer=c.name) order by c.name;""",as_dict=True)
+    return frappe.db.sql("""select c.name as customer,c.customer_name,a.address_line1,a.address_line2,a.city,a.state,a.country,a.pincode from `tabCustomer` as c join `tabDynamic Link` as dl on dl.link_name=c.name join `tabAddress` as a on a.name=dl.parent where c.customer_status='Live' and c.name not in ( select si.customer from `tabSales Invoice` as si where si.company="Omniway Technologies Pvt Ltd" and si.customer=c.name)  and dl.link_doctype='Customer' and dl.parenttype='Address' and a.is_primary_address=1 group by c.name order by c.name;""",as_dict=True)
 
 
 @frappe.whitelist(allow_guest=True)
