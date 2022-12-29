@@ -8,7 +8,7 @@ def get_live_customer():
 @frappe.whitelist(allow_guest=True)
 def return_planogram():
     values={"name":frappe.request.args["planogram_id"]}
-    return frappe.db.sql(""" select pi.row,pi.column,pi.brand,pi.item_name,pi.qty from `tabPlanogram Items` as pi where pi.parent=%(name)s order by pi.row,pi.column""",values=values,as_dict=True)
+    return frappe.db.sql(""" select pi.row,pi.column,i.brand,i.item_name,pi.qty from `tabPlanogram Items` as pi join `tabItem` as i on pi.item_code=i.item_code where pi.parent=%(name)s order by pi.row,pi.column""",values=values,as_dict=True)
 
 @frappe.whitelist(allow_guest=True)
 def find_asset():
