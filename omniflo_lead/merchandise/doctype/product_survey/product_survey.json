@@ -1,0 +1,96 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-01-04 15:53:01.552074",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "brand",
+  "customer_prefer",
+  "price",
+  "taste",
+  "quality",
+  "reason_not_buy",
+  "improve_the_product",
+  "specific_testimonials",
+  "comment"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_prefer",
+   "fieldtype": "Select",
+   "label": "Customer Prefer",
+   "options": "Price\nTaste\nIngredients\nPackaging"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Select",
+   "label": "Price ",
+   "options": "\nVery Dissatisfied\nDissatisfied\nNeutral\nSatisfied\nVery Satisfied"
+  },
+  {
+   "fieldname": "taste",
+   "fieldtype": "Select",
+   "label": "Taste",
+   "options": "\nVery Dissatisfied\nDissatisfied\nNeutral\nSatisfied\nVery Satisfied"
+  },
+  {
+   "fieldname": "quality",
+   "fieldtype": "Select",
+   "label": "Quality",
+   "options": "\nVery Dissatisfied\nDissatisfied\nNeutral\nSatisfied\nVery Satisfied"
+  },
+  {
+   "fieldname": "reason_not_buy",
+   "fieldtype": "Data",
+   "label": "Reason not Buy"
+  },
+  {
+   "fieldname": "improve_the_product",
+   "fieldtype": "Data",
+   "label": "Improve the Product"
+  },
+  {
+   "fieldname": "specific_testimonials",
+   "fieldtype": "Small Text",
+   "label": "specific testimonials"
+  },
+  {
+   "fieldname": "comment",
+   "fieldtype": "Small Text",
+   "label": "comment"
+  },
+  {
+   "fieldname": "brand",
+   "fieldtype": "Link",
+   "label": "Brand",
+   "options": "Brand"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-01-05 11:32:05.318945",
+ "modified_by": "Administrator",
+ "module": "Merchandise",
+ "name": "Product Survey",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
