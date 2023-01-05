@@ -1,7 +1,6 @@
 frappe.ready(function() {
 	
 	function on_save_event(){
-		get_checked_value()
 		var validate=frappe.web_form.validate_section()
 			
 			if (validate==true ) {
@@ -53,6 +52,16 @@ frappe.ready(function() {
 		}
 
 	}
+	function add_kannada(){
+		$("[data-fieldname='customer_prefer']").find('label').append("<br> ಉತ್ಪನ್ನವನ್ನು ಆಯ್ಕೆ ಮಾಡುವ ಮೊದಲು ಗ್ರಾಹಕರು ಯಾವುದಕ್ಕೆ ಹೆಚ್ಚು ಆದ್ಯತೆ ನೀಡಿದರು?")
+		$("[data-fieldname='price']").find('label').append("<br> ಉತ್ಪನ್ನದ ಬೆಲೆಯ ಬಗ್ಗೆ ಗ್ರಾಹಕರು ಹೇಗೆ ಭಾವಿಸಿದರು?")
+		$("[data-fieldname='taste']").find('label').append("<br> ಉತ್ಪನ್ನದ ರುಚಿಯ ಬಗ್ಗೆ ಗ್ರಾಹಕರು ಹೇಗೆ ಭಾವಿಸಿದರು?")
+		$("[data-fieldname='quality']").find('label').append("<br> ಉತ್ಪನ್ನದ ಗುಣಮಟ್ಟದ ಬಗ್ಗೆ ಗ್ರಾಹಕರು ಹೇಗೆ ಭಾವಿಸಿದರು?")
+		$("[data-fieldname='reason_not_buy']").find('label').append("<br> ಗ್ರಾಹಕರು ಉತ್ಪನ್ನವನ್ನು ಏಕೆ ಖರೀದಿಸಲಿಲ್ಲ?")
+		$("[data-fieldname='improve_the_product']").find('label').append("<br> ಉತ್ಪನ್ನವನ್ನು ಸುಧಾರಿಸಲು ಅಥವಾ ಅದನ್ನು ಹೆಚ್ಚು ಆಕರ್ಷಕವಾಗಿಸಲು ಬ್ರ್ಯಾಂಡ್ ಏನು ಮಾಡಬಹುದು?")
+		$("[data-fieldname='specific_testimonials']").find('label').append("<br> ನೀವು ನೆನಪಿಸಿಕೊಳ್ಳಬಹುದಾದ ಯಾವುದೇ ನಿರ್ದಿಷ್ಟ ಪ್ರಶಂಸಾಪತ್ರಗಳು ಇದೆಯೇ?")
+		$("[data-fieldname='comment']").find('label').append("<br> ಯಾವುದೇ ಇತರ ಒಳನೋಟ ಅಥವಾ ಕಾಮೆಂಟ್ ಅನ್ನು ಯಾವುದಾದರೂ ಹಂಚಿಕೊಳ್ಳಿ.")
+	}
 	
 
 	// bind events here
@@ -61,7 +70,10 @@ frappe.ready(function() {
 		frappe.web_form.add_button("Save","button",on_save_event)
 		save_button=$('button:contains("Save")')
 		save_button.css({"background-color":"Blue","color":"white"})
+		add_kannada()
 		add_check_box()
+		$("#reason_not_to_buy :checkbox").change(get_checked_value)
+		$("#improve_the_product :checkbox").change(get_checked_value)
 
 	}
 })
