@@ -38,7 +38,7 @@ frappe.ready(function() {
 	function add_check_box(){
 		$("[data-fieldname='reason_not_buy']").find('input').hide()
 		$("[data-fieldname='reason_not_buy']").find('div').find('.control-input').append("<div id='reason_not_to_buy'> </div>")
-		const arr = ["It was too expensive", "Taste was not good", "Didnot trust the ingredients","Didnot know about the brand","Size was not preferred"]
+		const arr = ["It was too expensive", "Taste was not good", "Did not trust the ingredients","Did not know about the brand","Size was not preferred"]
 		for (let i = 0; i < arr.length; i++){
 			var input="<label><input type='checkbox'  value='"+arr[i]+"' id='"+arr[i]+"' >"+arr[i]+"</label></br>"
 			$("[data-fieldname='reason_not_buy']").find('div').find('#reason_not_to_buy').append(input)
