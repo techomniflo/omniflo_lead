@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "brand",
+  "promoter",
   "customer_prefer",
   "price",
   "taste",
@@ -67,11 +68,17 @@
    "fieldtype": "Link",
    "label": "Brand",
    "options": "Brand"
+  },
+  {
+   "fieldname": "promoter",
+   "fieldtype": "Link",
+   "label": "Promoter",
+   "options": "Promoter"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-05 11:32:05.318945",
+ "modified": "2023-01-05 14:59:21.217617",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Product Survey",

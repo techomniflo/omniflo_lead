@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-01-05 11:33:37.015297",
+ "modified": "2023-01-05 14:59:47.971103",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "product-survey",
@@ -42,6 +42,19 @@
    "max_length": 0,
    "max_value": 0,
    "options": "Brand",
+   "read_only": 1,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "promoter",
+   "fieldtype": "Link",
+   "hidden": 0,
+   "label": "Promoter",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "Promoter",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
