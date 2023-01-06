@@ -59,8 +59,8 @@ frappe.ready(function() {
 		$("[data-fieldname='quality']").find('label').append("<br> ಉತ್ಪನ್ನದ ಗುಣಮಟ್ಟದ ಬಗ್ಗೆ ಗ್ರಾಹಕರು ಹೇಗೆ ಭಾವಿಸಿದರು?")
 		$("[data-fieldname='reason_not_buy']").find('label').append("<br> ಗ್ರಾಹಕರು ಉತ್ಪನ್ನವನ್ನು ಏಕೆ ಖರೀದಿಸಲಿಲ್ಲ?")
 		$("[data-fieldname='improve_the_product']").find('label').append("<br> ಉತ್ಪನ್ನವನ್ನು ಸುಧಾರಿಸಲು ಅಥವಾ ಅದನ್ನು ಹೆಚ್ಚು ಆಕರ್ಷಕವಾಗಿಸಲು ಬ್ರ್ಯಾಂಡ್ ಏನು ಮಾಡಬಹುದು?")
-		$("[data-fieldname='specific_testimonials']").find('label').append("<br> ನೀವು ನೆನಪಿಸಿಕೊಳ್ಳಬಹುದಾದ ಯಾವುದೇ ನಿರ್ದಿಷ್ಟ ಪ್ರಶಂಸಾಪತ್ರಗಳು ಇದೆಯೇ?")
-		$("[data-fieldname='comment']").find('label').append("<br> ಯಾವುದೇ ಇತರ ಒಳನೋಟ ಅಥವಾ ಕಾಮೆಂಟ್ ಅನ್ನು ಯಾವುದಾದರೂ ಹಂಚಿಕೊಳ್ಳಿ.")
+		$("[data-fieldname='specific_testimonials']").find('label').append("<br> ನೀವು ನೆನಪಿಸಿಕೊಳ್ಳಬಹುದಾದ ಯಾವುದೇ ನಿರ್ದಿಷ್ಟ ಸಾಕ್ಷ್ಯಗಳಿವೆಯೇ?")
+		$("[data-fieldname='comment']").find('label').append("<br> ಯಾವುದೇ ಇತರ ಒಳನೋಟ ಅಥವಾ ಕಾಮೆಂಟ್ ಅನ್ನು ಹಂಚಿಕೊಳ್ಳಿ, ಯಾವುದಾದರೂ ಒಂದು")
 	}
 	
 
