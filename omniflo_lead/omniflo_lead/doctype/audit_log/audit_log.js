@@ -3,6 +3,13 @@
 
 frappe.ui.form.on('Audit Log', {
 	refresh: function(frm) {
+		frm.fields_dict['item_group'].get_query = function(doc) {
+			return {
+				filters: {
+					"name": ['in',[' Food & Grocery',' Personal Care',' Purplle']]
+				}
+			}
+		}
 		getLocation(frm);
 		hide_add_row(frm);
 	 },
