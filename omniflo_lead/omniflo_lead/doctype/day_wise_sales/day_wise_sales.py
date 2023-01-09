@@ -23,7 +23,7 @@ def day_sales():
 	
 	for i in gmv_data:
 		doc=frappe.new_doc('Day Wise Sales')
-		doc.date=i[0]
+		doc.date=datetime.strptime(i[0], '%d-%m-%y')
 		doc.customer=i[1]
 		doc.qty=i[2]
 		doc.item_code=i[3]
