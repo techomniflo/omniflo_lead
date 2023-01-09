@@ -553,4 +553,4 @@ def age_and_gender():
 @frappe.whitelist()
 def calculate_sales_date_wise():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select dws.date ,dws.customer,dws.qty,dws.item_code,i.brand,dws.sale_from,i.item_name,(i.mrp*dws.qty) as gmv,dws.age,dws.gender from `tabDay Wise Sales` as dws join `tabItem` as i on i.name=dws.item_code where i.brand=%(brand)s order by dws.date desc""",values=values,as_list=True)
+	return frappe.db.sql("""select DATE_FORMAT(dws.date,'%d-%m-%y') as date ,dws.customer,dws.qty,dws.item_code,i.brand,dws.sale_from,i.item_name,(i.mrp*dws.qty) as gmv,dws.age,dws.gender from `tabDay Wise Sales` as dws join `tabItem` as i on i.name=dws.item_code where i.brand=%(brand)s order by dws.date desc""",values=values,as_list=True)
