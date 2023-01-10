@@ -8,22 +8,26 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "customer",
-  "customer_name",
+  "asset",
+  "item_group",
   "target",
   "start_date",
   "end_date",
+  "items",
   "amended_from"
  ],
  "fields": [
   {
-   "fieldname": "customer",
+   "fieldname": "asset",
+   "fieldtype": "Select",
+   "label": "Asset",
+   "options": "\nFSU\nCTU\nEnd Cap"
+  },
+  {
+   "fieldname": "item_group",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Customer",
-   "options": "Customer",
-   "unique": 1
+   "label": "Item Group",
+   "options": "Item Group"
   },
   {
    "fieldname": "target",
@@ -31,12 +35,6 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Target"
-  },
-  {
-   "fetch_from": "customer.customer_name",
-   "fieldname": "customer_name",
-   "fieldtype": "Data",
-   "label": "Customer Name"
   },
   {
    "fieldname": "start_date",
@@ -53,11 +51,17 @@
    "label": "End Date"
   },
   {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Customer Target Item"
+  },
+  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Customer Performance",
+   "options": "Customer Target",
    "print_hide": 1,
    "read_only": 1
   }
@@ -65,10 +69,10 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-05 18:01:05.830800",
+ "modified": "2023-01-10 17:34:59.619907",
  "modified_by": "Administrator",
  "module": "Merchandise",
- "name": "Customer Performance",
+ "name": "Customer Target",
  "owner": "Administrator",
  "permissions": [
   {
