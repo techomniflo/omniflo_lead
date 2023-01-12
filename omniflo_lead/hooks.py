@@ -93,6 +93,7 @@ doctype_js={"Customer": "public/js/customer.js","Sales Invoice":"public/js/sales
 
 override_doctype_class = {
 	"Stock Ledger Entry": "omniflo_lead.omniflo_lead.doctype_class_override.stock_ledger_entry.CustomStockLedgerEntry",
+	"Purchase Receipt": "omniflo_lead.omniflo_lead.doctype_class_override.purchase_receipt.CustomPurchaseReceipt",
 	"Stock Entry": "omniflo_lead.omniflo_lead.doctype_class_override.stock_entry.CustomStockEntry"
 }
 
