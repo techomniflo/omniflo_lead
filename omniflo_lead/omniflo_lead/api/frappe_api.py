@@ -26,7 +26,7 @@ def total_live_store():
 @frappe.whitelist()
 def stores_lives():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql(""" select distinct cb.customer,(select c.customer_name from `tabCustomer` as c where c.name=cb.customer) as customer_name from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code where i.brand=%(brand)s and cb.available_qty!=0 """,values=values,as_dict=True)
+	return frappe.db.sql(""" select distinct cb.customer,c.customer_name from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code join `tabCustomer` as c on c.name=cb.customer where i.brand=%(brand)s and cb.available_qty!=0 and c.customer_status='Live' """,values=values,as_dict=True)
 
 #Gives total no of live inventory for perticular brand
 @frappe.whitelist()
