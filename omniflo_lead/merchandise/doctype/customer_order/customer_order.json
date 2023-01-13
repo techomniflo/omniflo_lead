@@ -54,15 +54,15 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "Store Order Item"
+   "options": "Customer Order Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-13 16:13:29.195194",
+ "modified": "2023-01-13 16:26:46.097236",
  "modified_by": "Administrator",
  "module": "Merchandise",
- "name": "Store Order",
+ "name": "Customer Order",
  "owner": "Administrator",
  "permissions": [
   {
