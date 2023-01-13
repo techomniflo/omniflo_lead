@@ -23,6 +23,7 @@
    "options": "Customer"
   },
   {
+   "fetch_from": "customer.customer_name",
    "fieldname": "customer_name",
    "fieldtype": "Data",
    "label": "Customer Name"
@@ -35,8 +36,9 @@
   },
   {
    "fieldname": "item_group",
-   "fieldtype": "Data",
-   "label": "Item Group"
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
   },
   {
    "fieldname": "get_items",
@@ -57,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-13 11:45:08.355682",
+ "modified": "2023-01-13 16:13:29.195194",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Store Order",
