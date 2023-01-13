@@ -50,7 +50,7 @@
  "modified": "2023-01-12 19:01:18.338901",
  "modified_by": "Administrator",
  "module": "Merchandise",
- "name": "Store Order Item",
+ "name": "Customer Order Item",
  "naming_rule": "Autoincrement",
  "owner": "Administrator",
  "permissions": [],
