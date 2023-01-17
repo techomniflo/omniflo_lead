@@ -1,12 +1,14 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2023-01-12 17:38:06.071833",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
   "customer",
   "customer_name",
   "status",
@@ -55,11 +57,17 @@
    "fieldtype": "Table",
    "label": "Items",
    "options": "Customer Order Item"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "ORD-.YY.-\nSINV-.YY.-\nSRET-.YY.-\nOMNI-.YY.-\nSTR-.YY.-"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-13 16:26:46.097236",
+ "modified": "2023-01-17 17:39:26.176582",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Customer Order",
