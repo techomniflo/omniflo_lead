@@ -2,9 +2,17 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Customer Order', {
-	// refresh: function(frm) {
+	refresh: function(frm) {
+		frm.fields_dict['item_group'].get_query = function(doc) {
+			return {
+				filters: {
+					"name": ['in',['Food & Grocery','Purplle','Personal Care']]
+				}
+			}
+		}
+		$("input[data-target='Item Group']").prop('placeholder', 'All');
 
-	// }
+	},
 	get_items(frm){
 		cur_frm.clear_table("items");
 		cur_frm.refresh_field('items');
