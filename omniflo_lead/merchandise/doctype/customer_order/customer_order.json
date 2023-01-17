@@ -13,6 +13,7 @@
   "customer_name",
   "status",
   "item_group",
+  "warehouse",
   "items",
   "get_items",
   "order_image"
@@ -61,16 +62,25 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Series",
-   "options": "ORD-.YY.-\nSINV-.YY.-\nSRET-.YY.-\nOMNI-.YY.-\nSTR-.YY.-"
+   "options": "ORD-.YY.-\nSINV-.YY.-\nSRET-.YY.-\nOMNI-.YY.-\nSTR-.YY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-17 17:39:26.176582",
+ "modified": "2023-01-17 18:27:32.731611",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Customer Order",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
