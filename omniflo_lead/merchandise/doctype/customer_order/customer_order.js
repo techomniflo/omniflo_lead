@@ -11,6 +11,13 @@ frappe.ui.form.on('Customer Order', {
 			}
 		}
 		$("input[data-target='Item Group']").prop('placeholder', 'All');
+		frm.fields_dict['warehouse'].get_query = function(doc) {
+			return {
+				filters: {
+					"name": ['in',['Kormangala WareHouse - OS']]
+				}
+			}
+		}
 
 	},
 	get_items(frm){
