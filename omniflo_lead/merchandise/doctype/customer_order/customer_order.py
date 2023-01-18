@@ -2,9 +2,17 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe.website.website_generator import WebsiteGenerator
 from frappe.model.document import Document
 
-class CustomerOrder(Document):
+class CustomerOrder(WebsiteGenerator):
+	def validate(self):
+		self.route=self.name
+		self.published=1
+	def on_submit(self):
+		self.route=""
+		self.published=0
+
 	@frappe.whitelist()
 	def fetch_items(self):
 		if self.item_group==None:
