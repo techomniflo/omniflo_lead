@@ -1,0 +1,51 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<style>
+    table, th, td {
+      border:1px solid black;
+    }
+    </style>
+<div class="row">
+    <div class="col-sm-4 order-sm-last">
+        <h2>Customer Order</h2> 
+        <h5>{{ doc.name }}</h5>
+    </div>
+    <div class="col-sm-8">
+        <span><b>Date :</b>{{ doc.posting_date }}</span><br>
+        <span><b>Customer ID:</b> {{ doc.customer }} </span> <br>
+        <span><b> Customer Name :</b> {{ doc.customer_name }} </span> <br>
+    </b>
+    </div>
+    
+</div>
+<br><br>
+
+<div class="row">
+    <div class="col-sm-12">
+        <table style="width:100%">
+            <tr>
+              <th>Item Name</th>
+              <th>Brand Name</th>
+              <th>Quantity</th>
+            </tr>
+        {% for item in doc.items %}
+            <tr>
+                <td>{{ item.item_name }}</td>
+                <td>{{ item.brand }}</td>
+                <td>{{ item.qty }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    
+</div>
+<script>
+    document.getElementsByClassName("navbar-brand")[0].setAttribute('style','display:none')
+    document.getElementsByClassName("btn-login-area")[0].setAttribute('style','display:none')
+</script>
+
+
+{% endblock %}
+
+<!-- this is a sample default web page template -->

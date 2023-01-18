@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_guest_to_view": 1,
  "allow_rename": 1,
  "autoname": "naming_series:",
  "creation": "2023-01-12 17:38:06.071833",
@@ -9,6 +10,8 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "posting_date",
+  "posting_time",
   "customer",
   "customer_name",
   "status",
@@ -16,7 +19,10 @@
   "warehouse",
   "items",
   "get_items",
-  "order_image"
+  "order_image",
+  "route",
+  "published",
+  "amended_from"
  ],
  "fields": [
   {
@@ -79,11 +85,46 @@
    "label": "Warehouse",
    "options": "Warehouse",
    "read_only": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "route",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Route"
+  },
+  {
+   "default": "0",
+   "fieldname": "published",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Published"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Customer Order",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "label": "Posting Time"
   }
  ],
+ "has_web_view": 1,
  "index_web_pages_for_search": 1,
+ "is_published_field": "published",
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-01-18 09:55:43.460172",
+ "modified": "2023-01-18 19:26:02.945825",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Customer Order",
@@ -103,6 +144,7 @@
    "write": 1
   }
  ],
+ "route": "order",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
