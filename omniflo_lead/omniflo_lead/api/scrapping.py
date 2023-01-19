@@ -72,3 +72,7 @@ def item_list():
 def customer_list():
     rv=frappe.db.sql("""select c.name,c.customer_name from `tabCustomer` as c where c.name in (select si.customer from `tabSales Invoice` as si where si.customer=c.name and si.company='Omnipresent Services') and c.customer_status!='Closed';""")
     return rv
+
+@frappe.whitelist()
+def sales_data():
+    return frappe.db.sql(""" select dws.date,dws.customer,(dws.qty*i.mrp) as gmv,i.brand,i.item_name,i.item_code from `tabDay Wise Sales` as dws join `tabItem` as i on i.item_code=dws.item_code """,as_dict=True)
