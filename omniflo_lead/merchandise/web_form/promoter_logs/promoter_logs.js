@@ -40,7 +40,7 @@ frappe.ready(function() {
 	function on_save_event(){
 		var validate=frappe.web_form.validate_section()
 		var validate_geo=false
-			if (frappe.web_form.doc.latitude && frappe.web_form.doc.longitude){
+			if ((frappe.web_form.doc.latitude && frappe.web_form.doc.longitude)|| (frappe.web_form.doc.is_present==0) ){
 				validate_geo=true
 				
 			}
@@ -62,6 +62,7 @@ frappe.ready(function() {
 		frappe.web_form.add_button("Save","button",on_save_event)
 		save_button=$('button:contains("Save")')
 		save_button.css({"background-color":"Blue","color":"white"})
+		frappe.web_form.set_value('is_present',1)
 
 		get_live_promoter()
 		get_live_customer()
