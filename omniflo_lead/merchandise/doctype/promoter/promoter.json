@@ -11,7 +11,8 @@
   "promoter_id",
   "first_name",
   "last_name",
-  "full_name"
+  "full_name",
+  "promoter_type"
  ],
  "fields": [
   {
@@ -44,11 +45,17 @@
    "fieldname": "disabled",
    "fieldtype": "Check",
    "label": "Disabled"
+  },
+  {
+   "fieldname": "promoter_type",
+   "fieldtype": "Select",
+   "label": "Promoter Type",
+   "options": "Full Time\nPart Time\nWeekend\nBrandwise\nSamplers"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-21 16:30:28.328703",
+ "modified": "2023-01-19 18:58:25.754221",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter",
