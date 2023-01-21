@@ -7,9 +7,11 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "disable",
   "customer",
   "agreement",
   "asset",
+  "item_group",
   "start_date",
   "end_date",
   "contract_date",
@@ -41,6 +43,7 @@
    "label": "Start Date"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "end_date",
    "fieldtype": "Date",
    "label": "End Date"
@@ -102,12 +105,25 @@
    "options": "Customer Terms of Trade",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "disable",
+   "fieldtype": "Check",
+   "label": "Disable"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-28 18:08:34.229883",
+ "modified": "2023-01-20 17:58:24.219193",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Terms of Trade",
