@@ -32,8 +32,8 @@ def create_spotlight_issue(**kwargs):
 		file_doc.file_name = png_file_name
 		file_doc.attached_to_doctype="Spotlight Issue"
 		file_doc.attached_to_name=doc.name
-		file_doc.attached_to_field="image_url"
-		file_doc.content=base64.b64decode(kwargs['image'])
+		file_doc.attached_to_field="image"
+		file_doc.content=base64.b64decode(kwargs["image"])
 		file_doc.save(ignore_permissions=True)
 		frappe.db.commit()
 		doc.image_url=file_doc.file_url
