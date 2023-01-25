@@ -49,7 +49,7 @@ frappe.ui.form.on('Customer Order Item', {
 			if (res.message==false){
 				let msg_dialog = frappe.msgprint({
 					title: __('Warning'),
-					message: __('The Brand is not in Planogram <br> Are you sure you want to continue? <br>  <img src="https://s3.amazonaws.com/engine-omniflo/pictures/2023/01/25/Spotlight%20Issue/69M9NZFV_Bhai-kya-kar-raha-hai-tu-1024x711.webp" alt="Bhai ye kar raha h tu?" width="300" height="300">'),
+					message: __(`The ${item.brand} is not in Planogram <br> Are you sure you want to continue? <br>  <img src="https://s3.amazonaws.com/engine-omniflo/pictures/2023/01/25/Spotlight%20Issue/TLZ7PVJS_Resize_Bhai-kya-kar-raha-hai-tu-1024x711.webp" alt="Bhai ye kar raha h tu?" >`),
 					primary_action: {
 						action: () => {
 							msg_dialog.hide();
