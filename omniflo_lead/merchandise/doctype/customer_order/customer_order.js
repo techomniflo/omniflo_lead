@@ -33,3 +33,34 @@ frappe.ui.form.on('Customer Order', {
 		})
 	}
 });
+
+frappe.ui.form.on('Customer Order Item', {
+	item_code(frm, cdt, cdn){
+		let item = locals[cdt][cdn];
+		frappe.call({
+			args:{
+				brand:item.brand,
+				customer:cur_frm.doc.customer
+			},
+			method : 'omniflo_lead.merchandise.doctype.customer_order.customer_order.is_brand_in_planogram',
+			freeze : true,
+			freeze_message : 'Getting All Items'
+		}).then((res)  => {
+			if (res.message==false){
+				let msg_dialog = frappe.msgprint({
+					title: __('Warning'),
+					message: __('The Brand is not in Planogram <br> Are you sure you want to continue? <br>  <img src="https://s3.amazonaws.com/engine-omniflo/pictures/2023/01/25/Spotlight%20Issue/69M9NZFV_Bhai-kya-kar-raha-hai-tu-1024x711.webp" alt="Bhai ye kar raha h tu?" width="300" height="300">'),
+					primary_action: {
+						action: () => {
+							msg_dialog.hide();
+						},
+						label: () => __("Continue"),
+					},
+					wide: true
+
+				})
+			}
+			refresh_field('items');
+		})
+	}
+});

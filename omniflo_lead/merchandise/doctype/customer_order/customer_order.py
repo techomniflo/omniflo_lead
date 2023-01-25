@@ -33,3 +33,9 @@ class CustomerOrder(WebsiteGenerator):
 						'brand': item['brand'],
 						'qty':item_to_deploy
 						})
+@frappe.whitelist()
+def is_brand_in_planogram(brand,customer):
+	check_brand=frappe.db.sql("""select distinct i.brand from `tabPlanogram` as p join `tabPlanogram Items` as pi on p.name=pi.parent join `tabItem` as i on i.item_code=pi.item_code where p.disabled=0 and p.customer=%(customer)s and i.brand=%(brand)s group by i.brand""",values={'customer':customer,'brand':brand},as_dict=True)
+	if len(check_brand)>0:
+		return True
+	return False
