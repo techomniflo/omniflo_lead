@@ -20,6 +20,7 @@
   "items",
   "get_items",
   "order_image",
+  "order_image_preview",
   "route",
   "published",
   "amended_from"
@@ -117,6 +118,12 @@
    "fieldname": "posting_time",
    "fieldtype": "Time",
    "label": "Posting Time"
+  },
+  {
+   "fieldname": "order_image_preview",
+   "fieldtype": "Image",
+   "label": "Order Image Preview",
+   "options": "order_image"
   }
  ],
  "has_web_view": 1,
@@ -124,7 +131,7 @@
  "is_published_field": "published",
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-18 19:26:02.945825",
+ "modified": "2023-01-24 17:49:52.148182",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Customer Order",

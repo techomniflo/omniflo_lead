@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-01-19 18:52:57.419392",
+ "modified": "2023-01-27 16:06:10.087209",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-logs",
@@ -48,6 +48,7 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "depends_on": "eval:doc.is_present==0",
    "fieldname": "leave_type",
    "fieldtype": "Select",
    "hidden": 0,
