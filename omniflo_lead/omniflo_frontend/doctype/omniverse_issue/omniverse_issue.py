@@ -10,7 +10,7 @@ class OmniverseIssue(Document):
 	pass
 
 @frappe.whitelist(allow_guest=True)
-def create_spotlight_issue(**kwargs):
+def create_omniverse_issue(**kwargs):
 	kwargs=frappe._dict(kwargs)
 	kwargs=json.loads(json.dumps(kwargs))
 	doc=frappe.new_doc("Spotlight Issue")
