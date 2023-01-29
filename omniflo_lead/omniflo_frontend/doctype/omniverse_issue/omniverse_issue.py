@@ -36,7 +36,7 @@ def create_omniverse_issue(**kwargs):
 		file_doc.content=base64.b64decode(kwargs["image"])
 		file_doc.save(ignore_permissions=True)
 		frappe.db.commit()
-		doc.image_url=file_doc.file_url
+		doc.image=file_doc.file_url
 		doc.save(ignore_permissions=True)
 		frappe.delete_doc('File', file_doc.name)
 		return
