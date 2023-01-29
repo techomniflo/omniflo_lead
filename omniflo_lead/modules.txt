@@ -1,4 +1,3 @@
 Omniflo Lead
 Merchandise
-Spotlight Backend
 Omniflo Frontend
