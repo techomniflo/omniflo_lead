@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-01-29 21:42:55.913610",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "is_open",
+  "brand",
+  "url",
+  "configuration",
+  "image",
+  "issue"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "is_open",
+   "fieldtype": "Check",
+   "label": "is_open"
+  },
+  {
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "label": "Brand"
+  },
+  {
+   "fieldname": "url",
+   "fieldtype": "Text",
+   "label": "URL"
+  },
+  {
+   "fieldname": "configuration",
+   "fieldtype": "Text",
+   "label": "Configuration"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Code",
+   "label": "Image"
+  },
+  {
+   "fieldname": "issue",
+   "fieldtype": "Text",
+   "label": "Issue"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-01-29 21:42:55.913610",
+ "modified_by": "Administrator",
+ "module": "Omniflo Frontend",
+ "name": "Omniverse Issue",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
