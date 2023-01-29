@@ -38,7 +38,7 @@
   },
   {
    "fieldname": "image",
-   "fieldtype": "Code",
+   "fieldtype": "Data",
    "label": "Image"
   },
   {
@@ -49,7 +49,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-29 21:42:55.913610",
+ "modified": "2023-01-29 22:00:45.631547",
  "modified_by": "Administrator",
  "module": "Omniflo Frontend",
  "name": "Omniverse Issue",
