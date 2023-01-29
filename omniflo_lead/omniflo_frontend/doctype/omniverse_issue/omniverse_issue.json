@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2023-01-23 12:16:04.934270",
+ "creation": "2023-01-29 21:42:55.913610",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -38,7 +38,7 @@
   },
   {
    "fieldname": "image",
-   "fieldtype": "Attach Image",
+   "fieldtype": "Data",
    "label": "Image"
   },
   {
@@ -49,10 +49,10 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-24 12:24:45.671241",
+ "modified": "2023-01-29 22:00:45.631547",
  "modified_by": "Administrator",
- "module": "Spotlight Backend",
- "name": "Spotlight Issue",
+ "module": "Omniflo Frontend",
+ "name": "Omniverse Issue",
  "owner": "Administrator",
  "permissions": [
   {

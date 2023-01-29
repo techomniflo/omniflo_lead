@@ -6,14 +6,14 @@ import base64
 import json
 from frappe.model.document import Document
 
-class SpotlightIssue(Document):
+class OmniverseIssue(Document):
 	pass
 
 @frappe.whitelist(allow_guest=True)
-def create_spotlight_issue(**kwargs):
+def create_omniverse_issue(**kwargs):
 	kwargs=frappe._dict(kwargs)
 	kwargs=json.loads(json.dumps(kwargs))
-	doc=frappe.new_doc("Spotlight Issue")
+	doc=frappe.new_doc("Omniverse Issue")
 	doc.is_open=1
 	if "brand" in kwargs:
 		doc.brand=kwargs['brand']
@@ -26,11 +26,11 @@ def create_spotlight_issue(**kwargs):
 	doc.save(ignore_permissions=True)
 	frappe.db.commit()
 	if "image" in kwargs:
-		png_file_name = doc.name + '_spotlight_issue' + frappe.generate_hash(length=20)
+		png_file_name = doc.name + '_omniverse_issue' + frappe.generate_hash(length=20)
 		png_file_name = '{}.webp'.format(png_file_name)
 		file_doc = frappe.new_doc('File')
 		file_doc.file_name = png_file_name
-		file_doc.attached_to_doctype="Spotlight Issue"
+		file_doc.attached_to_doctype="Omniverse Issue"
 		file_doc.attached_to_name=doc.name
 		file_doc.attached_to_field="image"
 		file_doc.content=base64.b64decode(kwargs["image"])
