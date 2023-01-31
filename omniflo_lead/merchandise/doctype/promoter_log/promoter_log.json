@@ -24,7 +24,8 @@
   "selfie",
   "image_preview",
   "latitude",
-  "longitude"
+  "longitude",
+  "item_group"
  ],
  "fields": [
   {
@@ -122,7 +123,7 @@
    "fieldname": "leave_type",
    "fieldtype": "Select",
    "label": "Leave Type",
-   "options": "Week Off\nCasual Leave\nWrong Attendance"
+   "options": "\nWeek Off\nCasual Leave\nWrong Attendance"
   },
   {
    "fieldname": "reason",
@@ -133,12 +134,18 @@
    "fieldname": "leave_duration",
    "fieldtype": "Select",
    "label": "Leave Duration",
-   "options": "Full Day\nHalf Day"
+   "options": "\nFull Day\nHalf Day"
+  },
+  {
+   "fetch_from": "promoter.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Data",
+   "label": "Item Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-19 18:52:28.302258",
+ "modified": "2023-01-31 12:39:09.568089",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Log",

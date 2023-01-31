@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-01-27 16:06:10.087209",
+ "modified": "2023-01-31 12:42:03.408775",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "promoter-logs",
@@ -55,7 +55,7 @@
    "label": "Leave Type",
    "max_length": 0,
    "max_value": 0,
-   "options": "Week Off\nCasual Leave\nWrong Attendance",
+   "options": "\nWeek Off\nCasual Leave\nWrong Attendance",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
@@ -70,7 +70,7 @@
    "mandatory_depends_on": "eval:doc.is_present==0",
    "max_length": 0,
    "max_value": 0,
-   "options": "Full Day\nHalf Day",
+   "options": "\nFull Day\nHalf Day",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0

@@ -9,15 +9,14 @@ from collections import defaultdict
 @frappe.whitelist()
 def total_live_store():
     values={"brand":frappe.request.args["brand"]}
-    count_of_store = frappe.db.sql("""select count(customer) from (select
-	    cb.customer
-	from 
-	    `tabCustomer Bin`  as cb
-	    join  `tabItem`as it on cb.item_code = it.item_code
-	where brand!="" and brand!="Test" and cb.customer!="" and cb.available_qty>0 and it.brand=%(brand)s
-	group by it.brand,cb.customer
-	order by
-	    it.brand,cb.customer) as total_customer
+    count_of_store = frappe.db.sql("""select count(*) from 
+    (select 
+        distinct si.customer,
+        (select sum(SII.conversion_factor*SII.qty) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent join `tabItem` as I on I.item_code=SII.item_code where I.brand=i.brand and SI.docstatus=1 and SI.customer=si.customer) as billed_qty,
+        (select sum(cb.available_qty) from `tabCustomer Bin` as cb join `tabItem` as I on I.item_code=cb.item_code where I.brand=i.brand and cb.customer=si.customer) as available_qty,
+        c.customer_status as 'status' 
+    from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent  join `tabItem` as i  on i.item_code=sii.item_code join `tabCustomer` as c on c.name=si.customer where si.docstatus=1 and i.brand=%(brand)s ) as meta 
+where meta.status="Live" and meta.available_qty>0
     """,values=values,as_list=True)
     return count_of_store
 
@@ -389,7 +388,7 @@ def customer_profile():
 	return frappe.db.sql("""select meta.customer,meta.customer_name,if(meta.available_qty=0 and meta.status='Live','Dormant',meta.status) as customer_status,meta.start_date,cp.name1 as google_name,cp.sub_type,cp.address,cp.link as map_link,cp.image_url,cp.latitude,cp.longitude,cp.rating,cp.review_count,cp.store_timings,cp.daily_footfall,cp.delivery,cp.number_of_aisles_inside_the_store as asile,cp.number_of_floors,cp.average_order_value,cp.brand_present,cp.locality_area,cp.type,cp.brand_priority,cp.area,cp.number_of_floors 
 							from 
 								(select distinct si.customer,c.customer_name,(select sum(SII.conversion_factor*SII.qty) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent join `tabItem` as I on I.item_code=SII.item_code where I.brand=i.brand and SI.docstatus=1 and SI.customer=si.customer) as billed_qty,(select sum(cb.available_qty) from `tabCustomer Bin` as cb join `tabItem` as I on I.item_code=cb.item_code where I.brand=i.brand and cb.customer=si.customer) as available_qty,(select min(posting_date) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent join `tabItem` as I on I.item_code=SII.item_code where SI.docstatus=1 and I.brand=i.brand and SI.customer=si.customer) as start_date,c.customer_status as 'status' from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent  join `tabItem` as i  on i.item_code=sii.item_code join `tabCustomer` as c on c.name=si.customer where si.docstatus=1 and i.brand=%(brand)s  ) as meta
-							join 
+							left join 
 							`tabCustomer Profile` as cp on cp.customer=meta.customer""",values=values,as_dict=True)
 
 @frappe.whitelist()
