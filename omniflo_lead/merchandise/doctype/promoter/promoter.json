@@ -12,7 +12,8 @@
   "first_name",
   "last_name",
   "full_name",
-  "promoter_type"
+  "promoter_type",
+  "item_group"
  ],
  "fields": [
   {
@@ -51,11 +52,17 @@
    "fieldtype": "Select",
    "label": "Promoter Type",
    "options": "Full Time\nPart Time\nWeekend\nBrandwise\nSamplers"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-19 18:58:25.754221",
+ "modified": "2023-01-30 12:06:06.656774",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter",
