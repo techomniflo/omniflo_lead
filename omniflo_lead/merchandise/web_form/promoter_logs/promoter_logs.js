@@ -38,11 +38,6 @@ frappe.ready(function() {
 	}
 
 	function on_save_event(){
-		if (frappe.web_form.doc.is_present==1){
-			frappe.web_form.set_value("leave_type","")
-			frappe.web_form.set_value("leave_duration","")
-			frappe.web_form.set_value("reason","")
-		}
 		var validate=frappe.web_form.validate_section()
 		var validate_geo=false
 			if ((frappe.web_form.doc.latitude && frappe.web_form.doc.longitude)|| (frappe.web_form.doc.is_present==0) ){
@@ -72,6 +67,14 @@ frappe.ready(function() {
 		get_live_promoter()
 		get_live_customer()
 		getLocation()
+
+		frappe.web_form.on('is_present', (field, value) => {
+			if (value == 1) {
+				frappe.web_form.set_value("leave_type","")
+				frappe.web_form.set_value("leave_duration","")
+				frappe.web_form.set_value("reason","")
+			}
+		});
 	}
 
 

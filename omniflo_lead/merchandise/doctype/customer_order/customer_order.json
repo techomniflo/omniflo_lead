@@ -14,7 +14,7 @@
   "posting_time",
   "customer",
   "customer_name",
-  "status",
+  "order_status",
   "item_group",
   "warehouse",
   "items",
@@ -39,14 +39,6 @@
    "fieldname": "customer_name",
    "fieldtype": "Data",
    "label": "Customer Name"
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Status",
-   "options": "Pending\nCancelled\nConfirmed"
   },
   {
    "fieldname": "item_group",
@@ -124,6 +116,14 @@
    "fieldtype": "Image",
    "label": "Order Image Preview",
    "options": "order_image"
+  },
+  {
+   "fieldname": "order_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Status",
+   "options": "Pending\nCancelled\nConfirmed"
   }
  ],
  "has_web_view": 1,
@@ -131,7 +131,7 @@
  "is_published_field": "published",
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-24 17:49:52.148182",
+ "modified": "2023-02-05 04:57:33.603372",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Customer Order",
