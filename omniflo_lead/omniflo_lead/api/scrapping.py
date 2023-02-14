@@ -14,7 +14,7 @@ def stores_data_with_status():
 
 @frappe.whitelist()
 def stores_gmv_with_first_billing_date():
-    return_value=frappe.db.sql("""select meta.customer,meta.Billing_Date,meta.Bill_Amount-meta.Store_Available_Qty_Amount as GMV_Sales from (select 
+    return_value=frappe.db.sql("""select meta.customer,meta.Billing_Date,meta.Bill_Amount-meta.Store_Available_Qty_Amount as GMV_Sales,(select sum(-1*pp.grand_total) from `tabPlacement Promotion` as pp where pp.customer=meta.customer and pp.discount_type='Display Discount') as rent from (select 
     si.customer, 
     (
         select 
