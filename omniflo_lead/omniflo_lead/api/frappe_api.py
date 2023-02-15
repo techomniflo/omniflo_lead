@@ -557,3 +557,13 @@ def age_and_gender():
 def calculate_sales_date_wise():
 	values={"brand":frappe.request.args["brand"]}
 	return frappe.db.sql("""select DATE_FORMAT(dws.date,'%%d-%%m-%%y') as date ,dws.customer,dws.qty,dws.item_code,i.brand,dws.sale_from,i.item_name,(i.mrp*dws.qty) as gmv,dws.age,dws.gender from `tabDay Wise Sales` as dws join `tabItem` as i on i.name=dws.item_code where i.brand=%(brand)s order by dws.date desc""",values=values,as_list=True)
+
+@frappe.whitelist()
+def item():
+	values={"brand":frappe.request.args["brand"]}
+	return frappe.db.sql(""" select i.item_code,i.item_name,i.mrp,i.gst_hsn_code from `tabItem` as i where i.brand=%(brand)s """,values=values,as_dict=True)
+
+@frappe.whitelist()
+def sales_invoice():
+	values={"brand":frappe.request.args["brand"]}
+	return frappe.db.sql(""" select si.name as invoice_id,si.posting_date,si.net_total,si.total_taxes_and_charges,si.apply_discount_on,si.discount_amount,si.grand_total,si.rounding_adjustment,si.rounded_total from `tabSales Invoice` as si where si.docstatus=1 and si.company='Omniway Technologies Pvt Ltd' and si.customer in (select b.customer from `tabBrand` as b where b.brand=%(brand)s) """,values=values,as_dict=True)
