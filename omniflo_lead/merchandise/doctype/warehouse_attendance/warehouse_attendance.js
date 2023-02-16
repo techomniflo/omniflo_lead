@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Warehouse Attendance', {
 	refresh: function(frm) {
-		// getLocation(frm);
+		getLocation(frm);
 	}
 });
 function getLocation(frm) {
