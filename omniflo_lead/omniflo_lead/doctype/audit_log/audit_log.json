@@ -14,6 +14,7 @@
   "stock_details_section",
   "items",
   "get_current_items",
+  "issue",
   "latitude",
   "longitude",
   "amended_from"
@@ -86,12 +87,18 @@
    "fieldtype": "Link",
    "label": "Item Group",
    "options": "Item Group"
+  },
+  {
+   "fieldname": "issue",
+   "fieldtype": "Table",
+   "label": "Issue",
+   "options": "Audit Log Issue"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-06 16:07:17.102368",
+ "modified": "2023-02-17 18:13:04.207045",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Audit Log",
