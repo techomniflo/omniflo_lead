@@ -23,6 +23,10 @@ def create_omniverse_issue(**kwargs):
 		doc.configuration=kwargs['configuration']
 	if "issue" in kwargs:
 		doc.issue=kwargs['issue']
+	if "requested_by" in kwargs:
+		doc.requested_by=kwargs['requested_by']
+	if "email" in kwargs:
+		doc.email=kwargs['email']
 	doc.save(ignore_permissions=True)
 	frappe.db.commit()
 	if "image" in kwargs:
