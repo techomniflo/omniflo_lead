@@ -112,7 +112,7 @@ let get_reason = function(wrapper,data){
 var on_click_submit = function (wrapper,data){
 	reason=""
 	counter=false
-	var type_of_reason=["Poor_Store","Poor_Placement","Other_products_on_the_Shelf","Merchandising_Issue","Improper_Angle","Shelf_Not_in_Focus","Hygiene_Issues","Object_Cutoff","People_In_Frame","Planogram_Not_Followed","Poor_Lighting"]	
+	var type_of_reason=["Poor_Store","Poor_Placement","Other_products_on_the_Shelf","Merchandising_Issue","Refill Required","Improper_Angle","Shelf_Not_in_Focus","Hygiene_Issues","Object_Cutoff","People_In_Frame","Planogram_Not_Followed","Poor_Lighting"]	
 	type_of_reason.forEach(function(item,count) {
 		if ($('#'+item).is(":checked")){
 			if (counter){
