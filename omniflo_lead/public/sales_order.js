@@ -3,6 +3,8 @@ frappe.ui.form.on('Sales Order', {
         frm.set_df_property('set_warehouse','read_only',1)
         frm.doc.set_warehouse="Kormangala WareHouse - OS"
         frm.doc.company="Omnipresent Services"
+        cur_frm.clear_table("items");
+		cur_frm.refresh_field('items');
     },
     refresh: function(frm) {
         
@@ -43,7 +45,7 @@ frappe.ui.form.on('Sales Order', {
                                             item.delivery_date = frm.doc.delivery_date;
                                             
                                         } else {
-                                            frm.script_manager.copy_from_first_row("items", row, ["delivery_date"]);
+                                            frm.script_manager.copy_from_first_row("items", item, ["delivery_date"]);
                                         }
                                         frm.cscript.item_code(frm,'Sales Order Item',item.name)
                                       });
