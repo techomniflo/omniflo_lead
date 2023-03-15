@@ -18,6 +18,7 @@
   "column_break_6",
   "customer_name",
   "section_break_8",
+  "event_type",
   "customers_interacted",
   "focus_brands_sale_value",
   "total_sale_value",
@@ -141,11 +142,17 @@
    "fieldname": "item_group",
    "fieldtype": "Data",
    "label": "Item Group"
+  },
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "label": "Event Type",
+   "options": "\ncheck in\npunch\ncheck out\nbreak in\nbreak out"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-31 12:39:09.568089",
+ "modified": "2023-03-15 13:52:03.865769",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Log",

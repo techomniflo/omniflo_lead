@@ -1,0 +1,99 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-03-15 16:46:55.195528",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "promoter_log",
+  "selfie",
+  "capture_all_asset",
+  "check_in_category_placement",
+  "set_merchandising",
+  "set_offers",
+  "set_per_planogram",
+  "clean_products_and_shelf",
+  "check_uniform_and_id_card"
+ ],
+ "fields": [
+  {
+   "fieldname": "promoter_log",
+   "fieldtype": "Link",
+   "label": "Promoter Log",
+   "options": "Promoter Log"
+  },
+  {
+   "fieldname": "selfie",
+   "fieldtype": "Attach Image",
+   "label": "Selfie"
+  },
+  {
+   "default": "0",
+   "fieldname": "check_in_category_placement",
+   "fieldtype": "Check",
+   "label": "Check In Category Placement"
+  },
+  {
+   "default": "0",
+   "fieldname": "set_merchandising",
+   "fieldtype": "Check",
+   "label": "Set Merchandising"
+  },
+  {
+   "default": "0",
+   "fieldname": "set_offers",
+   "fieldtype": "Check",
+   "label": "Set Offers"
+  },
+  {
+   "default": "0",
+   "fieldname": "set_per_planogram",
+   "fieldtype": "Check",
+   "label": "Set per Planogram"
+  },
+  {
+   "default": "0",
+   "fieldname": "clean_products_and_shelf",
+   "fieldtype": "Check",
+   "label": "Clean Products and Shelf"
+  },
+  {
+   "default": "0",
+   "fieldname": "check_uniform_and_id_card",
+   "fieldtype": "Check",
+   "label": "Check Uniform and ID card"
+  },
+  {
+   "fieldname": "capture_all_asset",
+   "fieldtype": "Table",
+   "label": "Capture All Asset",
+   "options": "Promoter Hygiene Photos"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-03-15 17:00:33.431510",
+ "modified_by": "Administrator",
+ "module": "Merchandise",
+ "name": "Promoter Hygiene",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

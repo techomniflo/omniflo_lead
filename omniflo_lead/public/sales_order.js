@@ -3,8 +3,7 @@ frappe.ui.form.on('Sales Order', {
         frm.set_df_property('set_warehouse','read_only',1)
         frm.doc.set_warehouse="Kormangala WareHouse - OS"
         frm.doc.company="Omnipresent Services"
-        cur_frm.clear_table("items");
-		cur_frm.refresh_field('items');
+
     },
     refresh: function(frm) {
         
