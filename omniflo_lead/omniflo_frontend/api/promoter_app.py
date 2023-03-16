@@ -1,5 +1,6 @@
 import frappe
 import json
+import copy
 from frappe.utils import random_string
 
 def upload_file(doc,field_name,content):
@@ -18,7 +19,9 @@ def upload_file(doc,field_name,content):
 				"decode": 1,
 			}
 		).save(ignore_permissions=True)
-	return file.file_url
+	url=copy.copy(file.file_url)
+	file.delete()
+	return url
 
 def create_promoter_hygiene(promoter_log,kwargs):
 	promoter_hygiene = frappe.get_doc(
@@ -35,7 +38,7 @@ def create_promoter_hygiene(promoter_log,kwargs):
 		).save(ignore_permissions=True)
 	selfie_url=upload_file(doc=promoter_hygiene,field_name="selfie",content=kwargs["selfie"])
 	promoter_hygiene.db_set('selfie',selfie_url)
-	
+
 	for i in kwargs["capture_all_asset"]:
 		url=upload_file(promoter_hygiene,"image",i)
 		promoter_hygiene.append("capture_all_asset",
