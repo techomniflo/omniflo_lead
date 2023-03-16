@@ -10,6 +10,7 @@
  "field_order": [
   "item_code",
   "item_name",
+  "description",
   "brand",
   "scrapped_name",
   "item_url",
@@ -71,11 +72,16 @@
    "fieldname": "uom_qty",
    "fieldtype": "Data",
    "label": "UOM QTY"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-09 16:42:16.504491",
+ "modified": "2023-03-16 18:19:04.845462",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Item Profile",
