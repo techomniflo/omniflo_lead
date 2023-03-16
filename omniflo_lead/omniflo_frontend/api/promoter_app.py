@@ -1,10 +1,51 @@
 import frappe
 import json
+from frappe.utils import random_string
+
+def upload_file(doc,field_name,content):
+	file_name=random_string(8)
+
+	file = frappe.get_doc(
+			{
+				"doctype": "File",
+				"file_name": file_name+".jpeg",
+				"attached_to_doctype": doc.doctype,
+				"attached_to_name": doc.name,
+				"attached_to_field": field_name,
+				"folder": "Home/Attachments",
+				"is_private": 1,
+				"content": content,
+				"decode": 1,
+			}
+		).save(ignore_permissions=True)
+	return file.file_url
+
+def create_promoter_hygiene(promoter_log,kwargs):
+	promoter_hygiene = frappe.get_doc(
+			{
+				"doctype": "Promoter Hygiene",
+				"promoter_log":promoter_log,
+				"check_in_category_placement": kwargs["check_in_category_placement"],
+				"set_merchandising": kwargs["set_merchandising"],
+				"set_offers": kwargs["set_offers"],
+				"set_per_planogram": kwargs["set_per_planogram"],
+				"clean_products_and_shelf": kwargs["clean_products_and_shelf"],
+				"check_uniform_and_id_card": kwargs["check_uniform_and_id_card"],
+			}
+		).save(ignore_permissions=True)
+	selfie_url=upload_file(doc=promoter_hygiene,field_name="selfie",content=kwargs["selfie"])
+	promoter_hygiene.db_set('selfie',selfie_url)
+	
+	for i in kwargs["capture_all_asset"]:
+		url=upload_file(promoter_hygiene,"image",i)
+		promoter_hygiene.append("capture_all_asset",
+			{"image":url})
+	promoter_hygiene.save(ignore_permissions=True)
+	return
 
 @frappe.whitelist(allow_guest=True)
 def create_promoter_log(**kwargs):
-	kwargs=frappe._dict(kwargs)
-	kwargs=json.loads(json.dumps(kwargs))
+	kwargs = json.loads(frappe.request.data)
 	promoter_log= frappe.new_doc('Promoter Log')
 	promoter_doc=frappe.get_doc('Promoter',kwargs['promoter'])
 	promoter_log.promoter_name=promoter_doc.full_name
@@ -25,12 +66,13 @@ def create_promoter_log(**kwargs):
 		if 'duration' in kwargs:
 			promoter_log.reason=kwargs['duration']
 	promoter_log.save(ignore_permissions=True)
+	if kwargs["event_type"]=="check in":
+		create_promoter_hygiene(promoter_log.name,kwargs)
 	return
 
 @frappe.whitelist(allow_guest=True)
 def create_promoter_sales_capture(**kwargs):
-	kwargs=frappe._dict(kwargs)
-	kwargs=json.loads(json.dumps(kwargs))
+	kwargs = json.loads(frappe.request.data)
 	psc_doc = frappe.new_doc('Promoter Sales Capture')
 	psc_doc.customer=kwargs['customer']
 	psc_doc.promoter=kwargs['promoter']
