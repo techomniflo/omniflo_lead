@@ -39,3 +39,7 @@ def create_item_profile(**kwargs):
 	item_profile.save(ignore_permissions = True)
 	frappe.db.commit()
 	return item_profile
+
+@frappe.whitelist(allow_guest=True)
+def get_item_profile():
+	return frappe.db.sql(""" select ip.item_code,ip.item_name,ip.brand,ip.description,ip.scrapped_name,ip.item_url,ip.price,ip.uom,ip.uom_qty,ip.image_url from `tabItem Profile` as ip """,as_dict=True)
