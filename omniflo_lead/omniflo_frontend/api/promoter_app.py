@@ -69,8 +69,9 @@ def create_promoter_log(**kwargs):
 		if 'duration' in kwargs:
 			promoter_log.reason=kwargs['duration']
 	promoter_log.save(ignore_permissions=True)
-	if kwargs["event_type"]=="check in":
-		create_promoter_hygiene(promoter_log.name,kwargs)
+	if kwargs["is_present"]==1:
+		if kwargs["event_type"]=="check in":
+			create_promoter_hygiene(promoter_log.name,kwargs)
 	return
 
 @frappe.whitelist(allow_guest=True)
@@ -109,4 +110,7 @@ def get_items():
 		else:
 			brand_details[i['brand']].append({"item_name":i['item_name'],"mrp":i['mrp'],"item_code":i['item_code']})
 	return brand_details
+
+@frappe.whitlist(allow_guest=True)
+def mtd_promoter_log():
 
