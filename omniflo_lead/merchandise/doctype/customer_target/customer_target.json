@@ -51,6 +51,7 @@
    "label": "End Date"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
@@ -69,7 +70,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-10 17:34:59.619907",
+ "modified": "2023-03-17 16:28:49.889990",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Customer Target",
