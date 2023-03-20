@@ -38,7 +38,8 @@
   "average_order_value",
   "brand_present",
   "locality_area",
-  "brand_priority"
+  "brand_priority",
+  "time_spent_in_store"
  ],
  "fields": [
   {
@@ -200,11 +201,16 @@
    "fieldname": "brand_priority",
    "fieldtype": "Code",
    "label": "Brand Priority"
+  },
+  {
+   "fieldname": "time_spent_in_store",
+   "fieldtype": "Data",
+   "label": "Time Spent in Store"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-30 18:21:24.455442",
+ "modified": "2023-03-20 12:45:41.433000",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Profile",

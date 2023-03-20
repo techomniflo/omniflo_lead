@@ -78,6 +78,8 @@ def create_customer(**kwargs):
 		customer_profile.brand_priority=kwargs["brand_priority"]
 	if "website" in kwargs:
 		customer_profile.website=kwargs['website']
+	if "time_spent_in_store" in kwargs:
+		customer_profile.time_spent_in_store=kwargs["time_spent_in_store"]
 	customer_profile.save(ignore_permissions = True)
 	frappe.db.commit()
 	return customer_profile
