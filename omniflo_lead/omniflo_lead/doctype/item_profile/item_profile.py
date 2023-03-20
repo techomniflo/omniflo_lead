@@ -35,6 +35,8 @@ def create_item_profile(**kwargs):
 		item_profile.uom=kwargs["uom"]
 	if "uom_qty" in kwargs:
 		item_profile.uom_qty=kwargs["uom_qty"]
+	if "description" in kwargs:
+		item_profile.description=kwargs["description"]
 	
 	item_profile.save(ignore_permissions = True)
 	frappe.db.commit()
