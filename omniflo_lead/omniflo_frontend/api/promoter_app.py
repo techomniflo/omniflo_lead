@@ -3,13 +3,13 @@ import json
 import copy
 from frappe.utils import random_string
 
-def upload_file(doc,field_name,content):
+def upload_file(doc,field_name,content,image_format):
 	file_name=random_string(8)
 
 	file = frappe.get_doc(
 			{
 				"doctype": "File",
-				"file_name": file_name+".jpeg",
+				"file_name": file_name+"."+image_format,
 				"attached_to_doctype": doc.doctype,
 				"attached_to_name": doc.name,
 				"attached_to_field": field_name,
@@ -36,15 +36,21 @@ def create_promoter_hygiene(promoter_log,kwargs):
 				"check_uniform_and_id_card": kwargs["check_uniform_and_id_card"],
 			}
 		).save(ignore_permissions=True)
-	selfie_url=upload_file(doc=promoter_hygiene,field_name="selfie",content=kwargs["selfie"])
-	promoter_hygiene.db_set('selfie',selfie_url)
+
+	if "selfie" in kwargs and len(kwargs["selfie"])>0:
+		if len(kwargs["selfie"][0]):
+			image_format=kwargs["selfie"][0]["format"]
+			selfie_url=upload_file(doc=promoter_hygiene,field_name="selfie",content=kwargs["selfie"][0]["base64"],image_format=image_format)
+			promoter_hygiene.db_set('selfie',selfie_url)
 
 	for i in kwargs["capture_all_asset"]:
-		url=upload_file(promoter_hygiene,"image",i)
+		image_format=i["format"]
+		url=upload_file(promoter_hygiene,"image",i["base64"],image_format)
 		promoter_hygiene.append("capture_all_asset",
 			{"image":url})
 	promoter_hygiene.save(ignore_permissions=True)
 	return
+
 
 @frappe.whitelist(allow_guest=True)
 def create_promoter_log(**kwargs):
@@ -111,7 +117,7 @@ def get_items():
 			brand_details[i['brand']].append({"item_name":i['item_name'],"mrp":i['mrp'],"item_code":i['item_code']})
 	return brand_details
 
-@frappe.whitlist(allow_guest=True)
+@frappe.whitelist(allow_guest=True)
 def today_promoters_log():
 	values={"promoter":frappe.request.args["promoter"]}
 	return frappe.db.sql("""select pl.creation,pl.promoter,pl.customer,pl.event_type,pl.is_present,pl.latitude,pl.longitude from `tabPromoter Log` as pl where pl.promoter=%(promoter)s and date(pl.creation)=curdate() order by pl.creation """,values=values,as_dict=True)
