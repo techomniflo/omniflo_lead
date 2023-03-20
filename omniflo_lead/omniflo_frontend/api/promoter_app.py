@@ -112,5 +112,27 @@ def get_items():
 	return brand_details
 
 @frappe.whitlist(allow_guest=True)
-def mtd_promoter_log():
+def today_promoters_log():
+	values={"promoter":frappe.request.args["promoter"]}
+	return frappe.db.sql("""select pl.creation,pl.promoter,pl.customer,pl.event_type,pl.is_present,pl.latitude,pl.longitude from `tabPromoter Log` as pl where pl.promoter=%(promoter)s and date(pl.creation)=curdate() order by pl.creation """,values=values,as_dict=True)
+
+@frappe.whitelist(allow_guest=True)
+def get_target():
+	values={"promoter":frappe.request.args["promoter"]}
+	wtd=frappe.db.sql(""" select date(pl.creation) as date,pl.promoter,pl.customer,pl.item_group,ct.target/day(ct.end_date) as per_day_target,(select sum(i.mrp*psc.qty) from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code where psc.promoter=pl.promoter and date(psc.creation)=date(pl.creation) ) as gmv from `tabPromoter Log` as pl join `tabCustomer Target` as ct on ct.item_group=pl.item_group and date(pl.creation) between ct.start_date and ct.end_date join `tabCustomer Target Item` as cti on cti.customer=pl.customer and cti.parent=ct.name where is_present=1 and week(curdate())=week(pl.creation) and year(curdate())=year(pl.creation) and pl.promoter=%(promoter)s group by pl.customer,pl.promoter,date(pl.creation) order by date(pl.creation)""",values=values,as_dict=True)
+	current_date=frappe.db.sql("""select ct.target/day(ct.end_date) as target,(select sum(i.mrp*psc.qty) from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code where psc.promoter=pl.promoter and date(psc.creation)=date(pl.creation) ) as gmv from `tabPromoter Log` as pl join `tabCustomer Target` as ct on ct.item_group=pl.item_group and date(pl.creation) between ct.start_date and ct.end_date join `tabCustomer Target Item` as cti on cti.customer=pl.customer and cti.parent=ct.name where is_present=1 and date(pl.creation)=curdate() and pl.promoter=%(promoter)s group by pl.customer,pl.promoter,date(pl.creation) order by date(pl.creation)""",values=values,as_dict=True)
+	days=6
+	total_wtd_target=0
+	total_wtd_gmv=0
+	for i in wtd:
+		total_wtd_gmv+=i["gmv"]
+		total_wtd_target+=i["per_day_target"]
+		days-=1
+	if days and len(wtd)>0:
+		total_wtd_target+=days*wtd[-1]["per_day_target"]
+	
+	if len(current_date)==0:
+		return {"week":{"target":total_wtd_target,"gmv":total_wtd_gmv},"today":{"target":0,"gmv":0}}
+	return {"week":{"target":total_wtd_target,"gmv":total_wtd_gmv},"today":{"target":current_date[0]["target"],"gmv":current_date[0]["gmv"]}}
+	
 
