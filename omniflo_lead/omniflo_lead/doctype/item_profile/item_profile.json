@@ -50,7 +50,7 @@
   },
   {
    "fieldname": "item_url",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Item URL"
   },
   {
@@ -60,7 +60,7 @@
   },
   {
    "fieldname": "image_url",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Image URL"
   },
   {
@@ -81,7 +81,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-16 18:19:04.845462",
+ "modified": "2023-03-21 17:49:25.251223",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Item Profile",

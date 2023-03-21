@@ -2,6 +2,7 @@ import frappe
 import json
 import copy
 from frappe.utils import random_string
+from datetime import datetime
 
 def upload_file(doc,field_name,content,image_format):
 	file_name=random_string(8)
@@ -140,9 +141,76 @@ def get_target():
 		days-=1
 	if days and len(wtd)>0:
 		total_wtd_target+=days*wtd[-1]["per_day_target"]
-	
 	if len(current_date)==0:
 		return {"week":{"target":total_wtd_target,"gmv":total_wtd_gmv},"today":{"target":0,"gmv":0}}
-	return {"week":{"target":total_wtd_target,"gmv":total_wtd_gmv},"today":{"target":current_date[0]["target"],"gmv":current_date[0]["gmv"]}}
+	return {"week":{"target":total_wtd_target,"gmv":total_wtd_gmv},"today":{"target":current_date[0]["target"] or 0,"gmv":current_date[0]["gmv"] or 0}}
+
+def log():
+	values={"promoter":frappe.requests.args["promoter"]	}
+	pl_data=frappe.db.sql(""" select date(pl.creation) as date,time(pl.creation) as time,pl.is_present,pl.promoter,pl.customer,pl.event_type from `tabPromoter Log` as pl where pl.promoter=%(promoter)s and month(curdate())=month(pl.creation) and year(pl.creation)=year(curdate()) order by pl.creation """,values=values,as_dict=True)
+	pl_gmv_data=frappe.db.sql(""" select date(psc.creation) as date,sum(psc.qty*i.mrp) as gmv from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code where psc.promoter=%(promoter)s and month(curdate())=month(psc.creation) and year(curdate())=year(psc.creation) group by date(psc.creation) """,values=values,as_dict=True)
+
+	def has_no_event(dayLog,day_wise_time): 
+		hour=find_diff_time(dayLog[0]["time"],dayLog[-1]["time"])
+		day_wise_time[dayLog[0]['date']]=({'date':dayLog[0]['date'],'hours':hour,'gmv':0})
+		
 	
+	def has_event(dayLog,day_wise_time):
+		in_event=["punch","end break","check in"]
+		out_event=["start break","check out"]
+		count_hours=0
+		is_in_store=False
+		for i in dayLog:
+			if i["event_type"] in in_event and is_in_store==False:
+				is_in_store=True
+				last_in_time=i["time"]
+			
+			if i["event_type"] in out_event and is_in_store==True:
+				count_hours+=find_diff_time(last_in_time,i["time"])
+				is_in_store=False
+		if is_in_store == True:
+			count_hours+=find_diff_time(last_in_time, dayLog[-1]["time"])
+
+		day_wise_time[dayLog[0]['date']]=({'date':dayLog[0]['date'],'hours':count_hours,'gmv':0})
+
+
+	def find_diff_time(time1,time2):
+		start_time = datetime.strptime(time1, "%H:%M:%S.%f")
+		end_time = datetime.strptime(time2, "%H:%M:%S.%f")
+		sec = end_time-start_time
+		sec = sec.total_seconds()
+		hour = sec/(60*60)
+		return hour
+	
+	def calculate_hours(day_wise_time={}):
+		check_event=0
+		day=pl_data[0]['date']
+		dayLog=[]
+		for count, ele in enumerate(pl_data):
+			if day!=ele['date'] or len(pl_data)-1==count:
+				if len(pl_data)-1==count:
+					dayLog.append(ele)
+				if check_event:
+					day_wise_time=has_event(dayLog,day_wise_time)
+				else:
+					day_wise_time=has_no_event(dayLog,day_wise_time)
+				if ele["event_type"]==None or ele["event_type"]=="":
+					check_event=0
+				else:
+					check_event=1
+				day=ele['date']
+				dayLog = []
+			
+			dayLog.append(ele)
+		return day_wise_time
+	log=calculate_hours()
+	for i in pl_gmv_data:
+		if i["date"] in log:
+			log[i["date"]]["gmv"]=i["gmv"]
+			log[i["date"]]["avg_variance"]=True
+		else:
+			log[i["date"]]={"date":i["date"],"gmv":i["gmv"],"hours":0,"avg_variance":True}
+	return_value=list(log.values())
+	sorted_return_values = sorted(return_value, key=lambda x: datetime.strptime(x, '%Y-%m-%d'))
+	return sorted_return_values
 
