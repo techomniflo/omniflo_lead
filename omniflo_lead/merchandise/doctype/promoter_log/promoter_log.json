@@ -147,12 +147,12 @@
    "fieldname": "event_type",
    "fieldtype": "Select",
    "label": "Event Type",
-   "options": "\ncheck in\npunch\ncheck out\nbreak in\nbreak out"
+   "options": "\ncheck in\npunch\ncheck out\nstart break\nend break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-15 13:52:03.865769",
+ "modified": "2023-03-21 17:53:43.670100",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Log",
