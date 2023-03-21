@@ -147,7 +147,7 @@ def get_target():
 
 @frappe.whitelist(allow_guest=True)
 def log():
-	values={"promoter":frappe.requests.args["promoter"]	}
+	values={"promoter":frappe.request.args["promoter"]	}
 	pl_data=frappe.db.sql(""" select date(pl.creation) as date,time(pl.creation) as time,pl.is_present,pl.promoter,pl.customer,pl.event_type from `tabPromoter Log` as pl where pl.promoter=%(promoter)s and month(curdate())=month(pl.creation) and year(pl.creation)=year(curdate()) order by pl.creation """,values=values,as_dict=True)
 	pl_gmv_data=frappe.db.sql(""" select date(psc.creation) as date,sum(psc.qty*i.mrp) as gmv from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code where psc.promoter=%(promoter)s and month(curdate())=month(psc.creation) and year(curdate())=year(psc.creation) group by date(psc.creation) """,values=values,as_dict=True)
 
