@@ -140,9 +140,8 @@ def get_target():
 		days-=1
 	if days and len(wtd)>0:
 		total_wtd_target+=days*wtd[-1]["per_day_target"]
-	
 	if len(current_date)==0:
 		return {"week":{"target":total_wtd_target,"gmv":total_wtd_gmv},"today":{"target":0,"gmv":0}}
-	return {"week":{"target":total_wtd_target,"gmv":total_wtd_gmv},"today":{"target":current_date[0]["target"],"gmv":current_date[0]["gmv"]}}
+	return {"week":{"target":total_wtd_target,"gmv":total_wtd_gmv},"today":{"target":current_date[0]["target"] or 0,"gmv":current_date[0]["gmv"] or 0}}
 	
 
