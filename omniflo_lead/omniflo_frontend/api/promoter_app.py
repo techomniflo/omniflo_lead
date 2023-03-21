@@ -154,6 +154,7 @@ def log():
 	def has_no_event(dayLog,day_wise_time): 
 		hour=find_diff_time(dayLog[0]["time"],dayLog[-1]["time"])
 		day_wise_time[dayLog[0]['date']]=({'date':dayLog[0]['date'],'hours':hour,'gmv':0})
+		return day_wise_time
 		
 	
 	def has_event(dayLog,day_wise_time):
@@ -173,12 +174,10 @@ def log():
 			count_hours+=find_diff_time(last_in_time, dayLog[-1]["time"])
 
 		day_wise_time[dayLog[0]['date']]=({'date':dayLog[0]['date'],'hours':count_hours,'gmv':0})
-
+		return day_wise_time
 
 	def find_diff_time(time1,time2):
-		start_time = datetime.strptime(time1, "%H:%M:%S.%f")
-		end_time = datetime.strptime(time2, "%H:%M:%S.%f")
-		sec = end_time-start_time
+		sec = time2-time1
 		sec = sec.total_seconds()
 		hour = sec/(60*60)
 		return hour
