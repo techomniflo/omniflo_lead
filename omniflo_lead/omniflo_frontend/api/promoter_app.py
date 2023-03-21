@@ -211,6 +211,7 @@ def log():
 		else:
 			log[i["date"]]={"date":i["date"],"gmv":i["gmv"],"hours":0,"avg_variance":True}
 	return_value=list(log.values())
-	sorted_return_values = sorted(return_value, key=lambda x: datetime.strptime(x, '%Y-%m-%d'))
-	return sorted_return_values
+	sorted_return_values = sorted(return_value, key=lambda x: x['date'])
+	result = [dict(item, **{'average_variance':True}) for item in sorted_return_values]
+	return result
 
