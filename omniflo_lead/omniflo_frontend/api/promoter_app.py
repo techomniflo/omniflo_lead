@@ -133,7 +133,7 @@ def get_target():
 	for i in wtd:
 		if i["gmv"]==None:
 			i["gmv"]=0
-		if i["target"]==None:
+		if i["per_day_target"]==None:
 			i["per_day_target"]=0
 		total_wtd_gmv+=i["gmv"]
 		total_wtd_target+=i["per_day_target"]
