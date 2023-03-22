@@ -50,6 +50,7 @@
    "read_only": 1
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
@@ -162,7 +163,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-06 18:20:43.318584",
+ "modified": "2023-03-22 18:05:17.478502",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Planogram",
