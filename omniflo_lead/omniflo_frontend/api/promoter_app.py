@@ -55,7 +55,7 @@ def create_promoter_hygiene(pl_name,req_data):
 	return
 
 
-@frappe.whitelist(allow_guest=True,methods=["Post"])
+@frappe.whitelist(allow_guest=True)
 def create_promoter_log(**kwargs):
 	kwargs = json.loads(frappe.request.data)
 	if "is_present" in kwargs:
@@ -108,7 +108,7 @@ def create_promoter_log(**kwargs):
 	frappe.local.response['http_status_code'] = 201
 	return promoter_log
 
-@frappe.whitelist(allow_guest=True,methods=["POST"])
+@frappe.whitelist(allow_guest=True)
 def create_promoter_sales_capture(**kwargs):
 	kwargs = json.loads(frappe.request.data)
 	psc_doc = frappe.new_doc('Promoter Sales Capture')
