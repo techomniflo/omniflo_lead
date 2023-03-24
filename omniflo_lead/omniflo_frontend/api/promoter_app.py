@@ -24,49 +24,75 @@ def upload_file(doc,field_name,content,image_format):
 	file.delete()
 	return url
 
-def create_promoter_hygiene(promoter_log,kwargs):
+def create_promoter_hygiene(pl_name,req_data):
 	promoter_hygiene = frappe.get_doc(
 			{
 				"doctype": "Promoter Hygiene",
-				"promoter_log":promoter_log,
-				"check_in_category_placement": kwargs["check_in_category_placement"],
-				"set_merchandising": kwargs["set_merchandising"],
-				"set_offers": kwargs["set_offers"],
-				"set_per_planogram": kwargs["set_per_planogram"],
-				"clean_products_and_shelf": kwargs["clean_products_and_shelf"],
-				"check_uniform_and_id_card": kwargs["check_uniform_and_id_card"],
+				"promoter_log":pl_name,
+				"check_in_category_placement": req_data["check_in_category_placement"],
+				"set_merchandising": req_data["set_merchandising"],
+				"set_offers": req_data["set_offers"],
+				"set_per_planogram": req_data["set_per_planogram"],
+				"clean_products_and_shelf": req_data["clean_products_and_shelf"],
+				"check_uniform_and_id_card": req_data["check_uniform_and_id_card"],
 			}
 		).save(ignore_permissions=True)
+	try:
+		if "selfie" in req_data and len(req_data["selfie"])>0:
+			if len(req_data["selfie"][0]):
+				image_format=req_data["selfie"][0]["format"]
+				selfie_url=upload_file(doc=promoter_hygiene,field_name="selfie",content=req_data["selfie"][0]["base64"],image_format=image_format)
+				promoter_hygiene.db_set('selfie',selfie_url)
 
-	if "selfie" in kwargs and len(kwargs["selfie"])>0:
-		if len(kwargs["selfie"][0]):
-			image_format=kwargs["selfie"][0]["format"]
-			selfie_url=upload_file(doc=promoter_hygiene,field_name="selfie",content=kwargs["selfie"][0]["base64"],image_format=image_format)
-			promoter_hygiene.db_set('selfie',selfie_url)
-
-	for i in kwargs["capture_all_asset"]:
-		image_format=i["format"]
-		url=upload_file(promoter_hygiene,"image",i["base64"],image_format)
-		promoter_hygiene.append("capture_all_asset",
-			{"image":url})
-	promoter_hygiene.save(ignore_permissions=True)
+		for i in req_data["capture_all_asset"]:
+			image_format=i["format"]
+			url=upload_file(promoter_hygiene,"image",i["base64"],image_format)
+			promoter_hygiene.append("capture_all_asset",
+				{"image":url})
+		promoter_hygiene.save(ignore_permissions=True)
+	except Exception:
+		return "Your Attendance is marked but there is some issue in image ."
 	return
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=True,methods=["Post"])
 def create_promoter_log(**kwargs):
 	kwargs = json.loads(frappe.request.data)
+	if "is_present" in kwargs:
+		if kwargs["is_present"]==1:
+			check_list=["promoter","customer","latitude","longitude","event_type"]
+			for i in check_list:
+				if i not in kwargs.keys():
+					frappe.local.response['http_status_code'] = 404
+					return "Some fields missing"
+		elif kwargs["is_present"]==0:
+			check_list=["leave_type","duration","reason"]
+			for i in check_list:
+				if i not in kwargs.keys():
+					frappe.local.response['http_status_code'] = 404
+					return "Some fields missing"
+	
 	promoter_log= frappe.new_doc('Promoter Log')
-	promoter_doc=frappe.get_doc('Promoter',kwargs['promoter'])
+	try:
+		promoter_doc=frappe.get_doc('Promoter',kwargs['promoter'])
+	except Exception:
+		frappe.local.response['http_status_code'] = 404
+		return f"Promoter {kwargs['Promoter']} not Found."
+	
 	promoter_log.promoter_name=promoter_doc.full_name
 	promoter_log.item_group=promoter_doc.item_group
 	promoter_log.promoter=kwargs['promoter']
 	promoter_log.is_present=kwargs['is_present']
 	if kwargs['is_present']==1:
 		promoter_log.customer=kwargs['customer']
-		customer=frappe.get_doc('Customer',kwargs['customer'])
-		promoter_log.customer_name=customer.customer_name
 
+		try:
+			customer=frappe.get_doc('Customer',kwargs['customer'])
+		except Exception:
+			frappe.local.response['http_status_code'] = 404
+			return f"Promoter {kwargs['Customer']} not Found."
+		
+		promoter_log.customer_name=customer.customer_name
 		promoter_log.latitude=kwargs['latitude']
 		promoter_log.longitude=kwargs['longitude']
 		promoter_log.event_type=kwargs['event_type']
@@ -74,17 +100,23 @@ def create_promoter_log(**kwargs):
 		promoter_log.leave_type=kwargs['leave_type']
 		promoter_log.duration=kwargs['duration']
 		if 'duration' in kwargs:
-			promoter_log.reason=kwargs['duration']
+			promoter_log.reason=kwargs['reason']
 	promoter_log.save(ignore_permissions=True)
 	if kwargs["is_present"]==1:
 		if kwargs["event_type"]=="check in":
-			create_promoter_hygiene(promoter_log.name,kwargs)
-	return
+			frappe.enqueue(create_promoter_hygiene,pl_name=promoter_log.name,req_data=kwargs)
+	frappe.local.response['http_status_code'] = 201
+	return promoter_log
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=True,methods=["POST"])
 def create_promoter_sales_capture(**kwargs):
 	kwargs = json.loads(frappe.request.data)
 	psc_doc = frappe.new_doc('Promoter Sales Capture')
+	check_list=["promoter","customer","qty","brand","item_name","item_code","age","gender","in_category"]
+	for i in check_list:
+		if i not in kwargs:
+			frappe.local.response['http_status_code']=404
+			return "Some fields are missing."
 	psc_doc.customer=kwargs['customer']
 	psc_doc.promoter=kwargs['promoter']
 	psc_doc.qty=kwargs['qty']
@@ -98,7 +130,8 @@ def create_promoter_sales_capture(**kwargs):
 	if 'in_category' in kwargs:
 		psc_doc.in_category=kwargs['in_category']
 	psc_doc.save(ignore_permissions=True)
-	return
+	frappe.local.response['http_status_code'] = 201
+	return psc_doc
 
 @frappe.whitelist(allow_guest=True)
 def get_customer_location():
