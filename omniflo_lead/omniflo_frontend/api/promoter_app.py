@@ -225,7 +225,7 @@ def log():
 		dayLog=[]
 		for count, ele in enumerate(pl_data):
 			if day!=ele['date'] or len(pl_data)-1==count:
-				if len(pl_data)-1==count:
+				if len(pl_data)-1==count and day==ele['date']:
 					dayLog.append(ele)
 				if check_event:
 					day_wise_time=has_event(dayLog,day_wise_time)
