@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "posting_date",
   "promoter",
   "customer",
   "brand",
@@ -85,11 +86,17 @@
    "fieldname": "in_category",
    "fieldtype": "Check",
    "label": "In Category"
+  },
+  {
+   "default": "Now",
+   "fieldname": "posting_date",
+   "fieldtype": "Datetime",
+   "label": "Posting Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-22 13:53:12.186515",
+ "modified": "2023-03-24 18:20:24.968030",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Sales Capture",

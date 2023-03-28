@@ -7,7 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "customer",
-  "customer_name"
+  "customer_name",
+  "promoter_manager"
  ],
  "fields": [
   {
@@ -25,12 +26,18 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Customer Name"
+  },
+  {
+   "fieldname": "promoter_manager",
+   "fieldtype": "Link",
+   "label": "Promoter Manager",
+   "options": "User"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-10 12:23:59.373435",
+ "modified": "2023-03-28 16:31:27.646363",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Customer Target Item",
