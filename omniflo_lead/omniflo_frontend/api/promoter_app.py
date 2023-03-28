@@ -1,7 +1,7 @@
 import frappe
 import json
 import copy
-from frappe.utils import random_string
+from frappe.utils import random_string,now
 from datetime import datetime
 
 def upload_file(doc,field_name,content,image_format):
@@ -129,6 +129,10 @@ def create_promoter_sales_capture(**kwargs):
 		psc_doc.gender=kwargs['gender']
 	if 'in_category' in kwargs:
 		psc_doc.in_category=kwargs['in_category']
+	if 'posting_date' in kwargs:
+		pass
+	else:
+		psc_doc.posting_date=now()
 	psc_doc.save(ignore_permissions=True)
 	frappe.local.response['http_status_code'] = 201
 	return psc_doc
