@@ -240,13 +240,18 @@ def log():
 			
 			dayLog.append(ele)
 		return day_wise_time
-	log=calculate_hours()
+	if pl_data:
+		log=calculate_hours()
+	else:
+		log=[]
 	for i in pl_gmv_data:
 		if i["date"] in log:
 			log[i["date"]]["gmv"]=i["gmv"]
 			
 		else:
 			log[i["date"]]={"date":i["date"],"gmv":i["gmv"],"hours":0}
+	if not log:
+		return []
 	return_value=list(log.values())
 	sorted_return_values = sorted(return_value, key=lambda x: x['date'])
 	result = [dict(item, **{'average_variance':True}) for item in sorted_return_values]
