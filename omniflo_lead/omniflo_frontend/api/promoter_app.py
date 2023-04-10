@@ -257,3 +257,14 @@ def log():
 	result = [dict(item, **{'average_variance':True}) for item in sorted_return_values]
 	return result
 
+@frappe.whitelist(allow_guest=True)
+def top_promoter():
+	promoter_doc=frappe.get_doc('Promoter',frappe.request.args["promoter"] )
+	if promoter_doc.item_group==None or promoter_doc.item_group=="":
+		return []
+	values={"item_group":promoter_doc.item_group}
+	mtd=frappe.db.sql(""" select psc.promoter,sum(psc.qty*i.mrp) as gmv,p.full_name from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code join `tabPromoter` as p on p.name=psc.promoter where month(psc.posting_date)=month(CURDATE()) and year(psc.posting_date)=year(curdate()) and p.item_group =%(item_group)s group by psc.promoter order by gmv desc limit 3 """,values=values,as_dict=True)
+	wtd=frappe.db.sql(""" select psc.promoter,sum(psc.qty*i.mrp) as gmv,p.full_name from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code join `tabPromoter` as p on p.name=psc.promoter where YEARWEEK(psc.posting_date)=YEARWEEK(NOW()) and p.item_group =%(item_group)s  group by psc.promoter order by gmv desc limit 3 """,values=values,as_dict=True)
+	return {"mtd":mtd,"wtd":wtd}
+
+
