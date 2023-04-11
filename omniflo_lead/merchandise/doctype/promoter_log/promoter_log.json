@@ -26,6 +26,7 @@
   "image_preview",
   "latitude",
   "longitude",
+  "accuracy",
   "item_group"
  ],
  "fields": [
@@ -148,11 +149,16 @@
    "fieldtype": "Select",
    "label": "Event Type",
    "options": "\ncheck in\npunch\ncheck out\nstart break\nend break"
+  },
+  {
+   "fieldname": "accuracy",
+   "fieldtype": "Int",
+   "label": "Accuracy"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-21 17:53:43.670100",
+ "modified": "2023-04-11 17:56:10.624533",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Log",
