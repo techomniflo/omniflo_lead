@@ -96,6 +96,8 @@ def create_promoter_log(**kwargs):
 		promoter_log.latitude=kwargs['latitude']
 		promoter_log.longitude=kwargs['longitude']
 		promoter_log.event_type=kwargs['event_type']
+		if "accuracy" in kwargs:
+			promoter_log.accuracy=kwargs['accuracy']
 	else:
 		promoter_log.leave_type=kwargs['leave_type']
 		promoter_log.duration=kwargs['duration']
