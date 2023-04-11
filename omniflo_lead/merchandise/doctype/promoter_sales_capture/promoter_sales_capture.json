@@ -44,6 +44,7 @@
    "reqd": 1
   },
   {
+   "fetch_from": "item_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -60,8 +61,7 @@
    "fieldname": "qty",
    "fieldtype": "Int",
    "label": "QTY",
-   "non_negative": 1,
-   "read_only": 1
+   "non_negative": 1
   },
   {
    "fieldname": "item_code",
@@ -73,13 +73,13 @@
    "fieldname": "gender",
    "fieldtype": "Select",
    "label": "Gender",
-   "options": "Male\nFemale"
+   "options": "\nMale\nFemale"
   },
   {
    "fieldname": "age",
    "fieldtype": "Select",
    "label": "Age",
-   "options": "00 - 10\n10 - 20\n20 - 25\n25 - 30\n30 - 35\n35 - 40\n40 - 50\n50 - 60\n60+"
+   "options": "\n00 - 10\n10 - 20\n20 - 25\n25 - 30\n30 - 35\n35 - 40\n40 - 50\n50 - 60\n60+"
   },
   {
    "default": "0",
@@ -96,7 +96,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-24 18:20:24.968030",
+ "modified": "2023-04-11 15:07:54.378871",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Sales Capture",
