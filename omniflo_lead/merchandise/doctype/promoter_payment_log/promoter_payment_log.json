@@ -23,25 +23,34 @@
   {
    "fieldname": "month",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Month",
-   "options": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12"
+   "options": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12",
+   "reqd": 1
   },
   {
    "fieldname": "year",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Year",
-   "options": "2021\n2022\n2023\n2024\n2025\n2026\n2027\n2028\n2029\n2030\n2031\n2032\n2033\n2034\n2035\n2036\n2037\n2038\n2039\n2040"
+   "options": "2021\n2022\n2023\n2024\n2025\n2026\n2027\n2028\n2029\n2030\n2031\n2032\n2033\n2034\n2035\n2036\n2037\n2038\n2039\n2040",
+   "reqd": 1
   },
   {
    "fieldname": "promoter",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Promoter",
-   "options": "Promoter"
+   "options": "Promoter",
+   "reqd": 1
   },
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
-   "label": "Amount"
+   "in_list_view": 1,
+   "label": "Amount",
+   "non_negative": 1,
+   "reqd": 1
   },
   {
    "fieldname": "ip_address",
@@ -82,7 +91,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-14 14:23:29.728185",
+ "modified": "2023-04-14 16:53:12.266818",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Payment Log",
