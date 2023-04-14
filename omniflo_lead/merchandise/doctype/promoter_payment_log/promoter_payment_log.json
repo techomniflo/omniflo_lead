@@ -13,7 +13,7 @@
   "promoter",
   "amount",
   "ip_address",
-  "acknowledgment",
+  "acknowledgement",
   "timestamp",
   "latitude",
   "longitude",
@@ -58,12 +58,6 @@
    "label": "IP Address"
   },
   {
-   "default": "0",
-   "fieldname": "acknowledgment",
-   "fieldtype": "Check",
-   "label": "Acknowledgment"
-  },
-  {
    "fieldname": "timestamp",
    "fieldtype": "Datetime",
    "label": "Timestamp"
@@ -86,12 +80,18 @@
    "options": "Promoter Payment Log",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "acknowledgement",
+   "fieldtype": "Check",
+   "label": "Acknowledgement"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-14 16:53:12.266818",
+ "modified": "2023-04-14 17:43:40.810155",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Payment Log",
