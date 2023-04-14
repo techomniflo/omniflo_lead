@@ -1,0 +1,107 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "creation": "2023-04-14 13:29:17.031735",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "month",
+  "year",
+  "promoter",
+  "amount",
+  "ip_address",
+  "acknowledgment",
+  "timestamp",
+  "latitude",
+  "longitude",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "label": "Month",
+   "options": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12"
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Select",
+   "label": "Year",
+   "options": "2021\n2022\n2023\n2024\n2025\n2026\n2027\n2028\n2029\n2030\n2031\n2032\n2033\n2034\n2035\n2036\n2037\n2038\n2039\n2040"
+  },
+  {
+   "fieldname": "promoter",
+   "fieldtype": "Link",
+   "label": "Promoter",
+   "options": "Promoter"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "ip_address",
+   "fieldtype": "Data",
+   "label": "IP Address"
+  },
+  {
+   "default": "0",
+   "fieldname": "acknowledgment",
+   "fieldtype": "Check",
+   "label": "Acknowledgment"
+  },
+  {
+   "fieldname": "timestamp",
+   "fieldtype": "Datetime",
+   "label": "Timestamp"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Promoter Payment Log",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-04-14 14:23:29.728185",
+ "modified_by": "Administrator",
+ "module": "Merchandise",
+ "name": "Promoter Payment Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
