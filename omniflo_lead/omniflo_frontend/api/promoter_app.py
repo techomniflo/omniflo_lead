@@ -269,4 +269,8 @@ def top_promoter():
 	wtd=frappe.db.sql(""" select psc.promoter,sum(psc.qty*i.mrp) as gmv,p.full_name from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code join `tabPromoter` as p on p.name=psc.promoter where YEARWEEK(psc.posting_date)=YEARWEEK(NOW()) and p.item_group =%(item_group)s  group by psc.promoter order by gmv desc limit 3 """,values=values,as_dict=True)
 	return {"mtd":mtd,"wtd":wtd}
 
+@frappe.whitelist()
+def get_promoter_payment_log():
+	values={"promoter":frappe.request.args["promoter"]}
+	return frappe.db.sql("select ppl.month,ppl.year,ppl.promoter,ppl.amount from `tabPromoter Payment Log` as ppl where ppl.promoter=%(promoter)s and ppl.acknowledgement=0 and ppl.docstatus=1",values=values,as_dict=True)
 

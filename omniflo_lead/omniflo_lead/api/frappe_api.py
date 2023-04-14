@@ -572,3 +572,8 @@ def platform_sales_invoice():
 def item_billed_to_store():
 	values={"brand":frappe.request.args["brand"]}
 	return frappe.db.sql(""" select si.posting_date,si.customer,sii.qty*sii.conversion_factor as qty,sii.item_code,i.brand,i.item_name,sii.qty*sii.conversion_factor*i.mrp as gmv from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where si.docstatus=1 and i.brand=%(brand)s  """,values=values,as_list=True)
+
+@frappe.whitelist()
+def brand_message():
+	values={"brand":frappe.request.args["brand"]}
+	return frappe.db.sql("select bm.message,bm.type from `tabOmniverse Brand Message` as bm where bm.brand=%(brand)s order by bm.modified desc limit 1",values=values,as_dict=True)
