@@ -271,6 +271,30 @@ def top_promoter():
 
 @frappe.whitelist(allow_guest=True)
 def get_promoter_payment_log():
+	""" This function returns a pending acknowledgement by the promoter. """
 	values={"promoter":frappe.request.args["promoter"]}
-	return frappe.db.sql("select ppl.month,ppl.year,ppl.promoter,ppl.amount from `tabPromoter Payment Log` as ppl where ppl.promoter=%(promoter)s and ppl.acknowledgement=0 and ppl.docstatus=1",values=values,as_dict=True)
+	return frappe.db.sql("select ppl.name,ppl.processing_date,ppl.month,ppl.year,ppl.promoter,ppl.amount from `tabPromoter Payment Log` as ppl where ppl.promoter=%(promoter)s and ppl.acknowledgement=0 and ppl.docstatus=1",values=values,as_dict=True)
+
+@frappe.whitelist(allow_guest=True,methods=["POST"])
+def post_promoter_payment_log():
+	""" This is an acknowledgement function for the promoter to confirm that they have received the correct amount."""
+	try:
+		name=frappe.request.args["name"]
+		latitude=frappe.request.args["latitude"]
+		longitude=frappe.request.args["longitude"]
+		ip_address=frappe.request.headers.get("X-Forwarded-For")
+	except Exception:
+		frappe.local.response['http_status_code'] = 404
+		return 
+	frappe.db.set_value('Promoter Payment Log', name, {
+		'ip_address': ip_address,
+		'latitude': latitude,
+		'longitude':longitude,
+    	'acknowledgement':1,
+	    'timestamp':now()
+	})
+	frappe.db.commit()
+	frappe.local.response['http_status_code'] = 201
+	return frappe.db.get_value('Promoter Payment Log', name, ['acknowledgement'], as_dict=1)
+
 
