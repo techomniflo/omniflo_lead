@@ -8,6 +8,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "processing_date",
   "month",
   "year",
   "promoter",
@@ -86,12 +87,18 @@
    "fieldname": "acknowledgement",
    "fieldtype": "Check",
    "label": "Acknowledgement"
+  },
+  {
+   "fieldname": "processing_date",
+   "fieldtype": "Date",
+   "label": "Processing Date",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-14 17:43:40.810155",
+ "modified": "2023-04-17 17:09:53.249916",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Payment Log",

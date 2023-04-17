@@ -165,7 +165,7 @@ def today_promoters_log():
 @frappe.whitelist(allow_guest=True)
 def get_target():
 	values={"promoter":frappe.request.args["promoter"]}
-	wtd=frappe.db.sql(""" select date(pl.creation) as date,pl.promoter,pl.customer,pl.item_group,ct.target/day(ct.end_date) as per_day_target,(select sum(i.mrp*psc.qty) from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code where psc.promoter=pl.promoter and date(psc.creation)=date(pl.creation) ) as gmv from `tabPromoter Log` as pl join `tabCustomer Target` as ct on ct.item_group=pl.item_group and date(pl.creation) between ct.start_date and ct.end_date join `tabCustomer Target Item` as cti on cti.customer=pl.customer and cti.parent=ct.name where is_present=1 and week(curdate())=week(pl.creation) and year(curdate())=year(pl.creation) and pl.promoter=%(promoter)s group by pl.customer,pl.promoter,date(pl.creation) order by date(pl.creation)""",values=values,as_dict=True)
+	wtd=frappe.db.sql(""" select date(pl.creation) as date,pl.promoter,pl.customer,pl.item_group,ct.target/day(ct.end_date) as per_day_target,(select sum(i.mrp*psc.qty) from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code where psc.promoter=pl.promoter and date(psc.posting_date)=date(pl.creation) ) as gmv from `tabPromoter Log` as pl join `tabCustomer Target` as ct on ct.item_group=pl.item_group and date(pl.creation) between ct.start_date and ct.end_date join `tabCustomer Target Item` as cti on cti.customer=pl.customer and cti.parent=ct.name where is_present=1 and week(curdate(),1)=week(pl.creation,1) and year(curdate())=year(pl.creation) and pl.promoter=%(promoter)s group by pl.customer,pl.promoter,date(pl.creation) order by date(pl.creation)""",values=values,as_dict=True)
 	current_date=frappe.db.sql("""select ct.target/day(ct.end_date) as target,(select sum(i.mrp*psc.qty) from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code where psc.promoter=pl.promoter and date(psc.creation)=date(pl.creation) ) as gmv from `tabPromoter Log` as pl join `tabCustomer Target` as ct on ct.item_group=pl.item_group and date(pl.creation) between ct.start_date and ct.end_date join `tabCustomer Target Item` as cti on cti.customer=pl.customer and cti.parent=ct.name where is_present=1 and date(pl.creation)=curdate() and pl.promoter=%(promoter)s group by pl.customer,pl.promoter,date(pl.creation) order by date(pl.creation)""",values=values,as_dict=True)
 	days=6
 	total_wtd_target=0
@@ -271,6 +271,30 @@ def top_promoter():
 
 @frappe.whitelist(allow_guest=True)
 def get_promoter_payment_log():
+	""" This function returns a pending acknowledgement by the promoter. """
 	values={"promoter":frappe.request.args["promoter"]}
-	return frappe.db.sql("select ppl.month,ppl.year,ppl.promoter,ppl.amount from `tabPromoter Payment Log` as ppl where ppl.promoter=%(promoter)s and ppl.acknowledgement=0 and ppl.docstatus=1",values=values,as_dict=True)
+	return frappe.db.sql("select ppl.name,ppl.processing_date,ppl.month,ppl.year,ppl.promoter,ppl.amount from `tabPromoter Payment Log` as ppl where ppl.promoter=%(promoter)s and ppl.acknowledgement=0 and ppl.docstatus=1",values=values,as_dict=True)
+
+@frappe.whitelist(allow_guest=True,methods=["POST"])
+def post_promoter_payment_log():
+	""" This is an acknowledgement function for the promoter to confirm that they have received the correct amount."""
+	try:
+		name=frappe.request.args["name"]
+		latitude=frappe.request.args["latitude"]
+		longitude=frappe.request.args["longitude"]
+		ip_address=frappe.request.headers.get("X-Forwarded-For")
+	except Exception:
+		frappe.local.response['http_status_code'] = 404
+		return 
+	frappe.db.set_value('Promoter Payment Log', name, {
+		'ip_address': ip_address,
+		'latitude': latitude,
+		'longitude':longitude,
+    	'acknowledgement':1,
+	    'timestamp':now()
+	})
+	frappe.db.commit()
+	frappe.local.response['http_status_code'] = 201
+	return frappe.db.get_value('Promoter Payment Log', name, ['acknowledgement'], as_dict=1)
+
 
