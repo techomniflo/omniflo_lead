@@ -265,9 +265,140 @@ def top_promoter():
 	if promoter_doc.item_group==None or promoter_doc.item_group=="":
 		return []
 	values={"item_group":promoter_doc.item_group}
-	mtd=frappe.db.sql(""" select psc.promoter,sum(psc.qty*i.mrp) as gmv,p.full_name from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code join `tabPromoter` as p on p.name=psc.promoter where month(psc.posting_date)=month(CURDATE()) and year(psc.posting_date)=year(curdate()) and p.item_group =%(item_group)s group by psc.promoter order by gmv desc limit 3 """,values=values,as_dict=True)
-	wtd=frappe.db.sql(""" select psc.promoter,sum(psc.qty*i.mrp) as gmv,p.full_name from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code join `tabPromoter` as p on p.name=psc.promoter where YEARWEEK(psc.posting_date)=YEARWEEK(NOW()) and p.item_group =%(item_group)s  group by psc.promoter order by gmv desc limit 3 """,values=values,as_dict=True)
-	return {"mtd":mtd,"wtd":wtd}
+	yesterday=frappe.db.sql("""
+								select 
+									*, 
+									(gmv / target)* 100 as percentage 
+									from 
+									(
+										select 
+										psc.customer, 
+										sum(i.mrp * psc.qty) as gmv, 
+										psc.promoter, 
+										p.full_name, 
+										date(posting_date) as posting_date, 
+										(
+											select 
+											sum(ct.target)/ day(
+												last_day(psc.posting_date)
+											) 
+											from 
+											`tabCustomer Target` as ct 
+											join `tabCustomer Target Item` as cti on cti.parent = ct.name 
+											where 
+											cti.customer = psc.customer 
+											and (
+												date(psc.posting_date) between ct.start_date 
+												and ct.end_date
+											) 
+											and ct.item_group = p.item_group
+										) as target 
+										from 
+										`tabPromoter Sales Capture` as psc 
+										join `tabItem` as i on i.item_code = psc.item_code 
+										join `tabPromoter` as p on p.name = psc.promoter 
+										where 
+										date(psc.posting_date)= curdate() - interval 1 day 
+										and p.item_group = %(item_group)s
+										group by 
+										psc.promoter, 
+										psc.customer, 
+										date(psc.posting_date)
+									) as meta 
+									order by 
+									percentage desc 
+									limit 
+									3""",values=values,as_dict=True)
+	last_week=frappe.db.sql("""select 
+									master_data.promoter, 
+									sum(gmv) as gmv, 
+									sum(target) as target, 
+									(
+										sum(gmv)/ sum(target)
+									)* 100 as percentage 
+									from 
+									(
+										select 
+										log.*, 
+										p.full_name, 
+										(
+											select 
+											sum(psc.qty * i.mrp) 
+											from 
+											`tabPromoter Sales Capture` as psc 
+											join `tabItem` as i on i.item_code = psc.item_code 
+											where 
+											psc.promoter = log.promoter 
+											and psc.customer = log.customer 
+											and date(psc.posting_date)= log.posting_date
+										) as gmv, 
+										(
+											select 
+											sum(ct.target)/ day(
+												last_day(log.posting_date)
+											) 
+											from 
+											`tabCustomer Target` as ct 
+											join `tabCustomer Target Item` as cti on cti.parent = ct.name 
+											where 
+											cti.customer = log.customer 
+											and (
+												log.posting_date between ct.start_date 
+												and ct.end_date
+											) 
+											and ct.item_group = p.item_group
+										) as target 
+										from 
+										(
+											select 
+											date(pl.creation) as posting_date, 
+											pl.promoter, 
+											pl.customer 
+											from 
+											`tabPromoter Log` as pl 
+											where 
+											week(pl.creation, 1)= week(
+												curdate()
+											)-1 
+											and year(pl.creation)= year(
+												curdate()
+											) 
+											and is_present = 1 
+											group by 
+											pl.promoter, 
+											pl.customer, 
+											date(pl.creation) 
+											union 
+											select 
+											date(psc.posting_date) as posting_date, 
+											psc.promoter, 
+											psc.customer 
+											from 
+											`tabPromoter Sales Capture` as psc 
+											where 
+											week(psc.posting_date, 1)= week(
+												curdate()
+											)-1 
+											and year(psc.posting_date)= year(
+												curdate()
+											) 
+											group by 
+											psc.promoter, 
+											psc.customer, 
+											date(psc.posting_date)
+										) as log 
+										join `tabPromoter` as p on p.name = log.promoter 
+										where 
+										p.item_group = %(item_group)s
+									) as master_data 
+									group by 
+									master_data.promoter 
+									order by 
+									percentage desc 
+									limit 
+									3
+ 				""",values=values,as_dict=True)
+	return {"last_week":last_week,"yesterday":yesterday}
 
 @frappe.whitelist(allow_guest=True)
 def get_promoter_payment_log():
