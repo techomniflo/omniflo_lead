@@ -310,7 +310,8 @@ def top_promoter():
 									limit 
 									3""",values=values,as_dict=True)
 	last_week=frappe.db.sql("""select 
-									master_data.promoter, 
+									master_data.promoter,
+									master_data.full_name, 
 									sum(gmv) as gmv, 
 									sum(target) as target, 
 									(
