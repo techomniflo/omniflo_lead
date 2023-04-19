@@ -27,6 +27,7 @@
   "latitude",
   "longitude",
   "accuracy",
+  "fingerprint",
   "item_group"
  ],
  "fields": [
@@ -154,11 +155,17 @@
    "fieldname": "accuracy",
    "fieldtype": "Int",
    "label": "Accuracy"
+  },
+  {
+   "fieldname": "fingerprint",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Fingerprint"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-11 17:56:10.624533",
+ "modified": "2023-04-19 22:43:29.876535",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Log",
