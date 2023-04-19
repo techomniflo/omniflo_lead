@@ -18,7 +18,6 @@
   "timestamp",
   "latitude",
   "longitude",
-  "fingerprint",
   "amended_from"
  ],
  "fields": [
@@ -94,18 +93,12 @@
    "fieldtype": "Date",
    "label": "Processing Date",
    "reqd": 1
-  },
-  {
-   "fieldname": "fingerprint",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Fingerprint"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-19 20:16:03.581370",
+ "modified": "2023-04-19 22:43:01.808710",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Payment Log",
