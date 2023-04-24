@@ -407,7 +407,7 @@ def top_promoter():
 def get_promoter_payment_log():
 	""" This function returns a pending acknowledgement by the promoter. """
 	values={"promoter":frappe.request.args["promoter"]}
-	return frappe.db.sql("select ppl.name,ppl.processing_date,ppl.month,ppl.year,ppl.promoter,ppl.amount from `tabPromoter Payment Log` as ppl where ppl.promoter=%(promoter)s and ppl.acknowledgement=0 and ppl.docstatus=1",values=values,as_dict=True)
+	return frappe.db.sql("select ppl.name,ppl.processing_date,ppl.month,ppl.year,ppl.promoter,ppl.amount,ppl.payment_type from `tabPromoter Payment Log` as ppl where ppl.promoter=%(promoter)s and ppl.acknowledgement=0 and ppl.docstatus=1",values=values,as_dict=True)
 
 @frappe.whitelist(allow_guest=True,methods=["POST"])
 def post_promoter_payment_log():
