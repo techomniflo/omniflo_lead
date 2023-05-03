@@ -6,6 +6,13 @@ frappe.ui.form.on('Sales Order', {
 
     },
     refresh: function(frm) {
+        frm.set_query('customer', () => {
+            return {
+                filters: {
+                'customer_status': 'Live'
+                }
+            }
+        })
         
         if (frm.doc.docstatus==0){
             // adding custom button Get Suggested Planogram Qty
