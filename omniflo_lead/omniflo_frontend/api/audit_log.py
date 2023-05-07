@@ -1,4 +1,6 @@
 import frappe
+import json
+from omniflo_lead.omniflo_frontend.api.promoter_app import upload_file
 
 @frappe.whitelist()
 def get_audit_item():
@@ -54,3 +56,45 @@ def get_audit_item():
                         and meta.brand not in ('Sample', 'Tester')
                         """,values=values,as_dict=True)
     return sorted(return_value, key=lambda d: (d['expect_qty']==0,d['brand'],d['item_name']))
+
+def update_audit_images(doc,images):
+    for count,i in enumerate(images):
+        try:
+            url=upload_file(doc,field_name="details",content=i["base64"],image_format=i["image_format"])
+            child_doc=frappe.get_doc('Audit Log Details',doc.details[count].name)
+            child_doc.db_set('image', url, update_modified=False,commit=True)
+        except:
+            pass
+
+    
+
+@frappe.whitelist(allow_guest=True)
+def post_audit_log():
+    kwargs = json.loads(frappe.request.data)
+    try:
+        customer=kwargs['customer']
+        item_group=kwargs['item_group']
+        items=kwargs['items']
+    except:
+        frappe.local.response['http_status_code'] = 404
+        return "some field are missing"
+    images=[]
+    for i in kwargs["images"]:
+        images.append({'item_code':i['type']})
+
+    doc = frappe.get_doc(
+			{
+				"doctype": "Audit Log",
+                "customer": customer,
+                "item_group": item_group,
+                "items":items,
+                "details":images,
+                "latitude": kwargs['latitude'] if "latitude" in kwargs else "",
+                "longitude":kwargs['longitude'] if "longitude" in kwargs else ""
+			}
+		).save(ignore_permissions=True)
+    doc.submit()
+    if "images" in kwargs:
+        frappe.enqueue(update_audit_images,doc=doc,images=kwargs["images"])
+    frappe.local.response['http_status_code'] = 201
+    return doc

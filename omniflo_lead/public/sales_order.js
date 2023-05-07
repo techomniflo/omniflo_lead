@@ -6,6 +6,16 @@ frappe.ui.form.on('Sales Order', {
 
     },
     refresh: function(frm) {
+        cur_frm.fields_dict['items'].grid.wrapper.find('.row-index').css('height','auto')
+		cur_frm.fields_dict['items'].grid.wrapper.find('.grid-static-col').css('height','auto')
+		cur_frm.fields_dict['items'].grid.wrapper.find('.ellipsis').css('white-space','normal')
+        frm.set_query('customer', () => {
+            return {
+                filters: {
+                'customer_status': 'Live'
+                }
+            }
+        })
         
         if (frm.doc.docstatus==0){
             // adding custom button Get Suggested Planogram Qty
