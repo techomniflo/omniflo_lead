@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Audit Log', {
 	refresh: function(frm) {
-		text_wrap_table(frm,'items')
+		text_wrap_items_table(frm)
 		
 		frm.fields_dict['item_group'].get_query = function(doc) {
 			return {
@@ -62,9 +62,16 @@ frappe.ui.form.on('Audit Log', {
 	
 });
 function text_wrap_table(frm,table){
-	cur_frm.fields_dict[table].grid.wrapper.find('.row-index').css('height','auto')
-	cur_frm.fields_dict[table].grid.wrapper.find('.grid-static-col').css('height','auto')
-	cur_frm.fields_dict[table].grid.wrapper.find('.ellipsis').css('white-space','normal')
+	frm.fields_dict[table].grid.wrapper.find('.row-index').css('height','auto')
+	frm.fields_dict[table].grid.wrapper.find('.grid-static-col').css('height','auto')
+	frm.fields_dict[table].grid.wrapper.find('.ellipsis').css('white-space','normal')
+}
+function text_wrap_items_table(frm){
+	frm.fields_dict['items'].grid.wrapper.find('.next-page').click(function(){text_wrap_table(frm,'items')})
+	frm.fields_dict['items'].grid.wrapper.find('.prev-page').click(function(){text_wrap_table(frm,'items')})
+	frm.fields_dict['items'].grid.wrapper.find('.first-page').click(function(){text_wrap_table(frm,'items')})
+	frm.fields_dict['items'].grid.wrapper.find('.last-page').click(function(){text_wrap_table(frm,'items')})
+	text_wrap_table(frm,'items')
 }
 
 function getLocation(frm) {
@@ -80,7 +87,7 @@ function showPosition(position) {
   }
 
 function hide_add_row(frm) {
-	cur_frm.fields_dict['items'].grid.wrapper.find('.grid-add-row').remove();
+	frm.fields_dict['items'].grid.wrapper.find('.grid-add-row').remove();
 }
 frappe.ui.form.on('Audit Log Items', {
 	
