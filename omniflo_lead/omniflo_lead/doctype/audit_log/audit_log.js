@@ -3,6 +3,8 @@
 
 frappe.ui.form.on('Audit Log', {
 	refresh: function(frm) {
+		text_wrap_table(frm,'items')
+		
 		frm.fields_dict['item_group'].get_query = function(doc) {
 			return {
 				filters: {
@@ -51,6 +53,7 @@ frappe.ui.form.on('Audit Log', {
 			freeze_message : 'Getting All Items'
 		}).then((res) => {
 				refresh_field('items');
+				text_wrap_table(frm,'items')
 				hide_add_row(frm);
 
 				
@@ -58,6 +61,11 @@ frappe.ui.form.on('Audit Log', {
 	}
 	
 });
+function text_wrap_table(frm,table){
+	cur_frm.fields_dict[table].grid.wrapper.find('.row-index').css('height','auto')
+	cur_frm.fields_dict[table].grid.wrapper.find('.grid-static-col').css('height','auto')
+	cur_frm.fields_dict[table].grid.wrapper.find('.ellipsis').css('white-space','normal')
+}
 
 function getLocation(frm) {
 	if (navigator.geolocation) {
