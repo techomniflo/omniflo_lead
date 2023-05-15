@@ -5,6 +5,21 @@ import datetime
 import copy
 from collections import defaultdict
 
+@frappe.whitelist()
+def login():
+	"""" This is to verify the credential for omniverse. """
+	brand=frappe.request.args["brand"]
+	password=frappe.request.args["password"]
+	doc=frappe.get_doc('Omniverse Brand Credential',brand)
+	return doc.get_password('password')==password
+
+@frappe.whitelist(allow_guest=True)
+def is_active_brand():
+	""" This function return the is that brand is active or not. """
+	brand=frappe.request.args["brand"]
+	doc=frappe.get_doc('Brand',brand)
+	return doc.disabled==1
+
 #Gives total no live store of perticular brand -> int(number)
 @frappe.whitelist()
 def total_live_store():

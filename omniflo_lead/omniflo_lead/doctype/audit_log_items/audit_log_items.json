@@ -11,7 +11,9 @@
   "last_visit_qty",
   "damage_qty",
   "current_available_qty",
-  "item_code"
+  "item_code",
+  "in_category_qty",
+  "asset_available_qty"
  ],
  "fields": [
   {
@@ -58,12 +60,22 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Brand"
+  },
+  {
+   "fieldname": "in_category_qty",
+   "fieldtype": "Float",
+   "label": "In Category Qty"
+  },
+  {
+   "fieldname": "asset_available_qty",
+   "fieldtype": "Float",
+   "label": "Asset Available Qty"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-08-27 15:15:33.885078",
+ "modified": "2023-05-15 13:34:44.255184",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Audit Log Items",

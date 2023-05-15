@@ -78,10 +78,13 @@ def post_audit_log():
     except:
         frappe.local.response['http_status_code'] = 404
         return "some field are missing"
-    images=[]
-    for i in kwargs["images"]:
-        images.append({'item_code':i['type']})
+    images=[{"item_code":i['type']} for i in kwargs["images"] ]
 
+    for x in items:
+        if x["in_category_qty"]==None:
+            x["current_available_qty"]=x["asset_available_qty"]
+        else:
+            x["current_available_qty"]=x["asset_available_qty"]+x["in_category_qty"]
     doc = frappe.get_doc(
 			{
 				"doctype": "Audit Log",
