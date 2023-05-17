@@ -33,9 +33,10 @@ frappe.ui.form.on('Sales Order', {
                     }],
                     primary_action_label: 'Submit',
                     primary_action(values) {
-                        // get qty from call
+                        // add qty to child table items from add_planogram_qty function
                         frappe.call({
-                            method: 'omniflo_lead.omniflo_lead.api.planogram_api.get_suggested_items',
+                            doc:frm.doc,
+                            method: 'add_planogram_qty',
                             freeze:true,
                             async: false,
                             args: {
@@ -45,20 +46,7 @@ frappe.ui.form.on('Sales Order', {
                             },
                             callback: function(r) {
                                 if (!r.exc) {
-                                    
-                                    const array=r.message
-                                    array.forEach(function (suggested_item, index) {
-                                        
-                                        item=frm.add_child('items',{'item_code':suggested_item['item_code'],'qty':suggested_item['qty']})
-                                        if (frm.doc.delivery_date) {
-                                            item.delivery_date = frm.doc.delivery_date;
-                                            
-                                        } else {
-                                            frm.script_manager.copy_from_first_row("items", item, ["delivery_date"]);
-                                        }
-                                        frm.cscript.item_code(frm,'Sales Order Item',item.name)
-                                      });
-                                    
+                                    frm.refresh_field('items')
                                 }
                                 
                                 d.hide(); //hide dialog when all appeded all items
