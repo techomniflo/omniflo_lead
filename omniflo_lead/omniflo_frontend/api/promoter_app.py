@@ -431,4 +431,9 @@ def post_promoter_payment_log():
 	frappe.local.response['http_status_code'] = 201
 	return frappe.db.get_value('Promoter Payment Log', name, ['acknowledgement'], as_dict=1)
 
-
+@frappe.whitelist(allow_guest=True)
+def get_offers():
+	promoter=frappe.request.args["promoter"]
+	promoter_doc=frappe.get_doc("Promoter",promoter)
+	item_group=promoter_doc.item_group
+	return frappe.db.sql("""select obo.brand,obo.offer from `tabOmniverse Brand Offer` obo where obo.disabled=0 and obo.brand in (select distinct i.brand from `tabItem` as i where i.item_group=%(item_group)s )""",values={'item_group':item_group},as_dict=True)
