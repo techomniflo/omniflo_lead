@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "disabled",
   "brand",
   "offer",
   "start_date",
@@ -48,12 +49,17 @@
    "options": "Omniverse Brand Offer",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
   }
  ],
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
  "links": [],
- "modified": "2023-04-24 16:36:17.191530",
+ "modified": "2023-05-29 12:54:42.114134",
  "modified_by": "Administrator",
  "module": "Omniflo Frontend",
  "name": "Omniverse Brand Offer",
