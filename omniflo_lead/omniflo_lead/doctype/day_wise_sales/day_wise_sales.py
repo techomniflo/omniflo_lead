@@ -15,6 +15,10 @@ class DayWiseSales(Document):
 	pass
 
 @frappe.whitelist(allow_guest=True)
+def run_day_sales():
+	frappe.enqueue(day_sales,queue="long")
+
+
 def day_sales():
 	gmv_data=calculate_gmv()
 	
