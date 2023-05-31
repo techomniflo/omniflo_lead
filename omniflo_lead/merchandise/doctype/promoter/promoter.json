@@ -13,7 +13,12 @@
   "last_name",
   "full_name",
   "promoter_type",
-  "item_group"
+  "item_group",
+  "section_break_6y9bg",
+  "phone_no",
+  "pan_no",
+  "bank_account_no",
+  "ifsc"
  ],
  "fields": [
   {
@@ -58,11 +63,35 @@
    "fieldtype": "Link",
    "label": "Item Group",
    "options": "Item Group"
+  },
+  {
+   "fieldname": "section_break_6y9bg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "phone_no",
+   "fieldtype": "Data",
+   "label": "Phone No"
+  },
+  {
+   "fieldname": "pan_no",
+   "fieldtype": "Data",
+   "label": "PAN No"
+  },
+  {
+   "fieldname": "bank_account_no",
+   "fieldtype": "Data",
+   "label": "Bank Account No"
+  },
+  {
+   "fieldname": "ifsc",
+   "fieldtype": "Data",
+   "label": "IFSC"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-30 12:06:06.656774",
+ "modified": "2023-05-31 16:22:57.353937",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter",
