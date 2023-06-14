@@ -42,13 +42,13 @@ def create_promoter_hygiene(pl_name,req_data):
 			if len(req_data["selfie"][0]):
 				image_format=req_data["selfie"][0]["format"]
 				selfie_url=upload_file(doc=promoter_hygiene,field_name="selfie",content=req_data["selfie"][0]["base64"],image_format=image_format)
-				promoter_hygiene.db_set('selfie',selfie_url)
+				promoter_hygiene.append('capture_all_asset',{'image':selfie_url,'type':'Selfie'})
 
 		for i in req_data["capture_all_asset"]:
 			image_format=i["format"]
 			url=upload_file(promoter_hygiene,"image",i["base64"],image_format)
 			promoter_hygiene.append("capture_all_asset",
-				{"image":url})
+				{"image":url,'type':'Asset'})
 		promoter_hygiene.save(ignore_permissions=True)
 	except Exception:
 		return "Your Attendance is marked but there is some issue in image ."

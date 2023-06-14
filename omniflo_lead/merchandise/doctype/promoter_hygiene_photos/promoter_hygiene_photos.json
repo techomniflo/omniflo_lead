@@ -6,7 +6,10 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "image"
+  "image",
+  "type",
+  "status",
+  "reson"
  ],
  "fields": [
   {
@@ -15,12 +18,30 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Image"
+  },
+  {
+   "columns": 2,
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nSelfie\nAsset"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nAccept\nReject"
+  },
+  {
+   "fieldname": "reson",
+   "fieldtype": "Text",
+   "label": "Reson"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-03-15 16:58:36.563279",
+ "modified": "2023-06-14 23:20:08.874782",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Hygiene Photos",
