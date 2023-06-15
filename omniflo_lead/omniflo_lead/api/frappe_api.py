@@ -17,8 +17,8 @@ def login():
 def is_active_brand():
 	""" This function return the is that brand is active or not. """
 	brand=frappe.request.args["brand"]
-	doc=frappe.get_doc('Brand',brand)
-	return doc.disabled==1
+	doc=frappe.get_doc('Omniverse Brand Credential',brand)
+	return doc.disabled==0
 
 #Gives total no live store of perticular brand -> int(number)
 @frappe.whitelist()
