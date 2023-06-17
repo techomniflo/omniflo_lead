@@ -9,7 +9,7 @@
   "image",
   "type",
   "status",
-  "reson"
+  "reason"
  ],
  "fields": [
   {
@@ -30,18 +30,18 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "\nAccept\nReject"
+   "options": "\nApprove\nReject"
   },
   {
-   "fieldname": "reson",
+   "fieldname": "reason",
    "fieldtype": "Text",
-   "label": "Reson"
+   "label": "Reason"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-14 23:20:08.874782",
+ "modified": "2023-06-18 02:19:20.783367",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Hygiene Photos",
