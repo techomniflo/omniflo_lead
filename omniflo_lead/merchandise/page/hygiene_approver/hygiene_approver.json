@@ -1,19 +1,19 @@
 {
  "content": null,
- "creation": "2023-06-14 14:09:12.986680",
+ "creation": "2023-06-18 03:25:19.847096",
  "docstatus": 0,
  "doctype": "Page",
  "idx": 0,
- "modified": "2023-06-14 14:09:12.986680",
+ "modified": "2023-06-18 03:28:29.846489",
  "modified_by": "Administrator",
  "module": "Merchandise",
- "name": "promoter-hygiene-app",
+ "name": "hygiene-approver",
  "owner": "Administrator",
- "page_name": "promoter-hygiene-app",
+ "page_name": "hygiene-approver",
  "roles": [],
  "script": null,
  "standard": "Yes",
  "style": null,
  "system_page": 0,
- "title": "Promoter Hygiene Approver"
+ "title": "Hygiene Hygiene Approver"
 }
