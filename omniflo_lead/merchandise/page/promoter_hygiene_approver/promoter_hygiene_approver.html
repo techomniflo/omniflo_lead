@@ -1,0 +1,67 @@
+
+<div class="row main">
+	<div class="col-xs-12"> 
+		<select name="select_image_type" id="select_image_type">
+			<option value=""></option>
+			<option value="Selfie">Selfie</option>
+			<option value="Asset">Asset</option>
+		  </select>
+	</div>
+	
+
+	<div class="col-xs-8">
+		<img id="myimg" height="auto" width="auto" src="{{ image }}">
+	</div>
+	<div class="col-xs-4" >
+		
+
+		<!-- This reason div shows check box for reason  -->
+		<div class="col-xs-12" id="reason_div" >
+			
+			<div class="row">
+				{% if picture_type=="Selfie" %}
+				<div class="col-xs-6" >
+					<b>Selfie Issue:</b><br><br>
+					<label><input type="checkbox"  value="Id Card Not Wearing" id="id_card_not_wearing" >Id Card Not Wearing</label>
+					<label><input type="checkbox"  value="Half Image" id="half_image" >Half Image</label>
+					<label><input type="checkbox"  value="Blur Background" id="blur_background" >Blur Background</label>
+					<label><input type="checkbox"  value="Wrong Image" id="wrong_image" >Wrong Image</label>
+					
+				</div>
+			{% else %}
+				<div class="col-xs-6" >
+					<b>Asset/Shelf Issue:</b><br><br>
+					<label><input type="checkbox"  value="Half Shelf" id="Half Shelf" >Half Shelf</label>
+					<label><input type="checkbox"  value="Merchandising Missing" id="merchandising_missing" >Merchandising Missing</label>
+					<label><input type="checkbox"  value="Merchandising Broken" id="merchandising_broken" >Merchandising Broken</label>
+					<label><input type="checkbox"  value="Offer Not Updated" id="offer_not_updated" >Offer Not Updated</label>
+					<label><input type="checkbox"  value="Product Not Arranged" id="product_not_arranged" >Product Not Arranged</label>
+					<label><input type="checkbox"  value="People in Frame" id="People_In_Frame" >People in Frame</label>
+				</div>
+			{% endif %}
+
+			</div>
+			
+		</div>
+		<!-- This shows the data of image -->
+		
+		<div class="col-xs-12"> <b>Store Name</b><span id="Customer">:  {{ customer }}</span></div>
+		<div class="col-xs-12"> <b>Picture Type</b><span id="Picture_Type">:  {{ picture_type }}</span></div>
+		<div class="col-xs-12"> <b>Date and Time</b><span id="date_and_time">: {{ date_and_time }} </span></div>
+		<div class="col-xs-12"> <b>Clicked By</b><span id="promoter">: {{ promoter}}</span></div>
+		<div class="col-xs-12"> <b>Item Group</b><span id="item_group">: {{ item_group }}</span></div>
+
+		<br>
+		<div class="col-xs-12"><b>Promoter Hygiene Fields:</b></div>
+		{% for i in hygiene_check_boxes %}
+			{% if i[1]==1 %}
+			<div class="col-xs-12"><label><input type="checkbox" checked disabled>{{ i[0] }}</label></div>
+			{% else %}
+			<div class="col-xs-12"><label><input type="checkbox"  disabled>{{ i[0] }}</label></div>
+			{% endif %}
+		{% endfor %}
+
+		
+ 
+	</div>
+</div>
