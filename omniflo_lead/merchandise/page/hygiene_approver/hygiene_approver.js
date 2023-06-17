@@ -3,10 +3,10 @@ var index=0;       				//global variable
 var selected_image_type="" 		//global variable
 
 //on load page in frappe page
-frappe.pages['promoter-hygiene-approver'].on_page_load = function(wrapper) {
+frappe.pages['hygiene-approver'].on_page_load = function(wrapper) {
 	
      	frappe.call({
-     		method:"omniflo_lead.merchandise.page.promoter_hygiene_approver.promoter_hygiene_approver.get_details",
+     		method:"omniflo_lead.merchandise.page.hygiene_approver.hygiene_approver.get_details",
      		freeze:true,
      		callback: function(r){
      			data=r.message;
@@ -44,7 +44,7 @@ let Next = function(wrapper,data){
 // Approve function write status Approve in 'Promoter Hygiene Photos'
 let approve = function(wrapper,data){
 	frappe.call({
-     		method:"omniflo_lead.merchandise.page.promoter_hygiene_approver.promoter_hygiene_approver.approve",
+     		method:"omniflo_lead.merchandise.page.hygiene_approver.hygiene_approver.approve",
      		freeze:true,
      		args:{
      			data:data,
@@ -93,7 +93,7 @@ let reject = function(wrapper,data,reason){
 	remove_button()
 
 	frappe.call({
-     		method:"omniflo_lead.merchandise.page.promoter_hygiene_approver.promoter_hygiene_approver.reject",
+     		method:"omniflo_lead.merchandise.page.hygiene_approver.hygiene_approver.reject",
      		freeze:true,
 
      		args:{
@@ -115,7 +115,7 @@ var on_change_event_in_select = function(){
 	$("#select_image_type").change(function() {
         var type=$('#select_image_type').val();
 		frappe.call({
-			method:"omniflo_lead.merchandise.page.promoter_hygiene_approver.promoter_hygiene_approver.get_details",
+			method:"omniflo_lead.merchandise.page.hygiene_approver.hygiene_approver.get_details",
 			freeze:true,
 			args:{
 				type:type
@@ -177,7 +177,7 @@ let callback_return =function (wrapper,data){
 
 	
 		page.body.empty()
-		$(frappe.render_template("promoter_hygiene_approver", 
+		$(frappe.render_template("hygiene_approver", 
 			{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,promoter:promoter,item_group:item_group,hygiene_check_boxes:hygiene_check_boxes})).appendTo(page.body);
 		$("#reason_div").hide();
 		$('#select_image_type').val(selected_image_type) 
