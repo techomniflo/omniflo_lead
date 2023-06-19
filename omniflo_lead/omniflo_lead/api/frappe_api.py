@@ -8,10 +8,17 @@ from collections import defaultdict
 @frappe.whitelist()
 def login():
 	"""" This is to verify the credential for omniverse. """
-	brand=frappe.request.args["brand"]
+	user=frappe.request.args["user"]
 	password=frappe.request.args["password"]
-	doc=frappe.get_doc('Omniverse Brand Credential',brand)
-	return doc.get_password('password')==password
+	try:
+		doc=frappe.get_doc('Omniverse Brand Credential',user)
+	except:
+		frappe.local.response['http_status_code'] = 404
+		return
+	if doc.get_password('password')==password:
+		return {'brand':doc.brand,'validate':True}
+	frappe.local.response['http_status_code'] = 401
+	return
 
 @frappe.whitelist(allow_guest=True)
 def is_active_brand():
