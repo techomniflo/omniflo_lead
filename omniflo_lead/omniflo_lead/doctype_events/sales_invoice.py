@@ -2,6 +2,7 @@ import frappe
 import requests
 import json
 import os
+from erpnext.selling.doctype.sales_order.sales_order import update_status
 from pyqrcode import create as qrcreate
 from omniflo_lead.omniflo_lead.utilities import create_barcode_folder
 from omniflo_lead.omniflo_lead.doctype_events.file import file_upload_to_s3
@@ -9,6 +10,8 @@ from omniflo_lead.omniflo_lead.doctype_events.file import file_upload_to_s3
 import png
 import base64
 
+def before_cancel(doc,events):
+    change_sales_order_status(doc,'Re-Open')
 
 def on_submit(doc, event):
     for item in doc.items:
@@ -33,7 +36,7 @@ def on_submit(doc, event):
                 customer_bin.available_qty=0
             customer_bin.stock_uom = item.stock_uom
             customer_bin.save(ignore_permissions = True)
-
+    change_sales_order_status(doc,'Closed')
 
 def on_cancel(doc,event):
     for item in doc.items:
@@ -137,4 +140,19 @@ def createQR(name, invoiceNo, amount, email=None, contact=None, gstin=None, note
     # print("plink is", plink)
     ic = plink["image_content"]
     return ic
+
+def change_sales_order_status(doc,status):
+    sales_orders=set()
+    for item in doc.items:
+        if item.sales_order:
+            sales_orders.add(item.sales_order)
+    for orders in sales_orders:
+        try:
+            doc=frappe.get_doc("Sales Order",orders)
+            if status=='Closed' and doc.status not in ["Closed","Cancelled"]:
+                update_status(status='Closed',name=orders)
+            elif status=='Re-Open' and doc.status in ["Closed"]:
+                update_status(status="Draft",name=orders)
+        except:
+            pass
     
