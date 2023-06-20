@@ -6,9 +6,7 @@ frappe.ui.form.on('Sales Order', {
 
     },
     refresh: function(frm) {
-        cur_frm.fields_dict['items'].grid.wrapper.find('.row-index').css('height','auto')
-		cur_frm.fields_dict['items'].grid.wrapper.find('.grid-static-col').css('height','auto')
-		cur_frm.fields_dict['items'].grid.wrapper.find('.ellipsis').css('white-space','normal')
+        text_wrap_items_table(frm)
         frm.set_query('customer', () => {
             return {
                 filters: {
@@ -48,7 +46,7 @@ frappe.ui.form.on('Sales Order', {
                                 if (!r.exc) {
                                     frm.refresh_field('items')
                                 }
-                                
+                                text_wrap_items_table(frm)
                                 d.hide(); //hide dialog when all appeded all items
                             }
                         });
@@ -65,3 +63,16 @@ frappe.ui.form.on('Sales Order', {
   }
 
 });
+
+function text_wrap_table(frm,table){
+	frm.fields_dict[table].grid.wrapper.find('.row-index').css('height','auto')
+	frm.fields_dict[table].grid.wrapper.find('.grid-static-col').css('height','auto')
+	frm.fields_dict[table].grid.wrapper.find('.ellipsis').css('white-space','normal')
+}
+function text_wrap_items_table(frm){
+	frm.fields_dict['items'].grid.wrapper.find('.next-page').click(function(){text_wrap_table(frm,'items')})
+	frm.fields_dict['items'].grid.wrapper.find('.prev-page').click(function(){text_wrap_table(frm,'items')})
+	frm.fields_dict['items'].grid.wrapper.find('.first-page').click(function(){text_wrap_table(frm,'items')})
+	frm.fields_dict['items'].grid.wrapper.find('.last-page').click(function(){text_wrap_table(frm,'items')})
+	text_wrap_table(frm,'items')
+}
