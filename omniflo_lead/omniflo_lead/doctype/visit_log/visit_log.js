@@ -3,8 +3,9 @@
 
 frappe.ui.form.on('Visit Log', {
 	refresh: function(frm) {
-
+		if (frm.doc.latitude && frm.doc.longitude){
 		getLocation(frm);
+		}
 	}
 });
 
