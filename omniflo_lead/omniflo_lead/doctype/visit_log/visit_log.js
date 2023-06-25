@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Visit Log', {
 	refresh: function(frm) {
-		if (frm.doc.latitude && frm.doc.longitude){
+		if ((frm.doc.latitude==null || frm.doc.latitude==undefined) && (frm.doc.longitude==null || frm.doc.longitude==undefined)){
 		getLocation(frm);
 		}
 	}
