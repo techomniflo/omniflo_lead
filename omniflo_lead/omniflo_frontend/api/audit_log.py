@@ -68,7 +68,7 @@ def update_audit_images(doc,images):
 
     
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(methods=("POST",))
 def post_audit_log():
     kwargs = json.loads(frappe.request.data)
     try:
