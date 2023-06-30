@@ -8,6 +8,7 @@ class CustomSalesInvoice(SalesInvoice):
 	@frappe.whitelist()
 	def remove_stock_out_qty(self):
 		if not self.set_warehouse:
+			frappe.msgprint(" Please Set Warehouse ")
 			return
 		for item in self.items:
 			try:
@@ -23,5 +24,7 @@ class CustomSalesInvoice(SalesInvoice):
 			row.idx = index+1
 		self.run_method("set_missing_values")
 		self.run_method("calculate_taxes_and_totals")
+		if self.name[0:3]!='new':
+			self.save()
 		return 
 
