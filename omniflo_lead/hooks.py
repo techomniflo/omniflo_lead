@@ -92,7 +92,8 @@ doctype_js={"Customer": "public/js/customer.js","Sales Invoice":"public/js/sales
 # Override standard doctype classes
 
 override_doctype_class = {
-    "Sales Order":"omniflo_lead.omniflo_lead.doctype_class_override.sales_order.CustomSalesOrder"
+    "Sales Order":"omniflo_lead.omniflo_lead.doctype_class_override.sales_order.CustomSalesOrder",
+    "Sales Invoice":"omniflo_lead.omniflo_lead.doctype_class_override.sales_invoice.CustomSalesInvoice"
 }
 
 # Document Events
