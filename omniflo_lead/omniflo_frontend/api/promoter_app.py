@@ -2,7 +2,7 @@ import frappe
 import json
 import copy
 from frappe.utils import random_string,now
-from datetime import datetime
+from datetime import datetime,date
 
 def upload_file(doc,field_name,content,image_format):
 	file_name=random_string(8)
@@ -437,3 +437,12 @@ def get_offers():
 	promoter_doc=frappe.get_doc("Promoter",promoter)
 	item_group=promoter_doc.item_group
 	return frappe.db.sql("""select obo.brand,obo.offer from `tabOmniverse Brand Offer` obo where obo.disabled=0 and obo.brand in (select distinct i.brand from `tabItem` as i where i.item_group=%(item_group)s )""",values={'item_group':item_group},as_dict=True)
+
+@frappe.whitelist(allow_guest=True)
+def promoter_mtd_details(promoter):
+	values={'promoter':promoter}
+	attandance_punch=frappe.db.sql(""" select count(*) from (select * from `tabPromoter Log` as pl where pl.is_present=1 and month(pl.creation)=month(curdate()) and year(pl.creation)=year(curdate()) and date(pl.creation) not in ( select date(pl.creation) from `tabPromoter Log` as PL where date(PL.creation)=date(pl.creation) and pl.is_present=0 ) and pl.promoter=%(promoter)s group by date(pl.creation), pl.promoter) as meta """,values=values,as_list=True)
+	total_leave=frappe.db.sql(""" select count(*) from (select * from `tabPromoter Log` as pl where pl.is_present=0 and month(pl.creation)=month(curdate()) and year(pl.creation)=year(curdate()) and pl.promoter=%(promoter)s group by date(pl.creation), pl.promoter) as meta """,values=values,as_list=True)
+	weekoff_leave=frappe.db.sql(""" select count(*) from (select * from `tabPromoter Log` as pl where pl.is_present=0 and month(pl.creation)=month(curdate()) and year(pl.creation)=year(curdate()) and leave_type='Week Off' and pl.promoter=%(promoter)s  group by date(pl.creation), pl.promoter) as meta """,values=values,as_list=True)
+	weekend_leave=frappe.db.sql(""" select count(*) from (select * from `tabPromoter Log` as pl where pl.is_present=0 and month(pl.creation)=month(curdate()) and year(pl.creation)=year(curdate()) and weekday(pl.creation) in (5,6) and pl.promoter=%(promoter)s group by date(pl.creation), pl.promoter) as meta """,values=values,as_list=True)
+	return {'attandance_punch':attandance_punch[0][0],'total_leave':total_leave[0][0],'weekoff_leave':weekoff_leave[0][0],'weekend_leave':weekend_leave[0][0],'percentage_attandance':(attandance_punch[0][0]/date.today().day)*100}
