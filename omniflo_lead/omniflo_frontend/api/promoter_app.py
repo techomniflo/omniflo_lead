@@ -21,7 +21,6 @@ def upload_file(doc,field_name,content,image_format):
 			}
 		).save(ignore_permissions=True)
 	url=copy.copy(file.file_url)
-	file.delete()
 	return url
 
 def create_promoter_hygiene(pl_name,req_data):
