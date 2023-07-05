@@ -585,20 +585,36 @@ def calculate_sales_date_wise():
 
 @frappe.whitelist()
 def item():
+	""" This API provides item details such as item code, name, MRP, and GST HSN code. """
 	values={"brand":frappe.request.args["brand"]}
 	return frappe.db.sql(""" select i.item_code,i.item_name,i.mrp,i.gst_hsn_code from `tabItem` as i where i.brand=%(brand)s """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def platform_sales_invoice():
+	""" This API provides details of invoices raised against the brand. """
 	values={"brand":frappe.request.args["brand"]}
 	return frappe.db.sql(""" select si.name as invoice_id,si.posting_date,si.outstanding_amount,si.due_date,si.net_total,si.total_taxes_and_charges,si.apply_discount_on,si.discount_amount,si.grand_total,si.rounding_adjustment,si.rounded_total from `tabSales Invoice` as si where si.docstatus=1 and si.company='Omniway Technologies Pvt Ltd' and si.customer in (select b.customer from `tabBrand` as b where b.brand=%(brand)s) """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def item_billed_to_store():
+	""" This API provides a list of items sent to customers, including customer name and date,gmv. """
 	values={"brand":frappe.request.args["brand"]}
 	return frappe.db.sql(""" select si.posting_date,si.customer,sii.qty*sii.conversion_factor as qty,sii.item_code,i.brand,i.item_name,sii.qty*sii.conversion_factor*i.mrp as gmv from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where si.docstatus=1 and i.brand=%(brand)s  """,values=values,as_list=True)
 
 @frappe.whitelist()
 def brand_message():
+	""" This API shows brand messages. """
 	values={"brand":frappe.request.args["brand"]}
 	return frappe.db.sql("select bm.message,bm.type from `tabOmniverse Brand Message` as bm where bm.brand=%(brand)s order by bm.modified desc limit 1",values=values,as_dict=True)
+
+@frappe.whitelist()
+def brand_offers(brand:str):
+	""" This API provides a list of offers to display in Omniverse. """
+	values={"brand":brand}
+	return frappe.db.sql(""" select brand,offer from `tabOmniverse Brand Offer` where brand=%(brand)s """,values=values,as_dict=True)
+
+@frappe.whitelist()
+def item_send_to_us(brand:str):
+	""" This API provides total quantity sent by the brand to omnipresent. """
+	values={"brand":brand}
+	frappe.db.sql(""" select sum(pri.received_qty) as qty from `tabPurchase Receipt` as pr join `tabPurchase Receipt Item` as pri on pr.name=pri.parent join `tabItem` as i on i.item_code=pri.item_code where i.brand=%(brand)s and pr.docstatus=1 """,values=values,as_dict=True)
