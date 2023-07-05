@@ -1,7 +1,25 @@
 import json
 from datetime import datetime
 import frappe
-from frappe.utils import add_days, cint, formatdate, get_datetime, getdate
+from frappe.utils import add_days, cint, formatdate, get_datetime, getdate, random_string, now
+
+@frappe.whitelist()
+def upolad_image_in_sales_order(doc,image_array):
+    for image in image_array:
+        file_name=random_string(8)
+        file = frappe.get_doc(
+                {
+                    "doctype": "File",
+                    "file_name": file_name+"."+image['image_format'],
+                    "attached_to_doctype": doc.doctype,
+                    "attached_to_name": doc.name,
+                    "folder": "Home/Attachments",
+                    "is_private": 1,
+                    "content": image['base64'],
+                    "decode": 1,
+                }
+            ).save(ignore_permissions=True)
+        return
 
 @frappe.whitelist()
 def get_item_details():
@@ -74,6 +92,7 @@ def create_sales_order(**kwargs):
     doc.run_method("calculate_taxes_and_totals")
     doc.save()
     doc.submit()
+    frappe.enqueue(upolad_image_in_sales_order,doc=doc,image_array=args['images'])
     return doc
 
 
