@@ -19,10 +19,10 @@ def login(usr, pwd):
         return
 
     user = frappe.get_doc('User', frappe.session.user)
-    if not user.api_keys:
+    if not user.api_key:
         api_key,api_secret=generate_keys(frappe.session.user)
     else:
-        api_key=user.api_keys
+        api_key=user.api_key
         api_secret=user.get_password("api_secret")
 
 
@@ -30,8 +30,8 @@ def login(usr, pwd):
         "success_key":1,
         "message":"Authentication success",
         "sid":frappe.session.sid,
-        "api_key":user.api_key,
-        "api_secret":user.get_password('api_secret'),
+        "api_key":api_key,
+        "api_secret":api_secret,
         "username":user.username,
         "email":user.email
     }
