@@ -28,7 +28,7 @@ def get_item_details():
     except:
         frappe.local.response['http_status_code'] = 400
         return "please pass all the required parameter. "
-    get_items=frappe.db.sql("""select i.item_code,i.item_name,i.brand,ip.image_url,sug.planned_qty,sug.sell,sug.billed,bin.actual_qty as warehouse_qty from `tabItem` as i 
+    get_items=frappe.db.sql("""select i.item_code,i.item_name,i.brand,i.mrp,ip.image_url,sug.planned_qty,sug.sell,sug.billed,bin.actual_qty as warehouse_qty from `tabItem` as i 
                         join `tabBrand` as b on b.name=i.brand 
                         left join `tabItem Profile` as ip on ip.item_code=i.item_code
                         left join `tabBin` as bin on bin.item_code=i.item_code and bin.warehouse=%(warehouse)s 
