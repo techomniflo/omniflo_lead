@@ -10,52 +10,14 @@ def get_audit_item():
     except:
         frappe.local.response['http_status_code'] = 404
         return "some fields are missing"
-    return_value = frappe.db.sql(""" 
-                    select 
-                        meta.item_code,
-                        meta.item_name,
-                        meta.brand,
-                        ip.image_url, 
-                        (meta.billed_qty - meta.sell_qty) as 'expect_qty' 
-                        from 
-                        (
-                            select 
-                            sii.item_code, 
-                            i.item_name, 
-                            si.customer, 
-                            i.brand, 
-                            sum(sii.qty * sii.conversion_factor) as billed_qty, 
-                            (
-                                select 
-                                if(
-                                    sum(dws.qty) is null, 
-                                    0, 
-                                    sum(dws.qty)
-                                ) 
-                                from 
-                                `tabDay Wise Sales` as dws 
-                                where 
-                                dws.item_code = sii.item_code 
-                                and si.customer = dws.customer
-                            ) as sell_qty 
-                            from 
-                            `tabSales Invoice` as si 
-                            join `tabSales Invoice Item` as sii on si.name = sii.parent 
-                            join `tabItem` as i on i.item_code = sii.item_code 
-                            where 
-                            si.docstatus = 1 
-                            and si.customer = %(customer)s
-                            and i.item_group = %(item_group)s 
-                            group by 
-                            si.customer, 
-                            sii.item_code
-                        ) as meta 
-                        left join `tabItem Profile` as ip on meta.item_code = ip.item_code 
-                        where 
-                        meta.billed_qty > 0 
-                        and meta.brand not in ('Sample', 'Tester')
-                        """,values=values,as_dict=True)
-    return sorted(return_value, key=lambda d: (d['expect_qty']==0,d['brand'],d['item_name']))
+    return_value = frappe.db.sql(""" select meta.item_code,i.item_name,i.sub_brand,i.brand,cb.available_qty,ip.image_url,i.mrp from 
+                                            ( select tpii.item_code,tpi.customer from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent where tpi.docstatus=1 and tpi.customer=%(customer)s
+
+                                                 union
+
+                                            select item_code,customer from (select sii.item_code,si.customer,sum(sii.qty*sii.conversion_factor) as billed_qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent where si.customer=%(customer)s and si.docstatus=1 group by sii.item_code) as base_si where base_si.billed_qty>0) as meta 
+                                 join `tabItem` as i on meta.item_code=i.item_code join `tabCustomer Bin` as cb on cb.item_code=i.item_code and cb.customer=meta.customer left join `tabItem Profile` as ip on ip.item_code=i.item_code where i.item_group=%(item_group)s order by i.brand,i.sub_brand,cb.available_qty desc """,values=values,as_dict=True)
+    return return_value
 
 def update_audit_images(doc,images):
     for count,i in enumerate(images):
