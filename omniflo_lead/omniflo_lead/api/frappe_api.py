@@ -617,4 +617,4 @@ def brand_offers(brand:str):
 def item_send_to_us(brand:str):
 	""" This API provides total quantity sent by the brand to omnipresent. """
 	values={"brand":brand}
-	frappe.db.sql(""" select sum(pri.received_qty) as qty from `tabPurchase Receipt` as pr join `tabPurchase Receipt Item` as pri on pr.name=pri.parent join `tabItem` as i on i.item_code=pri.item_code where i.brand=%(brand)s and pr.docstatus=1 """,values=values,as_dict=True)
+	return frappe.db.sql(""" select sum(pri.received_qty) as qty from `tabPurchase Receipt` as pr join `tabPurchase Receipt Item` as pri on pr.name=pri.parent join `tabItem` as i on i.item_code=pri.item_code where i.brand=%(brand)s and pr.docstatus=1 """,values=values,as_dict=True)
