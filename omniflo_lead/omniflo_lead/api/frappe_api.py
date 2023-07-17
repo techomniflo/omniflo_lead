@@ -400,12 +400,12 @@ def audit_data():
 @frappe.whitelist()
 def warehouse_quantity():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select i.item_name,i.item_code,b.actual_qty as qty from `tabBin` as b join `tabItem` as i on i.item_code=b.item_code where b.warehouse="Kormangala WareHouse - OS" and i.brand=%(brand)s""",values=values,as_dict=True)
+	return frappe.db.sql("""select i.item_name,i.sub_brand,i.brand,i.item_code,b.actual_qty as qty from `tabBin` as b join `tabItem` as i on i.item_code=b.item_code where b.warehouse="Kormangala WareHouse - OS" and i.brand=%(brand)s""",values=values,as_dict=True)
 
 @frappe.whitelist()
 def deployed_quantity():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select c.customer_name,c.customer_id,cb.customer ,i.item_name,i.item_code,cb.available_qty as qty from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code join `tabCustomer` as c on c.name=cb.customer where i.brand=%(brand)s and cb.available_qty!=0 and c.customer_status='Live' """,values=values,as_dict=True)
+	return frappe.db.sql("""select c.customer_name,c.customer_id,cb.customer ,i.item_name,i.item_code,i.sub_brand,i.brand,cb.available_qty as qty from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code join `tabCustomer` as c on c.name=cb.customer where i.brand=%(brand)s and cb.available_qty!=0 and c.customer_status='Live' """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def customer_profile():
@@ -581,7 +581,7 @@ def age_and_gender():
 @frappe.whitelist()
 def calculate_sales_date_wise():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select DATE_FORMAT(dws.date,'%%d-%%m-%%y') as date ,dws.customer,dws.qty,dws.item_code,i.brand,dws.sale_from,i.item_name,(i.mrp*dws.qty) as gmv,dws.age,dws.gender,c.customer_id from `tabDay Wise Sales` as dws join `tabItem` as i on i.name=dws.item_code join `tabCustomer` as c on c.name=dws.customer where i.brand=%(brand)s order by dws.date """,values=values,as_list=True)
+	return frappe.db.sql("""select DATE_FORMAT(dws.date,'%%d-%%m-%%y') as date ,dws.customer,dws.qty,dws.item_code,i.brand,i.sub_brand,i,dws.sale_from,i.item_name,(i.mrp*dws.qty) as gmv,dws.age,dws.gender,c.customer_id from `tabDay Wise Sales` as dws join `tabItem` as i on i.name=dws.item_code join `tabCustomer` as c on c.name=dws.customer where i.brand=%(brand)s order by dws.date """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def item():
