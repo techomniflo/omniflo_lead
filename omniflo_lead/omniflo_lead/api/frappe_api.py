@@ -34,14 +34,15 @@ def is_active_brand():
 @frappe.whitelist()
 def total_live_store():
     values={"brand":frappe.request.args["brand"]}
-    count_of_store = frappe.db.sql("""select count(*) from 
-    (select 
-        distinct si.customer,
-        (select sum(SII.conversion_factor*SII.qty) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent join `tabItem` as I on I.item_code=SII.item_code where I.brand=i.brand and SI.docstatus=1 and SI.customer=si.customer) as billed_qty,
-        (select sum(cb.available_qty) from `tabCustomer Bin` as cb join `tabItem` as I on I.item_code=cb.item_code where I.brand=i.brand and cb.customer=si.customer) as available_qty,
-        c.customer_status as 'status' 
-    from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent  join `tabItem` as i  on i.item_code=sii.item_code join `tabCustomer` as c on c.name=si.customer where si.docstatus=1 and i.brand=%(brand)s ) as meta 
-where meta.status="Live" and meta.available_qty>0
+    count_of_store = frappe.db.sql("""
+		select count(*) from (
+			select distinct meta.customer from  
+				(
+					select si.customer,sum(sii.qty) as billed_qty ,(select sum(cb.available_qty) from `tabCustomer Bin` as cb join `tabItem` as I on I.item_code=cb.item_code where I.brand=i.brand and cb.customer=si.customer) as available_qty from `tabSales Invoice` as si  join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code join `tabCustomer` as c on c.name=si.customer where i.brand=%(brand)s and si.docstatus=1 and c.customer_status='Live' group by si.customer ) as meta where meta.billed_qty>0 and meta.available_qty>0
+
+				union
+			
+			select distinct tpi.customer from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as  tpii on tpi.name=tpii.parent join `tabItem` as i on i.item_code=tpii.item_code join `tabCustomer` as c  on c.name=tpi.customer join `tabCustomer Bin` as cb on cb.customer=c.name and i.item_code=cb.item_code  where c.customer_status='Live' and i.brand=%(brand)s and cb.available_qty>0 ) as no_store
     """,values=values,as_list=True)
     return count_of_store
 
@@ -410,11 +411,12 @@ def deployed_quantity():
 @frappe.whitelist()
 def customer_profile():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select meta.customer,meta.customer_name,meta.customer_id,if(meta.available_qty=0 and meta.status='Live','Dormant',meta.status) as customer_status,meta.start_date,cp.name1 as google_name,cp.sub_type,cp.address,cp.link as map_link,cp.image_url,cp.latitude,cp.longitude,cp.rating,cp.review_count,cp.store_timings,cp.daily_footfall,cp.delivery,cp.number_of_aisles_inside_the_store as asile,cp.number_of_floors,cp.average_order_value,cp.brand_present,cp.locality_area,cp.type,cp.brand_priority,cp.area,cp.number_of_floors 
-							from 
-								(select distinct si.customer,c.customer_name,c.customer_id,(select sum(SII.conversion_factor*SII.qty) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent join `tabItem` as I on I.item_code=SII.item_code where I.brand=i.brand and SI.docstatus=1 and SI.customer=si.customer) as billed_qty,(select sum(cb.available_qty) from `tabCustomer Bin` as cb join `tabItem` as I on I.item_code=cb.item_code where I.brand=i.brand and cb.customer=si.customer) as available_qty,(select min(posting_date) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent join `tabItem` as I on I.item_code=SII.item_code where SI.docstatus=1 and I.brand=i.brand and SI.customer=si.customer) as start_date,c.customer_status as 'status' from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent  join `tabItem` as i  on i.item_code=sii.item_code join `tabCustomer` as c on c.name=si.customer where si.docstatus=1 and i.brand=%(brand)s  ) as meta
-							left join 
-							`tabCustomer Profile` as cp on cp.customer=meta.customer""",values=values,as_dict=True)
+	return frappe.db.sql("""
+			select meta.customer,c.customer_name,c.customer_id,if(meta.available_qty<=0 and c.customer_status='Live','Dormant',c.customer_status) as customer_status,meta.start_date,cp.name1 as google_name,cp.sub_type,cp.address,cp.link as map_link,cp.image_url,cp.latitude,cp.longitude,cp.rating,cp.review_count,cp.store_timings,cp.daily_footfall,cp.delivery,cp.number_of_aisles_inside_the_store as asile,cp.number_of_floors,cp.average_order_value,cp.brand_present,cp.locality_area,cp.type,cp.brand_priority,cp.area,cp.number_of_floors from (
+					select distinct si.customer,min(si.posting_date) as start_date,(select sum(cb.available_qty) from `tabCustomer Bin` as cb join `tabItem` as I on cb.item_code=I.item_code where si.customer=cb.customer and I.brand=i.brand ) as available_qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where i.brand=%(brand)s and si.docstatus=1 group by si.customer
+						union
+					select distinct tpi.customer,null as start_date,(select sum(cb.available_qty) from `tabCustomer Bin` as cb join `tabItem` as I on cb.item_code=I.item_code where tpi.customer=cb.customer and I.brand=i.brand) as available_qty from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent join `tabItem` as i on i.item_code=tpii.item_code where i.brand=%(brand)s and tpi.docstatus=1 ) as meta left join `tabCustomer` as c on c.name=meta.customer left join `tabCustomer Profile` as cp on cp.customer=c.name
+			""",values=values,as_dict=True)
 
 @frappe.whitelist()
 def calculate_gmv():
