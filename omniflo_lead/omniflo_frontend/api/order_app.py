@@ -95,6 +95,11 @@ def create_sales_order(**kwargs):
     frappe.enqueue(upolad_image_in_sales_order,doc=doc,image_array=args['images'])
     return doc
 
+@frappe.whitelist()
+def get_sales_orders():
+    user=frappe.session.user
+    return frappe.db.sql("""  select so.name,so.creation,so.transaction_date ,so.customer_name, so.delivery_date ,so.set_warehouse, so.customer, so.selling_price_list,so.status,so.set_warehouse,so.total_taxes_and_charges,so.base_total,so.base_rounded_total from `tabSales Order` as so where so.owner=%(owner)s and so.naming_series='SAL-ORD-.YYYY.-' order by name desc limit 20  """,values={'owner':user},as_dict=True)
+
 
 
 
