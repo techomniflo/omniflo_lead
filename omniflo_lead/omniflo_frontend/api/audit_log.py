@@ -74,4 +74,4 @@ def pending_audits_list():
 def stores_audited_today():
     """ This API provides a list of stores that were audited today. """
     user=frappe.session.user
-    return frappe.db.sql(""" select count(*) as count,al.customer from  `tabAudit Log` as al where al.docstatus=1 and date(al.posting_date)=curdate() and al.owner=%()s group by al.customer """,values={'owner':user},as_dict=True)
+    return frappe.db.sql(""" select count(*) as count,al.customer from  `tabAudit Log` as al where al.docstatus=1 and date(al.posting_date)=curdate() and al.owner=%(owner)s group by al.customer """,values={'owner':user},as_dict=True)
