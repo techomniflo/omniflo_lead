@@ -70,8 +70,7 @@ def pending_audits_list():
     user=frappe.session.user
     return frappe.db.sql(""" select al.customer,DATEDIFF(curdate(),date(al.posting_date)) days from `tabAudit Log`  as al join (select AL.customer,max(posting_date) as posting_date from `tabAudit Log` as AL where AL.docstatus=1 group by AL.customer) as meta on meta.customer=al.customer and meta.posting_date=al.posting_date join `tabCustomer` as c on c.name=al.customer where c.customer_status='Live' and al.docstatus=1 and al.owner=%(owner)s order by days desc """,values={"owner":user},as_dict=True)
 
-@frappe.whitelist()
-def stores_audited_today():
+@frappe.whitelist(allow_guest=True)
+def stores_audited_today(user):
     """ This API provides a list of stores that were audited today. """
-    user=frappe.session.user
     return frappe.db.sql(""" select count(*) as count,al.customer from  `tabAudit Log` as al where al.docstatus=1 and date(al.posting_date)=curdate() and al.owner=%(owner)s group by al.customer """,values={'owner':user},as_dict=True)
