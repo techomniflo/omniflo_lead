@@ -15,6 +15,7 @@
   "column_break_2",
   "tentative_value",
   "section_break_4",
+  "asset_configuration",
   "shelf_code",
   "column_break_6",
   "shelf_name",
@@ -159,11 +160,17 @@
    "fieldname": "tentative_value",
    "fieldtype": "Currency",
    "label": "Tentative Value"
+  },
+  {
+   "fieldname": "asset_configuration",
+   "fieldtype": "Select",
+   "label": "Asset Configuration",
+   "options": "\nSpotlight\nFull Endcap\nSplit Endcap"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-22 18:05:17.478502",
+ "modified": "2023-07-24 19:04:07.952559",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Planogram",
