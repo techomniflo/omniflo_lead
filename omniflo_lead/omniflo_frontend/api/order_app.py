@@ -100,6 +100,27 @@ def get_sales_orders(user):
     """ This API provides a list of sales orders created by a user, limited to a length of 20. """
     return frappe.db.sql("""  select so.name,so.creation,so.transaction_date ,so.customer_name, so.delivery_date ,so.set_warehouse, so.customer, so.selling_price_list,so.status,so.set_warehouse,so.total_taxes_and_charges,so.base_total,so.base_rounded_total from `tabSales Order` as so where so.owner=%(owner)s and so.naming_series='SAL-ORD-.YYYY.-' order by name desc limit 20  """,values={'owner':user},as_dict=True)
 
+@frappe.whitelist(allow_guest=True)
+def get_sales_order_items_details(doc_name):
+    """ This API provides the items for a specific sales order, which is provided by the user. """
+    return frappe.db.sql("""  select sii.item_code,sii.item_name,i.mrp,i.brand,i.sub_brand,sii.rate,sii.qty*sii.conversion_factor as qty,sii.qty*sii.rate*sii.conversion_factor as amount from `tabSales Order Item` as sii join `tabItem`as i on i.item_code=sii.item_code where sii.parent=%(name)s  """,values={'name':doc_name},as_dict=True)
+
+@frappe.whitelist()
+def cancel_sales_order(doc_name):
+    """ This api is used to cancel sales order """
+    
+    try:
+        doc=frappe.get_doc('Sales Order',doc_name)
+        doc.cancel()
+        frappe.db.commit()
+        return 'Successful'
+    except Exception as e:
+        frappe.local.response['http_status_code'] = 500
+        return e
+
+
+
+
 
 
 
