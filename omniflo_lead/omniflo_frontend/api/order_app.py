@@ -103,7 +103,7 @@ def get_sales_orders(user):
 @frappe.whitelist(allow_guest=True)
 def get_sales_order_items_details(doc_name):
     """ This API provides the items for a specific sales order, which is provided by the user. """
-    return frappe.db.sql("""  select sii.item_code,sii.item_name,i.mrp,i.brand,i.sub_brand,sii.rate,sii.qty*sii.conversion_factor as qty,sii.qty*sii.rate*sii.conversion_factor as amount from `tabSales Order Item` as sii join `tabItem`as i on i.item_code=sii.item_code where sii.parent=%(name)s  """,values={'name':doc_name},as_dict=True)
+    return frappe.db.sql("""  select sii.item_code,sii.item_name,i.mrp,i.brand,i.sub_brand,sii.rate,sii.qty*sii.conversion_factor as qty,sii.qty*sii.rate*sii.conversion_factor as amount,ip.image_url from `tabSales Order Item` as sii join `tabItem`as i on i.item_code=sii.item_code left join `tabItem Profile` as ip on ip.item_code=i.item_code where sii.parent=%(name)s  """,values={'name':doc_name},as_dict=True)
 
 @frappe.whitelist()
 def cancel_sales_order(doc_name):
