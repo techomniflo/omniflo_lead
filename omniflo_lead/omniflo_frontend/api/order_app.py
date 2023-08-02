@@ -128,7 +128,7 @@ def cancel_sales_order(doc_name):
 
 def validate_cancel_sales_order(docname,doctype="Sales Order"):
     link_info={'Sales Invoice': {'child_doctype': 'Sales Invoice Item','fieldname': ['sales_order'],'doctype': 'Sales Invoice'}}
-    linked_doctype=get_linked_docs(doctype=doctype,docname=docname,link_info=link_info)
+    linked_doctype=get_linked_docs(doctype=doctype,name=docname,link_info=link_info)
     for link in linked_doctype["Sales Invoice"]:
         if link['docstatus'] ==1:
             frappe.local.response['http_status_code'] = 409
