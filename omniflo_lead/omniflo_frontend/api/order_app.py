@@ -109,7 +109,8 @@ def get_sales_order_items_details(doc_name):
 @frappe.whitelist()
 def cancel_sales_order(doc_name):
     """ This api is used to cancel sales order """
-    validate_cancel_sales_order(docname=doc_name)
+    if validate_cancel_sales_order(docname=doc_name) :
+        return
     doc=frappe.get_doc('Sales Order',doc_name)
 
     #check if sales order already cancelled.
@@ -120,26 +121,22 @@ def cancel_sales_order(doc_name):
         return
     try:
         doc.cancel()
-        frappe.db.commit()
         return 'Successful'
     except Exception as e:
         frappe.local.response['http_status_code'] = 500
         return e
 
 def validate_cancel_sales_order(docname,doctype="Sales Order"):
-    link_info={'Sales Invoice': {'child_doctype': 'Sales Invoice Item','fieldname': ['sales_order'],'doctype': 'Sales Invoice'}}
-    linked_doctype=get_linked_docs(doctype=doctype,name=docname,link_info=link_info)
-    for link in linked_doctype["Sales Invoice"]:
-        if link['docstatus'] ==1:
-            frappe.local.response['http_status_code'] = 409
-            frappe.local.response['message']=f"Order is already linked to Sales Invoice ( {link['name']} )"
-            return 
-        elif link['docstatus'] ==0:
-            frappe.local.response['http_status_code'] = 422
-            frappe.local.response['message']=f"Cannot cancel order in progress ,linked to Sales Invoice ( {link['name']} )"
-            return 
-
-
-
-
-
+    linkinfo={'Sales Invoice': {'child_doctype': 'Sales Invoice Item','fieldname': ['sales_order'],'doctype': 'Sales Invoice'}}
+    linked_doctype=get_linked_docs(doctype=doctype,name=docname,linkinfo=linkinfo)
+    if "Sales Invoice" in linked_doctype:
+        for link in linked_doctype["Sales Invoice"]:
+            if link['docstatus'] ==1:
+                frappe.local.response['http_status_code'] = 409
+                frappe.local.response['message']=f"Order is already linked to Sales Invoice ( {link['name']} )"
+                return True
+            elif link['docstatus'] ==0:
+                frappe.local.response['http_status_code'] = 422
+                frappe.local.response['message']=f"Cannot cancel order in progress ,linked to Sales Invoice ( {link['name']} )"
+                return True
+    return False
