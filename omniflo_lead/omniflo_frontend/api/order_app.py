@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 import frappe
+from frappe.desk.form.linked_with import get_linked_docs
 from frappe.utils import add_days, cint, formatdate, get_datetime, getdate, random_string, now
 
 @frappe.whitelist()
@@ -108,9 +109,16 @@ def get_sales_order_items_details(doc_name):
 @frappe.whitelist()
 def cancel_sales_order(doc_name):
     """ This api is used to cancel sales order """
-    
+    validate_cancel_sales_order(docname=doc_name)
+    doc=frappe.get_doc('Sales Order',doc_name)
+
+    #check if sales order already cancelled.
+
+    if doc.docstatus==2:
+        frappe.local.response['http_status_code'] = 422
+        frappe.local.response['message']=" Order Already Cancelled. "
+        return
     try:
-        doc=frappe.get_doc('Sales Order',doc_name)
         doc.cancel()
         frappe.db.commit()
         return 'Successful'
@@ -118,7 +126,18 @@ def cancel_sales_order(doc_name):
         frappe.local.response['http_status_code'] = 500
         return e
 
-
+def validate_cancel_sales_order(docname,doctype="Sales Order"):
+    link_info={'Sales Invoice': {'child_doctype': 'Sales Invoice Item','fieldname': ['sales_order'],'doctype': 'Sales Invoice'}}
+    linked_doctype=get_linked_docs(doctype=doctype,docname=docname,link_info=link_info)
+    for link in linked_doctype["Sales Invoice"]:
+        if link['docstatus'] ==1:
+            frappe.local.response['http_status_code'] = 409
+            frappe.local.response['message']=f"Order is already linked to Sales Invoice ( {link['name']} )"
+            return 
+        elif link['docstatus'] ==0:
+            frappe.local.response['http_status_code'] = 422
+            frappe.local.response['message']=f"Cannot cancel order in progress ,linked to Sales Invoice ( {link['name']} )"
+            return 
 
 
 
