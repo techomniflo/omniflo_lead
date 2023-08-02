@@ -115,7 +115,7 @@ def cancel_sales_order(doc_name):
     #check if sales order already cancelled.
 
     if doc.docstatus==2:
-        frappe.local.response['http_status_code'] = 422
+        frappe.local.response['http_status_code'] = 410
         frappe.local.response['message']=" Order Already Cancelled. "
         return
     try:
