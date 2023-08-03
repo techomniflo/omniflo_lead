@@ -406,11 +406,7 @@ def warehouse_quantity():
 @frappe.whitelist()
 def deployed_quantity():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select c.customer_id,c.customer_name ,meta.item_code,meta.item_name,meta.sub_brand,meta.brand,meta.customer,meta.billed_qty-meta.sell_qty as qty
-		      from (
-					select sum(sii.qty*sii.conversion_factor) as billed_qty ,sii.item_code,i.item_name,i.sub_brand,i.brand,si.customer,(select if(sum(dws.qty),sum(dws.qty),0) from `tabDay Wise Sales` as dws where dws.customer=si.customer and dws.item_code=i.item_code) as sell_qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where i.brand=%(brand)s and si.docstatus=1  group by si.customer , sii.item_code
-					) as meta 
-		      join `tabCustomer` as c on c.name=meta.customer where c.customer_status='Live' and meta.billed_qty>0 order by meta.customer,qty desc""",values=values,as_dict=True)
+	return frappe.db.sql("""select c.customer_name,c.customer_id,cb.customer ,i.item_name,i.item_code,i.sub_brand,i.brand,cb.available_qty as qty from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code join `tabCustomer` as c on c.name=cb.customer where i.brand=%(brand)s and cb.available_qty!=0 and c.customer_status='Live' """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def customer_profile():
