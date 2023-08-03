@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 import frappe
+from frappe.model.docstatus import DocStatus
 from frappe.desk.form.linked_with import get_linked_docs
 from frappe.utils import add_days, cint, formatdate, get_datetime, getdate, random_string, now
 
@@ -167,6 +168,6 @@ def cancel_sales_order_efficiency(sales_order):
 	doc_list=frappe.db.get_list('Sales Order Efficiency',filters={'sales_order': sales_order,'docstatus':1})
 	for i in doc_list:
 		doc=frappe.get_doc("Sales Order Efficiency",i['name'])
-		doc.cancel()
-		frappe.db.commit()
+		doc.docstatus = DocStatus.cancelled()
+		doc.save(ignore_permissions=True)
 
