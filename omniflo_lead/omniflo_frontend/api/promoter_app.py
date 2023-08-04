@@ -148,7 +148,13 @@ def get_customer_location():
 @frappe.whitelist(allow_guest=True)
 def get_items(customer):
 	values={"customer":customer}
-	data=frappe.db.sql("""select i.sub_brand,i.item_name,i.item_code,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where i.brand not in ('Sample','Tester') and si.docstatus=1 and si.customer=%(customer)s and 0<(select sum(SII.qty) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent where SI.docstatus=1 and SI.company=si.company and SI.customer=si.customer and SII.item_code=sii.item_code) group by i.sub_brand,i.item_name,i.item_code,i.mrp""",values=values,as_dict=True)
+	data=frappe.db.sql("""select i.sub_brand,i.item_name,i.item_code,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where i.brand not in ('Sample','Tester') and si.docstatus=1 and si.customer=%(customer)s and 0<(select sum(SII.qty) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent where SI.docstatus=1 and SI.company=si.company and SI.customer=si.customer and SII.item_code=sii.item_code) group by i.sub_brand,i.item_name,i.item_code,i.mrp
+		    		
+		    		union
+	
+				select i.sub_brand,i.item_name,i.item_code,i.mrp from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent join `tabItem` as i on i.item_code=tpii.item_code where tpi.docstatus=1 and tpi.customer=%(customer)s
+		    	
+		    """,values=values,as_dict=True)
 	brand_details={}
 	for i in data:
 		if i['sub_brand'] not in brand_details:
