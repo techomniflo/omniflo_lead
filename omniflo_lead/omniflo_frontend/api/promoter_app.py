@@ -123,9 +123,12 @@ def create_promoter_sales_capture(**kwargs):
 	psc_doc.customer=kwargs['customer']
 	psc_doc.promoter=kwargs['promoter']
 	psc_doc.qty=kwargs['qty']
-	psc_doc.brand=kwargs['brand']
 	psc_doc.item_name=kwargs['item_name']
 	psc_doc.item_code=kwargs['item_code']
+
+	item=frappe.get_doc('Item',kwargs['item_code'])
+	psc_doc.brand=item.brand
+
 	if 'age' in kwargs:
 		psc_doc.age=kwargs['age']
 	if 'gender' in kwargs:
