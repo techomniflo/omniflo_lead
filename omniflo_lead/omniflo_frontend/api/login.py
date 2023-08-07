@@ -47,7 +47,7 @@ def generate_keys(user):
         user_details.api_key = api_key
 
     user_details.api_secret = api_secret
-    user_details.save()
+    user_details.save(ignore_permissions=True)
     frappe.db.commit()
-
+    user_details.reload()
     return api_key,api_secret

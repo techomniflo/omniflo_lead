@@ -20,7 +20,7 @@ def run_day_sales():
 
 
 def day_sales():
-	gmv_data=calculate_gmv()
+	gmv_data=calculate_gmv() + third_party_sales()
 	
 	frappe.db.sql("""TRUNCATE TABLE `tabDay Wise Sales`;""")
 	frappe.db.commit()
@@ -37,6 +37,9 @@ def day_sales():
 		doc.save(ignore_permissions=True)
 	frappe.db.commit()
 	
+def third_party_sales():
+	return frappe.db.sql(""" select to_char(psc.posting_date,'DD-MM-YY') as 'date',psc.customer,psc.qty,psc.item_code,'promoter' as 'sale_from',psc.age,psc.gender from `tabPromoter Sales Capture` as psc where (psc.customer,psc.item_code) in (select tpi.customer,tpii.item_code from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent where tpi.docstatus=1)  """,as_list=True)
+
 @frappe.whitelist(allow_guest=True)
 def calculate_gmv():
 
