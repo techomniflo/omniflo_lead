@@ -55,7 +55,8 @@ def post_audit_log():
                 "items":items,
                 "details":images,
                 "latitude": kwargs['latitude'] if "latitude" in kwargs else "",
-                "longitude":kwargs['longitude'] if "longitude" in kwargs else ""
+                "longitude":kwargs['longitude'] if "longitude" in kwargs else "",
+                "facing":kwargs["facing"] if "facing" in kwargs else 0
 			}
 		).save(ignore_permissions=True)
     doc.submit()
