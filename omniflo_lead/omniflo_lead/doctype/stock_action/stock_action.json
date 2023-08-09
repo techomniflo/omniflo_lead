@@ -1,0 +1,173 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-07-26 17:47:51.786983",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "posting_date",
+  "posting_time",
+  "from_warehouse",
+  "to_warehouse",
+  "stock_entry",
+  "column_break_rpzyr",
+  "reason_type",
+  "de_from",
+  "customer",
+  "purchase_receipt",
+  "supplier",
+  "reason",
+  "section_break_dprns",
+  "images",
+  "items",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fetch_if_empty": 1,
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "default": "Now",
+   "fetch_if_empty": 1,
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Posting Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "from_warehouse",
+   "fieldtype": "Link",
+   "label": "Default Source Warehouse",
+   "mandatory_depends_on": "eval:(doc.reason_type==\"Damage\" || doc.reason_type==\"Expiry\")",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "to_warehouse",
+   "fieldtype": "Link",
+   "label": "Default Target Warehouse",
+   "mandatory_depends_on": "eval:(doc.reason_type==\"Damage\" || doc.reason_type==\"Expiry\")",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason"
+  },
+  {
+   "default": "Omnipresent Services",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "depends_on": "eval:doc.de_from==\"Customer\"",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "mandatory_depends_on": "eval:doc.de_from==\"Customer\"",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Stock Action",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_rpzyr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reason_type",
+   "fieldtype": "Select",
+   "label": "Reason Type",
+   "options": "Damage\nExpiry"
+  },
+  {
+   "fieldname": "section_break_dprns",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "images",
+   "fieldtype": "Table",
+   "label": "Images",
+   "options": "Stock Action Image"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Stock Action Item"
+  },
+  {
+   "depends_on": "eval:doc.de_from==\"Supplier\"",
+   "fieldname": "purchase_receipt",
+   "fieldtype": "Link",
+   "label": "Purchase Receipt",
+   "mandatory_depends_on": "eval:doc.de_from==\"Supplier\"",
+   "options": "Purchase Receipt"
+  },
+  {
+   "depends_on": "eval:(doc.reason_type==\"Sampling\" || doc.de_from==\"Supplier\")",
+   "fetch_from": "purchase_receipt.supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "mandatory_depends_on": "eval:doc.reason_type==\"Sampling\"",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock Entry",
+   "options": "Stock Entry",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:(doc.reason_type==\"Damage\" || doc.reason_type==\"Expiry\")",
+   "fieldname": "de_from",
+   "fieldtype": "Select",
+   "label": "Damage/Expiry From",
+   "options": "Warehouse\nCustomer\nSupplier"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-08-09 19:38:47.524285",
+ "modified_by": "Administrator",
+ "module": "Omniflo Lead",
+ "name": "Stock Action",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
