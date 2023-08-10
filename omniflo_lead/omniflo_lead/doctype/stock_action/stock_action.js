@@ -2,14 +2,36 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Stock Action', {
-	// refresh: function(frm) {
+	refresh: function(frm) {
+		frm.fields_dict['from_warehouse'].get_query = function(doc) {
+			return {
+				filters: {
+					"company": frm.doc.company,
+					"warehouse_type":"Transit"
+				}
+			}
+		},
+		frm.fields_dict['to_warehouse'].get_query = function(doc) {
+			return {
+				filters: {
+					"company": frm.doc.company,
+					"warehouse_type":frm.doc.reason_type
+				}
+			}
+		},
+		frm.fields_dict['purchase_receipt'].get_query = function(doc) {
+			return {
+				filters: {
+					"docstatus":1
+				}
 
-	// }
+				}
+			}
+		}
 });
 function set_item(frm,cdt,cdn) {
 	let item = locals[cdt][cdn];
 	if (item.item_code){
-		console.log("hello")
 		frappe.call({
 			args:{
 				item_code:item.item_code,
