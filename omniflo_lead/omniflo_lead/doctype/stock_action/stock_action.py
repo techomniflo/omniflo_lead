@@ -26,8 +26,34 @@ class StockAction(Document):
 		# if user amend or duplicate then it doesnot contain stock entry value
 		if self.docstatus==0:
 			self.stock_entry=""
+		if self.de_from=="Supplier":
+			self.check_pr_item()
 		self.check_actual_qty()
 	
+	def check_pr_item(self):
+		if (self.docstatus == 1 and self.purchase_receipt):
+			pr=frappe.get_doc("Purchase Receipt",self.purchase_receipt)
+			# It checks for warehouse
+			if pr.set_warehouse!=self.from_warehouse:
+				frappe.throw(_("In Purchase Receipt accepted warehouse is {0} and in Stock Action warehouse is {1} both are different.").format(frappe.bold(pr.set_warehouse),frappe.bold(self.from_warehouse)),title=_("Warehouse difference error"))
+			
+			items=pr.as_dict()["items"]
+			pr_items_dict={}
+			for item in items:
+				if item["item_code"] not in pr_items_dict:
+					pr_items_dict[item["item_code"]]=item["stock_qty"]
+				else:
+					pr_items_dict[item["item_code"]]+=item["stock_qty"]
+
+			for item in self.items:
+				item_code=item.item_code
+				item_name=item.item_name
+				#checking if item and qty is correct or not
+				if item_code not in pr_items_dict:
+					frappe.throw(_("Row {2}:Item {0} ({1}) not in Purchase Receipt but It is in Stock Action").format(frappe.bold(item_code),item_name,item.idx),title=_("Item Mismatch"))
+				elif item.transfer_qty>pr_items_dict[item_code]:
+					frappe.throw(_("Row {2}:Qty of Item {0} ({1}) is greater than qty in Purchase Receipt").format(frappe.bold(item_code),item_name,item.idx),title=_("Qty Mismatch"))
+
 	def check_actual_qty(self):
 		for d in self.get("items"):
 			previous_sle = get_previous_sle(
