@@ -149,7 +149,7 @@ def change_sales_order_status(doc,status):
     for orders in sales_orders:
         try:
             doc=frappe.get_doc("Sales Order",orders)
-            if status=='Closed' and doc.status not in ["Closed","Cancelled"]:
+            if status=='Closed' and doc.status not in ["Closed","Cancelled","Completed"]:
                 update_status(status='Closed',name=orders)
             elif status=='Re-Open' and doc.status in ["Closed"]:
                 update_status(status="Draft",name=orders)
