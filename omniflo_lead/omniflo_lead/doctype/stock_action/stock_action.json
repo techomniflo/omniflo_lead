@@ -1,12 +1,14 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2023-07-26 17:47:51.786983",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
   "company",
   "posting_date",
   "posting_time",
@@ -143,12 +145,18 @@
    "fieldtype": "Select",
    "label": "Damage/Expiry From",
    "options": "Warehouse\nCustomer\nSupplier"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "STK-ACN-"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-09 19:38:47.524285",
+ "modified": "2023-08-13 01:48:52.548126",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Stock Action",
