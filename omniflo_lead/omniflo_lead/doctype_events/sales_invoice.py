@@ -142,6 +142,8 @@ def createQR(name, invoiceNo, amount, email=None, contact=None, gstin=None, note
     return ic
 
 def change_sales_order_status(doc,status):
+    if doc.is_return:
+        return
     sales_orders=set()
     for item in doc.items:
         if item.sales_order:
