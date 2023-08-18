@@ -2,9 +2,19 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
 
 class Reconciliation(Document):
+	def validate(self):
+		for item in self.items:
+			if item.quantity==None:
+				frappe.throw(
+						_("Row {0}: No quantity is filled , Please fill the qty").format(_(item.idx)), title=_("Warning")
+					)
+			bin_list=frappe.get_list('Bin',filters={"item_code":item.item_code,"warehouse":self.default_warehouse},fields='*')
+			if not len(bin_list):
+				frappe.throw(_("Row {0}: {1}({2}) is not received yet please remove the row ").format(_(item.idx),_(item.item_code),_(item.item_name)),title=_("Warning"))
 
 	@frappe.whitelist()
 	def fetch_brands_item(self,brand):
@@ -22,7 +32,7 @@ class Reconciliation(Document):
 
 	def before_save(self):
 		for item in self.items:
-			item.difference=item.quantity-item.current_quantity
+				item.difference=item.quantity-item.current_quantity
 	
 	
 	@frappe.whitelist()
@@ -46,4 +56,7 @@ class Reconciliation(Document):
 @frappe.whitelist()
 def get_current_qty(item_code,warehouse):
 	item_actual_qty=frappe.db.sql(""" select b.actual_qty as current_qty from `tabBin` as b where b.item_code=%(item_code)s and b.warehouse=%(warehouse)s """,values={'warehouse':warehouse,'item_code':item_code},as_list=True)
-	return item_actual_qty[0][0]
+	try:
+		return item_actual_qty[0][0]
+	except IndexError as e:
+		frappe.throw(_("{0} is not Received yet .<br> Kindly remove row.").format(_(item_code)),title=(_("Warning")))
