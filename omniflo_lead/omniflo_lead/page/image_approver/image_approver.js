@@ -173,10 +173,11 @@ let callback_return =function (wrapper,data){
 		var full_name = data[index]['full_name']
 		var brand1=data[index]['brand1']
 		var brand2=data[index]['brand2']
+		var doctype=data[index]['doctype']
 		if (index==0){
 			console.log("if index is 0")
 			$(frappe.render_template("image_approver", 
-				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name,brand1:brand1,brand2:brand2})).appendTo(page.body);
+				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name,doctype:doctype,brand1:brand1,brand2:brand2})).appendTo(page.body);
 				$("#reason_div").hide();
 				show_brand(brand1,brand2,picture_type)
 				page.remove_inner_button('Submit')
@@ -187,7 +188,7 @@ let callback_return =function (wrapper,data){
 			page.body.empty()
 			console.log("The image link is",data[0]['image'])
 			$(frappe.render_template("image_approver", 
-				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name,brand1:brand1,brand2:brand2})).appendTo(page.body);
+				{customer:customer,image:image,picture_type:picture_type,date_and_time:date_and_time,full_name:full_name,doctype:doctype,brand1:brand1,brand2:brand2})).appendTo(page.body);
 			$("#reason_div").hide();
 			show_brand(brand1,brand2,picture_type)
 			page.remove_inner_button('Submit')
