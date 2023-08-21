@@ -195,9 +195,8 @@ def file_upload_to_s3(doc, method):
 			parent_name
 		)
 
-		file_url = '{}/{}/{}'.format(
-				s3_upload.S3_CLIENT.meta.endpoint_url,
-				s3_upload.BUCKET,
+		file_url = '{}/{}'.format(
+				"https://files.omniflo.in",
 				key
 		)
 		os.remove(file_path)
