@@ -149,11 +149,15 @@ def unit_sold():
 # It gives image with customer name
 @frappe.whitelist()
 def image_api():
-	# values={"brand":frappe.request.args["brand"]}
-	# image_with_customer_name=frappe.db.sql("""select distinct(ald.image),ald.status as status,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ald.creation as image_date from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code where ali.current_available_qty > 0 and i.brand=%(brand)s and ald.image is not null and ald.status='Approve' order by ald.creation desc;""",values=values,as_dict=True)
 	values={"brand":'%'+frappe.request.args["brand"]+'%'}
-	return frappe.db.sql(""" select al.posting_date as image_date,al.customer,c.customer_id,c.customer_name,(select cp.name1 from `tabCustomer Profile` as cp where cp.customer=al.customer) as google_name,ald.image,ald.item_code as image_type,ald.status from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabCustomer` as c on c.name=al.customer where status='Approve' and approved_brand is not null and approved_brand LIKE %(brand)s group by date(al.posting_date),al.customer,ald.item_code order by al.posting_date desc  """,values=values,as_dict=True)
+	return frappe.db.sql(""" with cte as (
 
+									select al.posting_date as image_date,al.customer,c.customer_id,c.customer_name,(select cp.name1 from `tabCustomer Profile` as cp where cp.customer=al.customer) as google_name,ald.image,ald.item_code as image_type,ald.status from `tabAudit Log Details` as ald join `tabAudit Log` as al on al.name=ald.parent join `tabCustomer` as c on c.name=al.customer where status='Approve'  and approved_brand is not null and approved_brand LIKE %(brand)s
+									union
+									select osi.creation as image_date,osi.customer,c.customer_id,c.customer_name,(select cp.name1 from `tabCustomer Profile` as cp where cp.customer=c.name) as google_name,osii.image,osii.type as image_type,osii.status from `tabOmniverse Store Image` as osi join `tabOmniverse Store Image Items` as osii on osi.name=osii.parent left join `tabCustomer` as c on c.name=osi.customer where osii.image is not null and osii.`status`='Approve' and osii.approved_brand LIKE %(brand)s
+         								) 
+							select * from cte where cte.image_date in ( select max(m.image_date) from cte as m where m.customer=cte.customer and m.image_type=cte.image_type )
+       					""",values=values,as_dict=True)
 @frappe.whitelist()
 def time_series_gmv_data():
 	values={"brand":frappe.request.args["brand"]}
