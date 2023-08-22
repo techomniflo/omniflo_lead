@@ -2,7 +2,6 @@
  "actions": [],
  "allow_rename": 1,
  "creation": "2023-03-15 16:46:55.195528",
- "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -15,7 +14,8 @@
   "set_offers",
   "set_per_planogram",
   "clean_products_and_shelf",
-  "check_uniform_and_id_card"
+  "check_uniform_and_id_card",
+  "is_tester_available"
  ],
  "fields": [
   {
@@ -70,11 +70,17 @@
    "fieldtype": "Table",
    "label": "Capture All Asset",
    "options": "Promoter Hygiene Photos"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_tester_available",
+   "fieldtype": "Check",
+   "label": "Is Tester Available"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-15 17:00:33.431510",
+ "modified": "2023-08-22 14:28:23.783922",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter Hygiene",
