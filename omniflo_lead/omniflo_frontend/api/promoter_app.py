@@ -34,6 +34,7 @@ def create_promoter_hygiene(pl_name,req_data):
 				"set_per_planogram": req_data["set_per_planogram"],
 				"clean_products_and_shelf": req_data["clean_products_and_shelf"],
 				"check_uniform_and_id_card": req_data["check_uniform_and_id_card"],
+				"is_tester_available":req_data["is_tester_available"]
 			}
 		).save(ignore_permissions=True)
 	try:

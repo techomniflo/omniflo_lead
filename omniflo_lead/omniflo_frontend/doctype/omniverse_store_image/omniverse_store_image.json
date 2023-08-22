@@ -37,7 +37,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-21 16:02:47.565258",
+ "modified": "2023-08-22 16:38:17.360679",
  "modified_by": "Administrator",
  "module": "Omniflo Frontend",
  "name": "Omniverse Store Image",
@@ -58,5 +58,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "customer"
 }
