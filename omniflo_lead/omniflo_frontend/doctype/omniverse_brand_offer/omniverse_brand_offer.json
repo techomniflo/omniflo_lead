@@ -2,13 +2,13 @@
  "actions": [],
  "allow_rename": 1,
  "creation": "2023-04-24 16:36:17.191530",
- "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "disabled",
   "brand",
+  "sub_brand",
   "offer",
   "start_date",
   "end_date",
@@ -55,11 +55,17 @@
    "fieldname": "disabled",
    "fieldtype": "Check",
    "label": "Disabled"
+  },
+  {
+   "fieldname": "sub_brand",
+   "fieldtype": "Link",
+   "label": "Sub Brand",
+   "options": "Brand"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-29 12:54:42.114134",
+ "modified": "2023-08-24 16:25:11.327242",
  "modified_by": "Administrator",
  "module": "Omniflo Frontend",
  "name": "Omniverse Brand Offer",
