@@ -34,7 +34,7 @@ frappe.ui.form.on('Omniverse Brand Offer', {
 async function getFilters(frm) {
 	const response = await frappe.db.get_list('Brand', {
 		filters: {
-			parent_brand: frm.doc.brand,
+			custom_parent_brand: frm.doc.brand,
 		},
 		fields: ['brand']
 	});
