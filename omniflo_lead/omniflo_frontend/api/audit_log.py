@@ -19,15 +19,22 @@ def get_audit_item():
                                  join `tabItem` as i on meta.item_code=i.item_code join `tabCustomer Bin` as cb on cb.item_code=i.item_code and cb.customer=meta.customer left join `tabItem Profile` as ip on ip.item_code=i.item_code where i.item_group=%(item_group)s order by i.brand,i.sub_brand,cb.available_qty desc """,values=values,as_dict=True)
     return return_value
 
-def update_audit_images(doc,images):
-    for count,i in enumerate(images):
-        try:
-            url=upload_file(doc,field_name="details",content=i["base64"],image_format=i["image_format"])
-            child_doc=frappe.get_doc('Audit Log Details',doc.details[count].name)
-            child_doc.db_set('image', url, update_modified=False,commit=True)
-        except:
-            pass
+def _update_audit_image(doc,image):
+        audit=frappe.get_doc('Audit Log',doc)
+        url=upload_file(doc=audit,field_name="details",content=image["base64"],image_format=image["image_format"])
+        audit.append('details',{'item_code':image['type'],'image':url})
+        audit.save(ignore_permissions=True)
 
+@frappe.whitelist(methods=("POST",))
+def update_audit_image():
+    kwargs = json.loads(frappe.request.data)
+    try:
+        doc,image=kwargs['doc'],kwargs['image']
+    except:
+        frappe.local.response['http_status_code'] = 404
+        return "some field are missing"
+    frappe.enqueue(_update_audit_image,doc=doc,image=kwargs["image"])
+    frappe.local.response['http_status_code'] = 201
     
 
 @frappe.whitelist(methods=("POST",))
@@ -60,8 +67,6 @@ def post_audit_log():
 			}
 		).save(ignore_permissions=True)
     doc.submit()
-    if "images" in kwargs:
-        frappe.enqueue(update_audit_images,doc=doc,images=kwargs["images"])
     frappe.local.response['http_status_code'] = 201
     return doc
 

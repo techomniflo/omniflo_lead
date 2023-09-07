@@ -19,6 +19,7 @@
   "pan_no",
   "bank_account_no",
   "ifsc",
+  "referred_by",
   "section_break_guf5r",
   "offer_letter"
  ],
@@ -100,11 +101,17 @@
    "fieldtype": "Table",
    "label": "Offer Letter",
    "options": "Promoter Offer Letter"
+  },
+  {
+   "fieldname": "referred_by",
+   "fieldtype": "Link",
+   "label": "Referred By",
+   "options": "Promoter"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-22 16:12:14.533408",
+ "modified": "2023-09-07 17:12:46.373997",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter",
