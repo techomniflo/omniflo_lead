@@ -84,12 +84,14 @@
   {
    "fieldname": "bank_account_no",
    "fieldtype": "Data",
-   "label": "Bank Account No"
+   "label": "Bank Account No",
+   "reqd": 1
   },
   {
    "fieldname": "ifsc",
    "fieldtype": "Data",
-   "label": "IFSC"
+   "label": "IFSC",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_guf5r",
@@ -104,7 +106,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-22 16:12:14.533408",
+ "modified": "2023-09-07 12:35:31.041993",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Promoter",
