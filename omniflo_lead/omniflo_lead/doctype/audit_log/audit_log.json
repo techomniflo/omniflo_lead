@@ -42,6 +42,7 @@
    "label": "Image Details"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "details",
    "fieldtype": "Table",
    "label": "Details",
@@ -98,7 +99,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-17 18:13:04.207045",
+ "modified": "2023-09-07 15:45:42.979194",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Audit Log",
