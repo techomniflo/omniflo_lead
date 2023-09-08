@@ -47,7 +47,6 @@ def post_audit_log():
     except:
         frappe.local.response['http_status_code'] = 404
         return "some field are missing"
-    images=[{"item_code":i['type']} for i in kwargs["images"] ]
 
     for x in items:
         if x["in_category_qty"]==None:
@@ -60,7 +59,6 @@ def post_audit_log():
                 "customer": customer,
                 "item_group": item_group,
                 "items":items,
-                "details":images,
                 "latitude": kwargs['latitude'] if "latitude" in kwargs else "",
                 "longitude":kwargs['longitude'] if "longitude" in kwargs else "",
                 "facing":kwargs["facing"] if "facing" in kwargs else 0
