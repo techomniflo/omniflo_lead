@@ -5,23 +5,27 @@ from frappe.model.docstatus import DocStatus
 from frappe.desk.form.linked_with import get_linked_docs
 from frappe.utils import add_days, cint, formatdate, get_datetime, getdate, random_string, now
 
-@frappe.whitelist()
-def upolad_image_in_sales_order(doc,image_array):
-	for image in image_array:
-		file_name=random_string(8)
-		file = frappe.get_doc(
-				{
-					"doctype": "File",
-					"file_name": file_name+"."+image['image_format'],
-					"attached_to_doctype": doc.doctype,
-					"attached_to_name": doc.name,
-					"folder": "Home/Attachments",
-					"is_private": 1,
-					"content": image['base64'],
-					"decode": 1,
-				}
-			).save(ignore_permissions=True)
-		return
+def _upload_file_in_sales_order(doc,file):
+	file_name=random_string(8)
+	file = frappe.get_doc(
+			{
+				"doctype": "File",
+				"file_name": file_name+"."+file['file_format'],
+				"attached_to_doctype": 'Sales Order',
+				"attached_to_name": doc,
+				"folder": "Home/Attachments",
+				"is_private": 1,
+				"content": file['base64'],
+				"decode": 1,
+			}
+		).save(ignore_permissions=True)
+	return
+
+@frappe.whitelist(methods=("POST",))
+def upolad_file_in_sales_order(doc,file):
+	"""API for uploading files within the sales order."""
+	frappe.enqueue(_upload_file_in_sales_order,doc=doc,file=file)
+	frappe.local.response['http_status_code'] = 201
 
 @frappe.whitelist()
 def get_item_details():
@@ -94,7 +98,6 @@ def create_sales_order(**kwargs):
 	doc.run_method("calculate_taxes_and_totals")
 	doc.save(ignore_permissions=True)
 	doc.submit()
-	frappe.enqueue(upolad_image_in_sales_order,doc=doc,image_array=args['images'])
 	return doc
 
 @frappe.whitelist(allow_guest=True)
