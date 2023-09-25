@@ -29,7 +29,7 @@ frappe.ui.form.on('Sales Invoice', {
     }
 
 
-    if (frm.doc.is_return=1){
+    if (frm.doc.is_return==1){
         mark_return_button(frm)
     }
 },
