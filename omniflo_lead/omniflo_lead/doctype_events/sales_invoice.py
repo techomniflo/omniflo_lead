@@ -19,9 +19,13 @@ def validate(doc,events):
 					frappe.throw(f"Row {item.idx} and Row {unique_sales_invoice_item[item.sales_invoice_item]} both are referring to same Sales Invoice")
 				else:
 					unique_sales_invoice_item[item.sales_invoice_item]=item.idx
-
+			check_rate_of_ref_invoice(item.rate,item.sales_invoice_item,item.idx)
 			check_balance_to_mark_return(doc,item.sales_invoice_item,item.qty,item.idx)
 
+def check_rate_of_ref_invoice(rate,sales_invoice_item,row):
+	sales_invoice_item_doc=frappe.get_doc('Sales Invoice Item',sales_invoice_item)
+	if rate!=sales_invoice_item_doc.rate:
+		frappe.throw(f"Row {row}: Rate cannot be greater than the rate used in Sales Invoice {sales_invoice_item_doc.parent}")
 def check_balance_to_mark_return(doc,sales_invoice_item,qty,row):
 	data=frappe.db.sql(""" select sii.qty,(select if(sum(SII.qty),abs(sum(SII.qty)),0) from `tabSales Invoice Item` as SII where SII.sales_invoice_item=sii.name and SII.docstatus=1) as return_item from `tabSales Invoice Item` as sii where sii.name=%(sales_invoice_item)s """,values={"sales_invoice_item":sales_invoice_item},as_dict=True)[0]
 	balance_qty=data["qty"]-data["return_item"]
