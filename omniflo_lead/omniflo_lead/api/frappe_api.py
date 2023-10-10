@@ -38,11 +38,11 @@ def total_live_store():
 		select count(*) from (
 			select distinct meta.customer from  
 				(
-					select si.customer,sum(sii.qty) as billed_qty ,(select sum(cb.available_qty) from `tabCustomer Bin` as cb join `tabItem` as I on I.item_code=cb.item_code where I.brand=i.brand and cb.customer=si.customer) as available_qty from `tabSales Invoice` as si  join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code join `tabCustomer` as c on c.name=si.customer where i.brand=%(brand)s and si.docstatus=1 and c.customer_status='Live' group by si.customer ) as meta where meta.billed_qty>0 and meta.available_qty>0
+					select si.customer,sum(sii.qty) as billed_qty ,(select sum(cb.available_qty) from `tabCustomer Bin` as cb join `tabItem` as I on I.item_code=cb.item_code where I.brand=i.brand and cb.customer=si.customer and I.item_group!='Sample') as available_qty from `tabSales Invoice` as si  join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code join `tabCustomer` as c on c.name=si.customer where i.brand=%(brand)s and si.docstatus=1 and c.customer_status='Live' group by si.customer ) as meta where meta.billed_qty>0 and meta.available_qty>0
 
 				union
 			
-			select distinct tpi.customer from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as  tpii on tpi.name=tpii.parent join `tabItem` as i on i.item_code=tpii.item_code join `tabCustomer` as c  on c.name=tpi.customer join `tabCustomer Bin` as cb on cb.customer=c.name and i.item_code=cb.item_code  where c.customer_status='Live' and i.brand=%(brand)s and cb.available_qty>0 ) as no_store
+			select distinct tpi.customer from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as  tpii on tpi.name=tpii.parent join `tabItem` as i on i.item_code=tpii.item_code join `tabCustomer` as c  on c.name=tpi.customer join `tabCustomer Bin` as cb on cb.customer=c.name and i.item_code=cb.item_code  where c.customer_status='Live' and i.brand=%(brand)s and cb.available_qty>0 and i.item_group!='Sample' ) as no_store
     """,values=values,as_list=True)
     return count_of_store
 
@@ -51,22 +51,23 @@ def total_live_store():
 @frappe.whitelist()
 def stores_lives():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql(""" select distinct cb.customer,c.customer_name,c.customer_id from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code join `tabCustomer` as c on c.name=cb.customer where i.brand=%(brand)s and cb.available_qty!=0 and c.customer_status='Live' """,values=values,as_dict=True)
+	return frappe.db.sql(""" select distinct cb.customer,c.customer_name,c.customer_id from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code join `tabCustomer` as c on c.name=cb.customer where i.brand=%(brand)s and cb.available_qty!=0 and c.customer_status='Live' and i.item_group!='Sample' """,values=values,as_dict=True)
 
 #Gives total no of live inventory for perticular brand
 @frappe.whitelist()
 def total_inventory():
 	values={"brand":frappe.request.args["brand"]}
 
-	total_inventory=frappe.db.sql("""select sum(available_qty) from (select
-	    it.brand,cb.customer,cb.item_code,cb.available_qty
-	from 
-	    `tabCustomer Bin`  as cb
-	    join  `tabItem`as it on cb.item_code = it.item_code
-	where brand!="" and brand!="Test" and cb.customer!="" and cb.available_qty>0 and it.brand=%(brand)s
-	group by brand,customer,item_code
-	order by
-	    it.brand,cb.customer) as total_available_qty""",values=values,as_list=True)
+	total_inventory=frappe.db.sql("""select 
+										sum(cb.available_qty) 
+										from 
+										`tabCustomer Bin` as cb 
+										join `tabItem` as i on i.item_code = cb.item_code 
+										where 
+										cb.available_qty > 0 
+										and i.brand = %(brand)s 
+										and i.item_group != 'Sample'
+							   """,values=values,as_list=True)
 	return total_inventory
 
 #Gives gmv(no. of item * mrp) amount of brand date wise 
@@ -158,115 +159,6 @@ def image_api():
          								) 
 							select * from cte where cte.image_date in ( select max(m.image_date) from cte as m where m.customer=cte.customer and m.image_type=cte.image_type )
        					""",values=values,as_dict=True)
-@frappe.whitelist()
-def time_series_gmv_data():
-	values={"brand":frappe.request.args["brand"]}
-	audit_data=frappe.db.sql("""select (DATE_FORMAT(al.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=al.customer) as customer,ali.current_available_qty as qty,ali.item_name,i.mrp from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
-				where i.brand=%(brand)s and al.docstatus=1 order by al.posting_date;""",values=values,as_dict=True)
-	sales_data=frappe.db.sql("""select (DATE_FORMAT(si.posting_date,'%%d-%%m-%%y')) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
-				where i.brand=%(brand)s  and si.`status` != 'Cancelled' and si.`status`!="Draft" and si.`status` != 'Return' order by si.posting_date;""",values=values,as_dict=True)
-
-	return_data=frappe.db.sql("""select (select (DATE_FORMAT(SI.posting_date,'%%d-%%m-%%y')) as date from `tabSales Invoice` as SI where SI.name=si.return_against) as date,(select c.customer_name from `tabCustomer` as c where c.name=si.customer) as customer,sii.qty,sii.item_name,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
-				where i.brand=%(brand)s and si.`status` = 'Return' order by date;""",values=values,as_dict=True)
-
-	#This function gives list of unique date
-	def get_date(data):
-		list_of_date=[]
-		for i in data:
-			list_of_date.append(i['date'])
-		list_of_date=set(list_of_date)
-		list_of_date=list(list_of_date)
-		list_of_date.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
-		return list_of_date
-
-
-
-	def crate_dict_for_give_date(date,x,is_add):
-		customer_dict={}
-		date_date=time.strptime(date,"%d-%m-%y")
-		for i in range(len(x)):
-			doctype_date=time.strptime(x[i]['date'],"%d-%m-%y")
-			if date_date==doctype_date:
-				customer=x[i]['customer']
-				item_name=x[i]['item_name']
-				qty=x[i]['qty']
-				mrp=x[i]['mrp']
-				if customer not in customer_dict:
-					customer_dict[customer]={item_name:[qty,mrp]}
-				else:
-					if item_name not in customer_dict[customer]:
-						customer_dict[customer][item_name]=[qty,mrp]
-					else:
-						if is_add==True:
-							customer_dict[customer][item_name][0]+=qty
-		return customer_dict
-
-	def get_dictionary_with_date(data,is_add):
-		di={}
-		list_of_date=get_date(data)
-		for i,date in enumerate(list_of_date):
-			di[date]=crate_dict_for_give_date(date,data,is_add)
-		return di
-
-	def merge_sales_and_return(sales_data,return_data):
-		for date in list(return_data.keys()):
-			if date in sales_data:
-				for customer in list(return_data[date].keys()):
-					if customer in sales_data[date]:
-						for item in list(return_data[date][customer].keys()):
-							if item in sales_data[date][customer]:
-								difference=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
-								if difference <= 0:
-									sales_data[date][customer].pop(item)
-									if len(list(sales_data[date][customer].keys()))<=0:
-										sales_data[date].pop(customer)
-									if len(list(sales_data[date].keys()))<=0:
-										sales_data.pop(date)
-								else:
-									sales_data[date][customer][item][0]=sales_data[date][customer][item][0]+return_data[date][customer][item][0]
-		return sales_data
-	audit_dictionary=get_dictionary_with_date(audit_data,is_add=False)
-	sales_dictionary=merge_sales_and_return(get_dictionary_with_date(sales_data,is_add=True),get_dictionary_with_date(return_data,is_add=True))
-	sales_invoice=copy.deepcopy(sales_dictionary)
-	audit_invoice=copy.deepcopy(audit_dictionary)
-	dates=list(sales_invoice.keys())+list(audit_invoice.keys())
-	dates=list(set(dates))
-
-	dates.sort(key=lambda x: datetime.datetime.strptime(x, "%d-%m-%y"))
-	final_dictionary={}
-	previous_data={}
-	for i in dates:
-		merged_customer={}
-		sales_data=sales_invoice.get(i,{})
-		audit_data=audit_invoice.get(i,{})
-		sales_customer=list(sales_data.keys())
-		audit_customer=list(audit_data.keys())
-		for customer in sales_customer:
-			if customer not in previous_data:
-				previous_data[customer]=sales_data[customer]
-				continue
-			elif customer in previous_data:
-				items=sales_data[customer]
-				for item in items.keys():
-					if item not in previous_data[customer]:
-						previous_data[customer][item]=sales_data[customer][item]
-					else:
-						previous_data[customer][item][0]+=sales_data[customer][item][0]
-		for customer in audit_customer:
-			if customer not in previous_data:
-				previous_data[customer]=audit_data[customer]
-				continue
-			if customer in sales_customer:
-				pass
-			if customer not in sales_customer:
-				items=audit_data[customer]
-				for item in items.keys():
-					previous_data[customer][item]=audit_data[customer][item]
-		both_customer=list(set(sales_customer+audit_customer))
-		for customer in both_customer:
-			merged_customer[customer]=copy.deepcopy(previous_data[customer])
-		final_dictionary[i]=merged_customer
-	return final_dictionary
 
 @frappe.whitelist()
 def gmv_sales_date_wise():
@@ -395,22 +287,22 @@ def promoter_data():
 @frappe.whitelist(allow_guest=True)
 def sales_data():
 	return frappe.db.sql("""select ADDTIME(CONVERT(si.posting_date, DATETIME), si.posting_time) as date,i.brand,si.customer as customer,sii.qty,i.item_name,i.mrp,i.item_code,null as age,null as gender from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on sii.parent=si.name join `tabItem` as i on i.item_code=sii.item_code 
-					where si.`status` != 'Cancelled' and si.`status`!="Draft" order by si.posting_date;""",as_dict=True)
+					where si.docstatus=1 and i.item_group!='Sample' order by si.posting_date;""",as_dict=True)
 
 @frappe.whitelist(allow_guest=True)
 def audit_data():
 	return frappe.db.sql("""select al.posting_date as date,al.customer,ali.current_available_qty as qty,i.item_code,i.item_name,i.mrp,i.brand,null as age,null as gender from `tabAudit Log` as al join `tabAudit Log Items` as ali on ali.parent=al.name join `tabItem` as i on i.item_code=ali.item_code 
-					where al.docstatus=1 order by al.posting_date;""",as_dict=True)
+					where al.docstatus=1 and i.item_group!='Sample' order by al.posting_date;""",as_dict=True)
 
 @frappe.whitelist()
 def warehouse_quantity():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select i.item_name,i.sub_brand,i.brand,i.item_code,b.actual_qty as qty from `tabBin` as b join `tabItem` as i on i.item_code=b.item_code where b.warehouse="Kormangala WareHouse - OS" and i.brand=%(brand)s""",values=values,as_dict=True)
+	return frappe.db.sql("""select i.item_name,i.sub_brand,i.brand,i.item_code,b.actual_qty as qty from `tabBin` as b join `tabItem` as i on i.item_code=b.item_code where b.warehouse="Kormangala WareHouse - OS" and i.brand=%(brand)s and i.item_group!='Sample'  """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def deployed_quantity():
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql("""select c.customer_name,c.customer_id,cb.customer ,i.item_name,i.item_code,i.sub_brand,i.brand,cb.available_qty as qty from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code join `tabCustomer` as c on c.name=cb.customer where i.brand=%(brand)s and cb.available_qty!=0 and c.customer_status='Live' """,values=values,as_dict=True)
+	return frappe.db.sql("""select c.customer_name,c.customer_id,cb.customer ,i.item_name,i.item_code,i.sub_brand,i.brand,cb.available_qty as qty from `tabCustomer Bin` as cb join `tabItem` as i on i.name=cb.item_code join `tabCustomer` as c on c.name=cb.customer where i.brand=%(brand)s and cb.available_qty>0 and c.customer_status='Live' and i.item_group!='Sample' """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def customer_profile():
@@ -597,7 +489,7 @@ def calculate_sales_date_wise():
 def item():
 	""" This API provides item details such as item code, name, MRP, and GST HSN code. """
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql(""" select i.item_code,i.item_name,i.mrp,i.gst_hsn_code from `tabItem` as i where i.brand=%(brand)s """,values=values,as_dict=True)
+	return frappe.db.sql(""" select i.item_code,i.item_name,i.mrp,i.gst_hsn_code from `tabItem` as i where i.brand=%(brand)s and i.item_group!='Sample' """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def platform_sales_invoice():
@@ -609,7 +501,7 @@ def platform_sales_invoice():
 def item_billed_to_store():
 	""" This API provides a list of items sent to customers, including customer name and date,gmv. """
 	values={"brand":frappe.request.args["brand"]}
-	return frappe.db.sql(""" select sum(sii.qty*sii.conversion_factor*i.mrp) as gmv from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where si.docstatus=1 and i.brand=%(brand)s  """,values=values,as_list=True)
+	return frappe.db.sql(""" select sum(sii.qty*sii.conversion_factor*i.mrp) as gmv from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where si.docstatus=1 and i.brand=%(brand)s and i.item_group!='Sample'  """,values=values,as_list=True)
 
 @frappe.whitelist()
 def brand_message():
@@ -627,4 +519,4 @@ def brand_offers(brand:str):
 def item_send_to_us(brand:str):
 	""" This API provides total quantity sent by the brand to omnipresent. """
 	values={"brand":brand}
-	return frappe.db.sql(""" select sum(pri.received_qty) as qty from `tabPurchase Receipt` as pr join `tabPurchase Receipt Item` as pri on pr.name=pri.parent join `tabItem` as i on i.item_code=pri.item_code where i.brand=%(brand)s and pr.docstatus=1 """,values=values,as_dict=True)
+	return frappe.db.sql(""" select sum(pri.received_qty) as qty from `tabPurchase Receipt` as pr join `tabPurchase Receipt Item` as pri on pr.name=pri.parent join `tabItem` as i on i.item_code=pri.item_code where i.brand=%(brand)s and pr.docstatus=1 and i.item_group!='Sample' """,values=values,as_dict=True)

@@ -11,11 +11,11 @@ def get_audit_item():
         frappe.local.response['http_status_code'] = 404
         return "some fields are missing"
     return_value = frappe.db.sql(""" select meta.item_code,i.item_name,i.sub_brand,i.brand,cb.available_qty,ip.image_url,i.mrp from 
-                                            ( select tpii.item_code,tpi.customer from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent where tpi.docstatus=1 and tpi.customer=%(customer)s
+                                            ( select tpii.item_code,tpi.customer,null as expected_qty from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent where tpi.docstatus=1 and tpi.customer=%(customer)s
 
                                                  union
 
-                                            select item_code,customer from (select sii.item_code,si.customer,sum(sii.qty*sii.conversion_factor) as billed_qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent where si.customer=%(customer)s and si.docstatus=1 group by sii.item_code) as base_si where base_si.billed_qty>0) as meta 
+                                            select item_code,customer,billed_qty - sales_qty as expected_qty  from (select sii.item_code,si.customer,sum(sii.qty*sii.conversion_factor) as billed_qty,(select sum(qty) from `tabDay Wise Sales` as dws where dws.customer=si.customer and sii.item_code=dws.item_code ) as sales_qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent where si.customer=%(customer)s and si.docstatus=1 group by sii.item_code) as base_si where base_si.billed_qty>0) as meta 
                                  join `tabItem` as i on meta.item_code=i.item_code join `tabCustomer Bin` as cb on cb.item_code=i.item_code and cb.customer=meta.customer left join `tabItem Profile` as ip on ip.item_code=i.item_code where i.item_group=%(item_group)s order by i.brand,i.sub_brand,cb.available_qty desc """,values=values,as_dict=True)
     return return_value
 
