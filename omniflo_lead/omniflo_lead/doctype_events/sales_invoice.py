@@ -38,7 +38,7 @@ def before_cancel(doc,events):
 
 def on_submit(doc, event):
 	for item in doc.items:
-		if item.brand=='Sample' or item.brand=='Tester':
+		if item.brand=='Sample' or item.brand=='Tester' or item.item_group=='Sample':
 			continue
 		customer_bin = frappe.db.get_value('Customer Bin', {'customer': doc.customer, 'item_code': item.item_code})
 		if not customer_bin:

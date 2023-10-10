@@ -152,11 +152,11 @@ def get_customer_location():
 @frappe.whitelist(allow_guest=True)
 def get_items(customer):
 	values={"customer":customer}
-	data=frappe.db.sql("""select i.sub_brand,i.item_name,i.item_code,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where i.brand not in ('Sample','Tester') and si.docstatus=1 and si.customer=%(customer)s and 0<(select sum(SII.qty) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent where SI.docstatus=1 and SI.company=si.company and SI.customer=si.customer and SII.item_code=sii.item_code) group by i.sub_brand,i.item_name,i.item_code,i.mrp
+	data=frappe.db.sql("""select i.sub_brand,i.item_name,i.item_code,i.mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent join `tabItem` as i on i.item_code=sii.item_code where i.brand not in ('Sample','Tester') and si.docstatus=1 and i.item_group!='Sample' and si.customer=%(customer)s and 0<(select sum(SII.qty) from `tabSales Invoice` as SI join `tabSales Invoice Item` as SII on SI.name=SII.parent where SI.docstatus=1 and SI.company=si.company and SI.customer=si.customer and SII.item_code=sii.item_code) group by i.sub_brand,i.item_name,i.item_code,i.mrp
 		    		
 		    		union
 	
-				select i.sub_brand,i.item_name,i.item_code,i.mrp from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent join `tabItem` as i on i.item_code=tpii.item_code where tpi.docstatus=1 and tpi.customer=%(customer)s
+				select i.sub_brand,i.item_name,i.item_code,i.mrp from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent join `tabItem` as i on i.item_code=tpii.item_code where tpi.docstatus=1 and tpi.customer=%(customer)s and i.item_group!='Sample'
 		    	
 		    """,values=values,as_dict=True)
 	brand_details={}
@@ -444,7 +444,7 @@ def get_offers():
 	promoter=frappe.request.args["promoter"]
 	promoter_doc=frappe.get_doc("Promoter",promoter)
 	item_group=promoter_doc.item_group
-	return frappe.db.sql("""select obo.sub_brand as brand,obo.offer from `tabOmniverse Brand Offer` obo where obo.disabled=0 and obo.brand in (select distinct i.brand from `tabItem` as i where i.item_group='Personal Care' ) and (obo.end_date is null or obo.end_date >= curdate())""",values={'item_group':item_group},as_dict=True)
+	return frappe.db.sql("""select obo.sub_brand as brand,obo.offer from `tabOmniverse Brand Offer` obo where obo.disabled=0 and obo.brand in (select distinct i.brand from `tabItem` as i where i.item_group=%(item_group)s ) and (obo.end_date is null or obo.end_date >= curdate())""",values={'item_group':item_group},as_dict=True)
 
 @frappe.whitelist(allow_guest=True)
 def promoter_mtd_details(promoter):
