@@ -37,33 +37,6 @@ class CustomSalesInvoice(SalesInvoice):
 		map_child_doc(source_d=source_d,target_parent=self,table_map=table_map,source_parent=source_doc,qty=qty)
 
 
-	def check_sales_order_on_hold_or_close(self, ref_fieldname):
-	 
-		for d in self.get("items"):
-			if d.get(ref_fieldname):
-				status = frappe.db.get_value("Sales Order", d.get(ref_fieldname), "status")
-				if status in ("Closed", "On Hold") and not self.is_return:
-					frappe.throw(_("Sales Order {0} is {1}").format(d.get(ref_fieldname), status))
-	def update_reserved_qty(self):
-		so_map = {}
-		for d in self.get("items"):
-			if d.so_detail:
-				if self.doctype == "Delivery Note" and d.against_sales_order:
-					so_map.setdefault(d.against_sales_order, []).append(d.so_detail)
-				elif self.doctype == "Sales Invoice" and d.sales_order and self.update_stock:
-					so_map.setdefault(d.sales_order, []).append(d.so_detail)
-
-		for so, so_item_rows in so_map.items():
-			if so and so_item_rows:
-				sales_order = frappe.get_doc("Sales Order", so)
-
-				if (sales_order.status == "Closed" and not self.is_return) or sales_order.status in ["Cancelled"]:
-					frappe.throw(
-						_("{0} {1} is cancelled or closed").format(_("Sales Order"), so), frappe.InvalidStatusError
-					)
-
-				sales_order.update_reserved_qty(so_item_rows)
-
 	@frappe.whitelist()
 	def fifo_qty(self,item):
 		if not self.customer:
