@@ -1,0 +1,93 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:item_code",
+ "creation": "2023-10-10 15:06:32.530252",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "brand",
+  "column_break_vyikt",
+  "sample_item_code",
+  "sample_item_name",
+  "sample_brand"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
+  },
+  {
+   "fetch_from": "item_code.brand",
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "label": "Brand"
+  },
+  {
+   "fieldname": "column_break_vyikt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sample_item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sample Item Code",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "sample_item_code.item_name",
+   "fieldname": "sample_item_name",
+   "fieldtype": "Data",
+   "label": "Sample Item Name"
+  },
+  {
+   "fetch_from": "sample_item_code.brand",
+   "fieldname": "sample_brand",
+   "fieldtype": "Data",
+   "label": "Sample Brand"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-10-12 13:02:02.296408",
+ "modified_by": "Administrator",
+ "module": "Omniflo Lead",
+ "name": "Sample Item Mapper",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "item_name"
+}
