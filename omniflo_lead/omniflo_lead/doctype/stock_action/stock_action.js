@@ -2,23 +2,26 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Stock Action', {
+
+	on_submit:function(frm){
+		frappe.call({
+			doc : frm.doc,
+			method : 'set_previous_gle_queue',
+			freeze : true,
+			freeze_message : 'Getting All Items'
+		}).then((res) => {
+			
+		})
+	},
 	refresh: function(frm) {
-		frm.fields_dict['from_warehouse'].get_query = function(doc) {
-			return {
-				filters: {
-					"company": frm.doc.company,
-					"warehouse_type":"Transit"
-				}
-			}
-		},
-		frm.fields_dict['to_warehouse'].get_query = function(doc) {
-			return {
-				filters: {
-					"company": frm.doc.company,
-					"warehouse_type":frm.doc.reason_type
-				}
-			}
-		},
+
+		from_warehouse_filters(frm)
+		to_warehouse_fiters(frm)
+		if(frm.doc.docstatus==0){
+			frm.doc.stock_entry=""
+			frm.doc.purchase_invoice=""
+		}
+		
 		frm.fields_dict['purchase_receipt'].get_query = function(doc) {
 			return {
 				filters: {
@@ -27,6 +30,9 @@ frappe.ui.form.on('Stock Action', {
 
 				}
 			}
+		},
+	reason_type: function(frm){
+			to_warehouse_fiters(frm)
 		}
 });
 function set_item(frm,cdt,cdn) {
@@ -46,6 +52,44 @@ function set_item(frm,cdt,cdn) {
 			item.conversion_factor=res.message['conversion_factor']
 			refresh_field('items');
 		})
+	}
+}
+
+function to_warehouse_fiters(frm){
+	
+	frm.fields_dict['to_warehouse'].get_query = function(doc) {
+		
+		if (frm.doc.reason_type=="Sampling" ||frm.doc.reason_type=="Dispose"){
+			console.log(frm.doc.reason_type)
+			return {
+				filters: {
+					"company": frm.doc.company,
+					"warehouse_type":"Transit"
+				}
+			}
+	
+		}
+		else{
+			return {
+				filters: {
+					"company": frm.doc.company,
+					"warehouse_type":frm.doc.reason_type
+				}
+			}
+		}
+	}
+	
+}
+
+function from_warehouse_filters(frm){
+	frm.fields_dict['from_warehouse'].get_query = function(doc) {
+		return {
+			filters: {
+				"company": frm.doc.company,
+				"warehouse_type":"Transit"
+			}
+		}
+
 	}
 }
 
