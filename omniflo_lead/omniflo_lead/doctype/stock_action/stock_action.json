@@ -20,6 +20,7 @@
   "de_from",
   "customer",
   "purchase_receipt",
+  "purchase_invoice",
   "supplier",
   "reason",
   "section_break_dprns",
@@ -57,7 +58,7 @@
    "fieldname": "to_warehouse",
    "fieldtype": "Link",
    "label": "Default Target Warehouse",
-   "mandatory_depends_on": "eval:(doc.reason_type==\"Damage\" || doc.reason_type==\"Expiry\")",
+   "mandatory_depends_on": "eval:(doc.reason_type==\"Damage\" || doc.reason_type==\"Expiry\" || doc.reason_type==\"Sampling\" || doc.reason_type==\"Dispose\" )",
    "options": "Warehouse"
   },
   {
@@ -73,11 +74,11 @@
    "options": "Company"
   },
   {
-   "depends_on": "eval:doc.de_from==\"Customer\"",
+   "depends_on": "eval:doc.de_from==\"Customer\" && (doc.reason_type==\"Damage\" || doc.reason_type==\"Expiry\")",
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "mandatory_depends_on": "eval:doc.de_from==\"Customer\"",
+   "mandatory_depends_on": "eval:doc.de_from==\"Customer\" && (doc.reason_type==\"Damage\" || doc.reason_type==\"Expiry\")",
    "options": "Customer"
   },
   {
@@ -97,7 +98,7 @@
    "fieldname": "reason_type",
    "fieldtype": "Select",
    "label": "Reason Type",
-   "options": "Damage\nExpiry"
+   "options": "Damage\nExpiry\nSampling\nDispose"
   },
   {
    "fieldname": "section_break_dprns",
@@ -124,12 +125,12 @@
    "options": "Purchase Receipt"
   },
   {
-   "depends_on": "eval:(doc.reason_type==\"Sampling\" || doc.de_from==\"Supplier\")",
+   "depends_on": "eval:(doc.reason_type==\"Sampling\" || doc.reason_type==\"Dispose\" || doc.de_from==\"Supplier\")",
    "fetch_from": "purchase_receipt.supplier",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier",
-   "mandatory_depends_on": "eval:doc.reason_type==\"Sampling\"",
+   "mandatory_depends_on": "eval:(doc.reason_type==\"Sampling\" || doc.reason_type==\"Dispose\")",
    "options": "Supplier"
   },
   {
@@ -151,15 +152,23 @@
    "fieldtype": "Select",
    "label": "Series",
    "options": "STK-ACN-"
+  },
+  {
+   "fieldname": "purchase_invoice",
+   "fieldtype": "Link",
+   "label": "Purchase Invoice",
+   "options": "Purchase Invoice",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-13 01:48:52.548126",
+ "modified": "2023-10-16 17:33:46.839890",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Stock Action",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
