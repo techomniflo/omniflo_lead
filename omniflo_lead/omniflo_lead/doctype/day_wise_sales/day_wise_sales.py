@@ -6,10 +6,12 @@ import frappe
 import requests
 import pprint
 import json
+import uuid
 from dateutil import parser
 import pprint
 from datetime import datetime
 from frappe.model.document import Document
+import time
 
 class DayWiseSales(Document):
 	pass
@@ -20,23 +22,35 @@ def run_day_sales():
 
 
 def day_sales():
+	if frappe.session.user:
+		user=frappe.session.user
+	else:
+		user='Administrator'
+	
 	gmv_data=calculate_gmv() + third_party_sales()
 	
 	frappe.db.sql("""TRUNCATE TABLE `tabDay Wise Sales`;""")
 	frappe.db.commit()
-	
-	for i in gmv_data:
-		doc=frappe.new_doc('Day Wise Sales')
-		doc.date=datetime.strptime(i[0], '%d-%m-%y')
-		doc.customer=i[1]
-		doc.qty=i[2]
-		doc.item_code=i[3]
-		doc.sale_from=i[4]
-		doc.age=i[5]
-		doc.gender=i[6]
-		doc.save(ignore_permissions=True)
+
+	sql = "INSERT INTO `tabDay Wise Sales` (name, creation, modified, owner, modified_by, date, customer, qty, item_code, sale_from, age, gender) VALUES "
+	db_vals = []
+
+	for idx, i in enumerate(gmv_data):
+
+		date=datetime.strptime(i[0], '%d-%m-%y')
+		customer=i[1]
+		qty=i[2]
+		item_code=i[3]
+		sale_from=i[4]
+		age=i[5]
+		gender=i[6]
+		sql += f"(%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s),"
+		db_vals.extend((uuid.uuid4().hex[-10:], frappe.utils.now(), frappe.utils.now(), user, user, date, customer, qty, item_code, sale_from, age, gender))
+		
+	sql = sql[:-1] + ';'
+	frappe.db.sql(sql, db_vals, auto_commit=True)
 	frappe.db.commit()
-	
+
 def third_party_sales():
 	return frappe.db.sql(""" select to_char(psc.posting_date,'DD-MM-YY') as 'date',psc.customer,psc.qty,psc.item_code,'promoter' as 'sale_from',psc.age,psc.gender from `tabPromoter Sales Capture` as psc where (psc.customer,psc.item_code) in (select tpi.customer,tpii.item_code from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent where tpi.docstatus=1)  """,as_list=True)
 
