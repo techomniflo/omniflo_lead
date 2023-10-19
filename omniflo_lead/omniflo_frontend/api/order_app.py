@@ -22,7 +22,7 @@ def _upload_file_in_sales_order(doc,file):
 	return
 
 @frappe.whitelist(methods=("POST",))
-def upolad_file_in_sales_order(doc,file):
+def upload_file_in_sales_order(doc,file):
 	"""API for uploading files within the sales order."""
 	frappe.enqueue(_upload_file_in_sales_order,doc=doc,file=file)
 	frappe.local.response['http_status_code'] = 201
