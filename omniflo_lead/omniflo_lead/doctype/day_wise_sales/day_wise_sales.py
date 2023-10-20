@@ -16,6 +16,13 @@ import time
 class DayWiseSales(Document):
 	pass
 
+def get_highest_mrp():
+	rv={}
+	data=frappe.db.sql(""" select sii.item_code,max(mrp) as mrp from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent where si.docstatus=1 group by sii.item_code """,as_dict=True)
+	for item in data:
+		rv[item['item_code']]=item['mrp']
+	return rv
+
 @frappe.whitelist(allow_guest=True)
 def run_day_sales():
 	frappe.enqueue(day_sales,queue="long")
@@ -32,9 +39,9 @@ def day_sales():
 	frappe.db.sql("""TRUNCATE TABLE `tabDay Wise Sales`;""")
 	frappe.db.commit()
 
-	sql = "INSERT INTO `tabDay Wise Sales` (name, creation, modified, owner, modified_by, date, customer, qty, item_code, sale_from, age, gender) VALUES "
+	sql = "INSERT INTO `tabDay Wise Sales` (name, creation, modified, owner, modified_by, date, customer, qty, item_code, sale_from, age, gender,mrp) VALUES "
 	db_vals = []
-
+	max_mrp=get_highest_mrp()
 	for idx, i in enumerate(gmv_data):
 
 		date=datetime.strptime(i[0], '%d-%m-%y')
@@ -44,15 +51,21 @@ def day_sales():
 		sale_from=i[4]
 		age=i[5]
 		gender=i[6]
-		sql += f"(%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s),"
-		db_vals.extend((uuid.uuid4().hex[-10:], frappe.utils.now(), frappe.utils.now(), user, user, date, customer, qty, item_code, sale_from, age, gender))
+		try:
+			mrp=max_mrp[item_code]
+		except KeyError:
+			mrp=i[7]
+		except:
+			pass
+		sql += f"(%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s),"
+		db_vals.extend((uuid.uuid4().hex[-10:], frappe.utils.now(), frappe.utils.now(), user, user, date, customer, qty, item_code, sale_from, age, gender, mrp))
 		
 	sql = sql[:-1] + ';'
 	frappe.db.sql(sql, db_vals, auto_commit=True)
 	frappe.db.commit()
 
 def third_party_sales():
-	return frappe.db.sql(""" select to_char(psc.posting_date,'DD-MM-YY') as 'date',psc.customer,psc.qty,psc.item_code,'promoter' as 'sale_from',psc.age,psc.gender from `tabPromoter Sales Capture` as psc where (psc.customer,psc.item_code) in (select tpi.customer,tpii.item_code from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent where tpi.docstatus=1)  """,as_list=True)
+	return frappe.db.sql(""" select to_char(psc.posting_date,'DD-MM-YY') as 'date',psc.customer,psc.qty,psc.item_code,'promoter' as 'sale_from',psc.age,psc.gender,i.mrp from `tabPromoter Sales Capture` as psc join `tabItem` as i on i.item_code=psc.item_code where (psc.customer,psc.item_code) in (select tpi.customer,tpii.item_code from `tabThird Party Invoicing` as tpi join `tabThird Party Invoicing Item` as tpii on tpi.name=tpii.parent where tpi.docstatus=1)  """,as_list=True)
 
 @frappe.whitelist(allow_guest=True)
 def calculate_gmv():

@@ -13,7 +13,8 @@
   "item_code",
   "sale_from",
   "age",
-  "gender"
+  "gender",
+  "mrp"
  ],
  "fields": [
   {
@@ -55,11 +56,16 @@
    "fieldname": "gender",
    "fieldtype": "Data",
    "label": "Gender"
+  },
+  {
+   "fieldname": "mrp",
+   "fieldtype": "Float",
+   "label": "MRP"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-09 19:02:24.537721",
+ "modified": "2023-10-20 15:37:13.074509",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Day Wise Sales",

@@ -30,7 +30,8 @@
   "add",
   "section_break_11",
   "items",
-  "shelf_preview"
+  "shelf_preview",
+  "category_items"
  ],
  "fields": [
   {
@@ -166,11 +167,18 @@
    "fieldtype": "Select",
    "label": "Asset Configuration",
    "options": "\nSpotlight\nFull Endcap\nSplit Endcap"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "category_items",
+   "fieldtype": "Table",
+   "label": "Category Items",
+   "options": "Planogram Category Items"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-24 19:04:07.952559",
+ "modified": "2023-10-20 14:22:38.735082",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Planogram",
