@@ -59,13 +59,13 @@
   },
   {
    "fieldname": "mrp",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "MRP"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-20 13:12:41.909306",
+ "modified": "2023-10-20 15:37:13.074509",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Day Wise Sales",
