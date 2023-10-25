@@ -57,6 +57,7 @@ def post_audit_log():
 			{
 				"doctype": "Audit Log",
                 "customer": customer,
+                "posting_date":kwargs["posting_date"] if "posting_date" in kwargs else frappe.utils.now(),
                 "item_group": item_group,
                 "items":items,
                 "latitude": kwargs['latitude'] if "latitude" in kwargs else "",
@@ -77,3 +78,31 @@ def pending_audits_list(user):
 def stores_audited_today(user):
     """ This API provides a list of stores that were audited today. """
     return frappe.db.sql(""" select count(*) as count,al.customer from  `tabAudit Log` as al where al.docstatus=1 and date(al.posting_date)=curdate() and al.owner=%(owner)s group by al.customer """,values={'owner':user},as_dict=True)
+
+@frappe.whitelist(allow_guest=True)
+def get_punched_audit(user):
+    """ This api gives the list of last 20 audit of made by user """
+    return frappe.db.sql(""" select al.name,al.customer,al.posting_date,al.item_group,al.owner from `tabAudit Log` as al where al.owner=%(owner)s and al.docstatus=1 order by al.posting_date desc limit 20 """,values={'owner':user},as_dict=True)
+
+@frappe.whitelist(allow_guest=True)
+def get_punched_audit_items(doc_name):
+    """ This audit gives list of item details against audit. """
+    return frappe.db.sql(""" select ali.item_code,ali.item_name,ali.in_category_qty,ali.asset_available_qty,ali.facing,ali.last_visit_qty as expected_qty from `tabAudit Log Items` as ali where ali.parent=%(doc_name)s and ali.parenttype='Audit Log' order by idx """,values={"doc_name":doc_name},as_dict=True)
+
+@frappe.whitelist(methods=("POST",))
+def cancel_audit_log(doc_name):
+	""" This api is used to cancel Audit Log """
+	doc=frappe.get_doc('Audit Log',doc_name)
+
+	#check if Audit Log already cancelled.
+
+	if doc.docstatus==2:
+		frappe.local.response['http_status_code'] = 410
+		frappe.local.response['message']=" Audit Log Already Cancelled. "
+		return
+	try:
+		doc.cancel()
+		return 'Successful'
+	except Exception as e:
+		frappe.local.response['http_status_code'] = 500
+		return e
