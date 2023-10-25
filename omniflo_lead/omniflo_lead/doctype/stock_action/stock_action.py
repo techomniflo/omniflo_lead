@@ -190,7 +190,7 @@ class StockAction(Document):
 		item_code_no=frappe.db.sql(""" select max(cast(substring(i.item_code,14,17) as INTEGER ) )  from `tabItem` as i; """,as_list=True)[0][0]+1
 		sample_item=frappe.copy_doc(item_doc)
 		sample_item.item_code='OMNI-ITM-SAM-'+str(item_code_no)
-		sample_item.item_name='Sample -'+item_doc.item_name
+		sample_item.item_name='Sample - '+item_doc.item_name
 		sample_item.barcodes=[]
 		sample_item.item_group='Sample'
 		sample_item.last_purchase_rate=0
