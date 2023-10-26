@@ -54,3 +54,14 @@ def qrcode_as_png(doctype, docname):
 		url.png(png_file, scale=8)
 	return file_url
 
+def disable_s3_backup():
+	doc=frappe.get_doc('S3 Backup Settings','S3 Backup Settings')
+	doc.enabled=0
+	doc.save()
+	frappe.db.commit()
+
+def disable_backup_day_wise_sales():
+	backup_settings_doc=frappe.get_doc("Omniflo Setting","Omniflo Setting")
+	backup_settings_doc.enable_backup_day_wise_sales=0
+	backup_settings_doc.save()
+	frappe.db.commit()

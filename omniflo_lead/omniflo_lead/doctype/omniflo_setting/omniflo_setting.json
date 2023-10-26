@@ -6,20 +6,20 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "qr_codes"
+  "enable_backup_day_wise_sales"
  ],
  "fields": [
   {
-   "fieldname": "qr_codes",
-   "fieldtype": "Table",
-   "label": "QR Codes",
-   "options": "QR Code Link"
+   "default": "0",
+   "fieldname": "enable_backup_day_wise_sales",
+   "fieldtype": "Check",
+   "label": "Enable Backup Day Wise Sales"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-12-08 22:54:59.996272",
+ "modified": "2023-10-26 16:53:17.279379",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Omniflo Setting",
@@ -37,5 +37,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }
