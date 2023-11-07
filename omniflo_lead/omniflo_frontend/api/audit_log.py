@@ -87,7 +87,7 @@ def get_punched_audit(user):
 @frappe.whitelist(allow_guest=True)
 def get_punched_audit_items(doc_name):
     """ This audit gives list of item details against audit. """
-    return frappe.db.sql(""" select ali.item_code,ali.item_name,ali.in_category_qty,ali.asset_available_qty,ali.facing,ali.last_visit_qty as expected_qty from `tabAudit Log Items` as ali where ali.parent=%(doc_name)s and ali.parenttype='Audit Log' order by idx """,values={"doc_name":doc_name},as_dict=True)
+    return frappe.db.sql(""" select ali.item_code,ali.item_name,i.brand,i.sub_brand,i.mrp,ali.in_category_qty,ali.asset_available_qty,ali.facing,ali.last_visit_qty as expected_qty from `tabAudit Log Items` as ali join `tabItem` as i on i.item_code=ali.item_code where ali.parent=%(doc_name)s and ali.parenttype='Audit Log' order by ali.idx """,values={"doc_name":doc_name},as_dict=True)
 
 @frappe.whitelist(methods=("POST",))
 def cancel_audit_log(doc_name):
