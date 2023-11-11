@@ -77,7 +77,6 @@ function mark_return_button(frm){
                     label:"Item Code",
                     options: 'Item',
                     onchange: function(e) {
-                        console.log(e)
                         if(this.value){
                             dialog.set_value("uom","Piece")
                         }
@@ -97,6 +96,14 @@ function mark_return_button(frm){
                     fieldname:"uom",
                     label:"UOM",
                 },
+                {
+                    fieldtype:'Section Break'
+                },
+                {
+                    fieldtype:'Button',
+                    fieldname:'bulk_return',
+                    label:'Bulk Return'
+                }
 
             ],
             primary_action: function(values) {
@@ -130,6 +137,35 @@ function mark_return_button(frm){
             secondary_action_label: __('Close')
         }).show();
 
+        dialog.fields_dict.bulk_return.input.onclick = function(){
+            dialog.hide()
+           new frappe.ui.FileUploader({
+                as_dataurl: !0,
+                allow_multiple: !1,
+                restrictions: {
+                  allowed_file_types: [".csv"]
+                },
+                on_success(n) {
+                  var r = frappe.utils.csv_to_array(frappe.utils.get_decoded_string(n.dataurl)),
+                    o = r[2];
+                    
+                    frm.clear_table('items')
+                    frm.refresh_field('items')
+                    frappe.call({
+                        doc:frm.doc,
+                        method: 'bulk_return',
+                        freeze:true,
+                        freeze_message:"processing",
+                        async: false,
+                        args: {'arr':r},
+                        callback: function(r) {
+                              frm.refresh_field('items')
+                        }
+                        })
+                    
+                }
+              })
+        }
     });
     
 }

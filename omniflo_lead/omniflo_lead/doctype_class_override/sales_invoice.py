@@ -36,6 +36,35 @@ class CustomSalesInvoice(SalesInvoice):
 		source_doc=frappe.get_doc('Sales Invoice',source_doc_name)
 		map_child_doc(source_d=source_d,target_parent=self,table_map=table_map,source_parent=source_doc,qty=qty)
 
+	
+	@frappe.whitelist()
+	def bulk_return(self,arr):
+		required_fields=['item_code','qty','uom']
+		for count,name in enumerate(arr[0]):
+			if name in required_fields :
+				required_fields.remove(name)
+				if name=='item_code':
+					item_code_column=count
+				elif name=='qty':
+					qty_column=count
+				elif name=='uom':
+					uom_column=count
+			if not required_fields:
+				break
+		if required_fields:
+			rfs=", ".join(required_fields)
+			frappe.msgprint(msg=f"<b> Warning </b>: <strong> {rfs} </strong> fields are missing from csv file.",indicator='red',title='warning')
+			return
+		
+		for count,row in enumerate(arr[1:]):
+			if row!=['']:
+				item_code=row[item_code_column]
+				qty=row[qty_column]
+				uom=row[uom_column]
+				message=self.fifo_qty(item={'item_code':item_code,'qty':int(qty),'uom':uom})
+				if message:
+					frappe.msgprint(msg=f"CSV Row {count+2}: " + message,indicator='red',title='warning')
+			
 
 	@frappe.whitelist()
 	def fifo_qty(self,item):
@@ -43,23 +72,25 @@ class CustomSalesInvoice(SalesInvoice):
 			frappe.msgprint("Please Set Customer")
 			return
 		remaining_qty=item['qty']
-		fifo=frappe.db.sql("""  select *,(meta.qty-meta.return_item) as balance_qty from (
-							select si.name,si.posting_date,si.posting_time,TIMESTAMP(si.posting_date,si.posting_time) as posting_date_time,sii.item_code,sii.qty,sii.uom,sii.name as child_name,(select if(sum(SII.qty),abs(sum(SII.qty)),0) from `tabSales Invoice Item` as SII where SII.sales_invoice_item=sii.name and SII.docstatus=1) as return_item from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent where si.docstatus=1  and si.company='Omnipresent Services' and si.customer=%(customer)s and sii.item_code=%(item_code)s and si.discount_amount=0 and sii.uom=%(uom)s and is_return=0
-							) as meta where (meta.qty-meta.return_item) > 0 order by meta.posting_date_time  """,values={"customer":self.customer,"item_code":item["item_code"],"uom":item["uom"]},as_dict=True)
+
+		fifo=frappe.db.sql("""   select si.name,si.posting_date,si.posting_time,TIMESTAMP(si.posting_date,si.posting_time) as posting_date_time,sii.item_code,sii.qty,sii.uom,sii.name as child_name,( select sii.qty-if(abs(sum(SII.qty)),abs(sum(SII.qty)),0) from `tabSales Invoice Item` as SII where SII.sales_invoice_item=sii.name and SII.docstatus=1 ) as balance_qty from `tabSales Invoice` as si join `tabSales Invoice Item` as sii on si.name=sii.parent where si.docstatus=1  and si.company='Omnipresent Services' and si.customer=%(customer)s and sii.item_code=%(item_code)s and si.discount_amount=0 and sii.uom='Piece' and is_return=0 order by si.posting_date
+					 		""",values={"customer":self.customer,"item_code":item["item_code"],"uom":item["uom"]},as_dict=True)
+		
 		if not fifo:
 			return f"Can't find any qty to mark return for item_code {item['item_code']} and uom {item['uom']} "
 		for i in fifo:
 			balance_qty=i['balance_qty']
-			if remaining_qty>0:
-				if remaining_qty>=balance_qty:
-					remaining_qty-=i['balance_qty']
-					qty=i['balance_qty']
+			if balance_qty:
+				if remaining_qty>0:
+					if remaining_qty>=balance_qty:
+						remaining_qty-=i['balance_qty']
+						qty=i['balance_qty']
+					else:
+						qty=remaining_qty
+						remaining_qty=0
+					self.create_return(source_doc_name=i['name'],child_name=i["child_name"],qty=qty)
 				else:
-					qty=remaining_qty
-					remaining_qty=0
-				self.create_return(source_doc_name=i['name'],child_name=i["child_name"],qty=qty)
-			else:
-				break
+					break
 		if remaining_qty:
 			return f"For item code {item['item_code']} and uom {item['uom']}, {item['qty']-remaining_qty} quantity has been added, while the remaining {remaining_qty} cannot be added."
 		return
