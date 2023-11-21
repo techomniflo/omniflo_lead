@@ -19,7 +19,8 @@
   "e_mail",
   "latitude",
   "longitude",
-  "link"
+  "link",
+  "customer_link"
  ],
  "fields": [
   {
@@ -77,12 +78,18 @@
    "fieldname": "link",
    "fieldtype": "Long Text",
    "label": "Link"
+  },
+  {
+   "fieldname": "customer_link",
+   "fieldtype": "Link",
+   "label": "Customer Link",
+   "options": "Customer"
   }
  ],
  "icon": "fa fa-user",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-21 19:01:56.510006",
+ "modified": "2023-11-21 20:27:27.840337",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Store",
@@ -104,7 +111,6 @@
  ],
  "search_fields": "store_name,area",
  "show_name_in_global_search": 1,
- "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
