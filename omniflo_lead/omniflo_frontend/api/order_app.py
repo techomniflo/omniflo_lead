@@ -97,7 +97,6 @@ def create_sales_order(**kwargs):
 	doc.run_method("set_missing_values")
 	doc.run_method("calculate_taxes_and_totals")
 	doc.save(ignore_permissions=True)
-	doc.submit()
 	return doc
 
 @frappe.whitelist(allow_guest=True)
@@ -174,3 +173,44 @@ def cancel_sales_order_efficiency(sales_order):
 		doc.docstatus = DocStatus.cancelled()
 		doc.save(ignore_permissions=True)
 
+@frappe.whitelist(methods=("POST",))
+def submit_sales_order(docname):
+	doc=frappe.get_doc('Sales Order',docname)
+	doc.submit()
+	return doc
+
+
+@frappe.whitelist(methods=("POST",))
+def edit_sales_order(**kwargs):
+	args = json.loads(frappe.request.data)
+
+	try:
+		items=args["items"]
+		doc=frappe.get_doc('Sales Order',args["docname"])
+	except KeyError:
+		frappe.local.response['http_status_code'] = 400
+		return "Some argument's are missing. "
+	except frappe.DoesNotExistError:
+		frappe.clear_messages()
+		frappe.local.response['http_status_code'] = 400
+		return f"Sales Order :{args['docname']} is not valid."
+
+	if doc.docstatus==1:
+		frappe.clear_messages()
+		frappe.local.response['http_status_code'] = 400
+		return f"Sales Order :{args['docname']} can't edit because already submitted. "
+
+
+	doc.items=[]
+	for item in items:
+		doc.append('items',{'item_code' : item['item_code'], 
+						'item_name' : item['item_name'],
+						'qty':item['qty'],
+						'delivery_date':doc.delivery_date
+						})
+
+	doc.run_method("set_missing_values")
+	doc.run_method("calculate_taxes_and_totals")
+	doc.save(ignore_permissions=True)
+
+	return doc
