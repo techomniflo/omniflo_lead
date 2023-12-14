@@ -12,6 +12,13 @@ class Planogram(Document):
 				no_of_rows.add(item.row)
 		if len(no_of_rows)>self.max_rows:
 			frappe.throw(f'Rows are greater than {self.max_rows}')
+		
+		if self.asset_configuration=='Category':
+			if self.get('items'):
+				frappe.throw("Please remove items from shelf table beacuse items should in Category")
+		else:
+			if self.get('category_items'):
+				frappe.throw("Please remove items from category table beacuse items should in Shelf")
 	def before_save(self):
 		li=[]
 		if self.get('items'):
@@ -71,8 +78,6 @@ class Planogram(Document):
 
 
 			table=frappe.render_template(index,{'shelf_structure':shelf_structure})
-			print(table)
-			print(shelf_structure)
 			return table
 		return "\n\n\n\n"
 

@@ -1,48 +1,37 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:user",
- "creation": "2023-05-09 17:45:26.580398",
+ "autoname": "field:brand",
+ "creation": "2023-12-14 17:06:32.398376",
+ "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "disabled",
-  "user",
   "brand",
-  "password"
+  "links"
  ],
  "fields": [
-  {
-   "fieldname": "password",
-   "fieldtype": "Password",
-   "label": "Password"
-  },
   {
    "fieldname": "brand",
    "fieldtype": "Link",
    "label": "Brand",
-   "options": "Brand"
-  },
-  {
-   "default": "0",
-   "fieldname": "disabled",
-   "fieldtype": "Check",
-   "label": "Disabled"
-  },
-  {
-   "fieldname": "user",
-   "fieldtype": "Data",
-   "label": "User",
+   "options": "Brand",
    "unique": 1
+  },
+  {
+   "fieldname": "links",
+   "fieldtype": "Table",
+   "label": "Links",
+   "options": "Brand Reference Links"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-14 17:31:18.837308",
+ "modified": "2023-12-14 17:10:15.976009",
  "modified_by": "Administrator",
- "module": "Omniflo Frontend",
- "name": "Omniverse Brand Credential",
+ "module": "Omniflo Lead",
+ "name": "Brand Reference",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
