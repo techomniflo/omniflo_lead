@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-12-14 17:09:05.905034",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "party_type",
+  "party",
+  "customer",
+  "supplier"
+ ],
+ "fields": [
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Party Type",
+   "options": "\nCustomer\nSupplier"
+  },
+  {
+   "depends_on": "eval:doc.customer!='' && doc.supplier!='';",
+   "fieldname": "party",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Party",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.party_type=='Customer';",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "mandatory_depends_on": "eval:doc.party_type=='Customer';",
+   "options": "Customer"
+  },
+  {
+   "depends_on": "eval:doc.party_type=='Supplier';",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "mandatory_depends_on": "eval:doc.party_type=='Supplier';",
+   "options": "Supplier"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-12-14 17:28:30.654583",
+ "modified_by": "Administrator",
+ "module": "Omniflo Lead",
+ "name": "Brand Reference Links",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
