@@ -494,8 +494,8 @@ def item():
 @frappe.whitelist()
 def platform_sales_invoice():
 	""" This API provides details of invoices raised against the brand. """
-	values={"user":frappe.request.args["user"]}
-	return frappe.db.sql(""" select si.name as invoice_id,si.posting_date,si.outstanding_amount,si.due_date,si.net_total,si.total_taxes_and_charges,si.apply_discount_on,si.discount_amount,si.grand_total,si.rounding_adjustment,si.rounded_total from `tabSales Invoice` as si where si.docstatus=1 and si.company='Omniway Technologies Pvt Ltd' and si.customer in ( select obcl.customer from `tabOmniverse Brand Credential` as obc join `tabOmniverse Brand Credential Links` as obcl on obcl.parent=obc.name where obc.name=%(user)s and obcl.party_type='Customer' ) """,values=values,as_dict=True)
+	values={"brand":frappe.request.args["brand"]}
+	return frappe.db.sql(""" select si.name as invoice_id,si.posting_date,si.outstanding_amount,si.due_date,si.net_total,si.total_taxes_and_charges,si.apply_discount_on,si.discount_amount,si.grand_total,si.rounding_adjustment,si.rounded_total from `tabSales Invoice` as si where si.docstatus=1 and si.company='Omniway Technologies Pvt Ltd' and si.customer in ( select brl.customer from `tabBrand Reference Links` as brl where brl.parent = %(brand)s and brl.party_type='Customer' ) """,values=values,as_dict=True)
 
 @frappe.whitelist()
 def item_billed_to_store():
