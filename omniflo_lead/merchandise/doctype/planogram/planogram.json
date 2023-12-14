@@ -53,6 +53,7 @@
   },
   {
    "allow_bulk_edit": 1,
+   "depends_on": "eval:doc.asset_configuration != 'Category' ;",
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
@@ -99,6 +100,7 @@
    "label": "Cohort Section"
   },
   {
+   "depends_on": "eval:doc.asset_configuration != 'Category';",
    "fieldname": "shelf_preview",
    "fieldtype": "HTML",
    "label": "Shelf Preview"
@@ -166,10 +168,11 @@
    "fieldname": "asset_configuration",
    "fieldtype": "Select",
    "label": "Asset Configuration",
-   "options": "\nSpotlight\nFull Endcap\nSplit Endcap"
+   "options": "\nSpotlight\nFull Endcap\nSplit Endcap\nCategory"
   },
   {
    "allow_bulk_edit": 1,
+   "depends_on": "eval:doc.asset_configuration == 'Category';",
    "fieldname": "category_items",
    "fieldtype": "Table",
    "label": "Category Items",
@@ -178,7 +181,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-20 14:22:38.735082",
+ "modified": "2023-12-04 17:08:14.507229",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Planogram",
