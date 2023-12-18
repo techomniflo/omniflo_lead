@@ -71,8 +71,7 @@
    "fieldname": "shelf_code",
    "fieldtype": "Link",
    "label": "Shelf Code",
-   "options": "Shelf",
-   "reqd": 1
+   "options": "Shelf"
   },
   {
    "fetch_from": "shelf_code.shelf_name",
@@ -181,7 +180,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-04 17:08:14.507229",
+ "modified": "2023-12-18 13:54:48.640603",
  "modified_by": "Administrator",
  "module": "Merchandise",
  "name": "Planogram",

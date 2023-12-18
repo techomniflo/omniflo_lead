@@ -6,12 +6,6 @@ from frappe.model.document import Document
 
 class Planogram(Document):
 	def validate(self):
-		if self.get('items'):
-			no_of_rows=set()
-			for item in self.get('items'):
-				no_of_rows.add(item.row)
-		if len(no_of_rows)>self.max_rows:
-			frappe.throw(f'Rows are greater than {self.max_rows}')
 		
 		if self.asset_configuration=='Category':
 			if self.get('items'):
