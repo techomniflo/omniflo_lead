@@ -30,7 +30,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "reqd": 1
   },
   {
    "fieldname": "agreement",
@@ -89,7 +90,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Asset",
-   "options": "CTU\nFSU\nEnd Cap\nIn Category"
+   "options": "CTU\nFSU\nEnd Cap\nIn Category",
+   "reqd": 1
   },
   {
    "default": "0",
@@ -117,13 +119,14 @@
    "fieldname": "item_group",
    "fieldtype": "Link",
    "label": "Item Group",
-   "options": "Item Group"
+   "options": "Item Group",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-20 17:58:24.219193",
+ "modified": "2023-12-19 18:42:08.165378",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Customer Terms of Trade",
