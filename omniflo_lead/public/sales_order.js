@@ -1,10 +1,4 @@
 frappe.ui.form.on('Sales Order', {
-    setup:function(frm){
-        frm.set_df_property('set_warehouse','read_only',1)
-        frm.doc.set_warehouse="Kormangala WareHouse - OS"
-        frm.doc.company="Omnipresent Services"
-
-    },
     refresh: function(frm) {
         text_wrap_items_table(frm)
         frm.set_query('customer', () => {
