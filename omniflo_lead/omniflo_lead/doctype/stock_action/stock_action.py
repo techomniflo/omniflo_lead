@@ -117,6 +117,7 @@ class StockAction(Document):
 	def make_stock_transfer(self):
 		doc=frappe.new_doc("Stock Entry")
 		doc.company=self.company
+		doc.set_posting_time=self.set_posting_time
 		doc.posting_date=self.posting_date
 		doc.posting_time=self.posting_time
 		doc.stock_entry_type="Material Transfer"
@@ -138,6 +139,7 @@ class StockAction(Document):
 		doc=frappe.new_doc("Purchase Invoice")
 		doc.company=self.company
 		doc.supplier=self.supplier
+		doc.set_posting_time=self.set_posting_time
 		doc.posting_date=self.posting_date
 		doc.posting_time=self.posting_time
 		doc.is_return=1

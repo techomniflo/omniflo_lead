@@ -12,6 +12,7 @@
   "company",
   "posting_date",
   "posting_time",
+  "set_posting_time",
   "from_warehouse",
   "to_warehouse",
   "stock_entry",
@@ -36,6 +37,7 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Posting Date",
+   "read_only_depends_on": "eval:doc.set_posting_time==0",
    "reqd": 1
   },
   {
@@ -45,6 +47,7 @@
    "fieldtype": "Time",
    "in_list_view": 1,
    "label": "Posting Time",
+   "read_only_depends_on": "eval:doc.set_posting_time==0",
    "reqd": 1
   },
   {
@@ -159,12 +162,18 @@
    "label": "Purchase Invoice",
    "options": "Purchase Invoice",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "set_posting_time",
+   "fieldtype": "Check",
+   "label": "Edit Posting Date and Time"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-16 17:33:46.839890",
+ "modified": "2024-01-08 18:51:56.177364",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Stock Action",
