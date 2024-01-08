@@ -17,6 +17,7 @@
   "pincode",
   "phone_no",
   "e_mail",
+  "store_type",
   "latitude",
   "longitude",
   "link",
@@ -84,12 +85,18 @@
    "fieldtype": "Link",
    "label": "Customer Link",
    "options": "Customer"
+  },
+  {
+   "fieldname": "store_type",
+   "fieldtype": "Select",
+   "label": "Store Type",
+   "options": "\nSupermarket\nPharmacy"
   }
  ],
  "icon": "fa fa-user",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-21 20:27:27.840337",
+ "modified": "2024-01-08 18:01:35.782142",
  "modified_by": "Administrator",
  "module": "Omniflo Lead",
  "name": "Store",
