@@ -207,7 +207,9 @@ class StockAction(Document):
 	
 	@frappe.whitelist()
 	def set_previous_gle_queue(self):
-		rv=[]
+		if self.reason_type in ["Damage","Expiry"]:
+			return
+		
 		for item in self.items:
 			previous_sle = get_previous_sle(
 						{
@@ -218,8 +220,9 @@ class StockAction(Document):
 						}
 					)
 			previous_stock_queue=previous_sle.get("stock_queue") or []
-			frappe.db.sql(""" update `tabStock Action Item` set previous_stock_queue=%(previous_stock_queue)s where name=%(name)s """,values={"name":item.name,"previous_stock_queue":previous_stock_queue})
-			frappe.db.commit()
+			if previous_stock_queue:
+				frappe.db.sql(""" update `tabStock Action Item` set previous_stock_queue=%(previous_stock_queue)s where name=%(name)s """,values={"name":item.name,"previous_stock_queue":previous_stock_queue})
+				frappe.db.commit()
 
 def set_taxes(doc):
 		taxes=get_taxes_and_charges(master_doctype='Purchase Taxes and Charges Template',master_name=doc.taxes_and_charges)
