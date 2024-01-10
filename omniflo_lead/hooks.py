@@ -109,7 +109,6 @@ doc_events = {
     "Sales Invoice":{
         "on_submit": "omniflo_lead.omniflo_lead.doctype_events.sales_invoice.on_submit",
 		"on_cancel": "omniflo_lead.omniflo_lead.doctype_events.sales_invoice.on_cancel",
-		"before_submit": "omniflo_lead.omniflo_lead.doctype_events.sales_invoice.before_submit",
         "before_cancel": "omniflo_lead.omniflo_lead.doctype_events.sales_invoice.before_cancel",
         "validate": "omniflo_lead.omniflo_lead.doctype_events.sales_invoice.validate"
     },

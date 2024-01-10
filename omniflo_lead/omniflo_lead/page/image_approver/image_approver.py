@@ -3,10 +3,11 @@ import json
 
 @frappe.whitelist()
 def get_details():
-    detils_of_image=frappe.db.sql("""select ald.name,al.customer,al.docstatus,(ald.item_code)as picture_type,'Audit Log' as doctype,ald.parent,ald.modified_by,ald.image,(DATE_FORMAT(ald.creation,'%d-%m-%y %r')) as date_and_time ,u.full_name from `tabAudit Log Details` as ald left join `tabAudit Log` as al on ald.parent = al.name left join `tabUser` as u on ald.modified_by=u.email where ald.image is not null and Date(ald.creation) > Date('2023-11-30') and (ald.status="" or ald.status='Hold' or ald.status is null ) and (ald.item_code='Shelf' or ald.item_code='Category') 
-                                  union
-                                  select osii.name,osi.customer,osi.docstatus,osii.type as picture_type,'Omniverse Store Image' as doctype,osii.parent,osii.modified_by,osii.image,(DATE_FORMAT(osii.creation,'%d-%m-%y %r')) as date_and_time ,u.full_name from `tabOmniverse Store Image Items` as osii join `tabOmniverse Store Image` as osi on osi.name=osii.parent left join `tabUser` as u on osii.modified_by=u.name where (osii.status="" or osii.status is null)  and osii.image is not null
-                                             """,as_dict=True)
+    detils_of_image=frappe.db.sql("""select * from 
+                                        ( select ald.name,al.customer,al.docstatus,(ald.item_code)as picture_type,'Audit Log' as doctype,ald.parent,ald.modified_by,ald.image,(DATE_FORMAT(ald.creation,'%d-%m-%y %r')) as date_and_time ,u.full_name from `tabAudit Log Details` as ald left join `tabAudit Log` as al on ald.parent = al.name left join `tabUser` as u on ald.modified_by=u.email where ald.image is not null and Date(ald.creation) > Date('2023-11-30') and (ald.status="" or ald.status='Hold' or ald.status is null ) and (ald.item_code='Shelf' or ald.item_code='Category') 
+                                        union
+                                        select osii.name,osi.customer,osi.docstatus,osii.type as picture_type,'Omniverse Store Image' as doctype,osii.parent,osii.modified_by,osii.image,(DATE_FORMAT(osii.creation,'%d-%m-%y %r')) as date_and_time ,u.full_name from `tabOmniverse Store Image Items` as osii join `tabOmniverse Store Image` as osi on osi.name=osii.parent left join `tabUser` as u on osii.modified_by=u.name where (osii.status="" or osii.status is null)  and osii.image is not null ) as meta
+                                    order by meta.date_and_time desc """,as_dict=True)
     for image in detils_of_image:
         if image['doctype']=="Audit Log":
             values={'name':image['parent']}
