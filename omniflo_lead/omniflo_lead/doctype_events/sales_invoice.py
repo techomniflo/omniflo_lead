@@ -60,6 +60,41 @@ def on_submit(doc, event):
 			customer_bin.stock_uom = item.stock_uom
 			customer_bin.save(ignore_permissions = True)
 	change_sales_order_status(doc,'Closed')
+	create_discount_ledger(doc)
+
+def create_discount_ledger(doc):
+	if doc.company!='Omnipresent Services' or doc.is_return==1:
+		return
+
+	taxes=[]
+	try:
+		margin_percentage=int(doc.selling_price_list[:2])
+	except Exception:
+		return
+	customer_group=doc.customer_group
+	for tax in doc.taxes:
+		if tax.charge_type=="On Net Total":
+			taxes.append(tax.account_head)
+	for item in doc.items:
+		item_tax_template=item.item_tax_template
+		tax_percentage=get_tax_percentage(tax_type=taxes,item_tax_template=item_tax_template)
+		discount_percentage=calculate_discount_percentage(customer_group=customer_group,mrp=item.mrp,rate=item.rate,margin_percentage=margin_percentage,tax_percentage=tax_percentage)
+		if discount_percentage:
+			frappe.get_doc({
+				'doctype':'Discount Ledger',
+				'item_code':item.item_code,
+				'voucher_type':'Sales Invoice',
+				'voucher_no':doc.name,
+				'voucher_details_no':item.name,
+				'posting_date':doc.posting_date,
+				'posting_time':doc.posting_time,
+				'uom':item.uom,
+				'qty':item.qty,
+				'is_cancelled':0,
+				'mrp':item.mrp,
+				'discount_percentage':discount_percentage,
+				'company':doc.company
+			}).save(ignore_permissions=True)
 
 def on_cancel(doc,event):
 	for item in doc.items:
@@ -75,94 +110,17 @@ def on_cancel(doc,event):
 				customer_bin.available_qty -= item.stock_qty
 				customer_bin.stock_uom = item.stock_uom
 				customer_bin.save(ignore_permissions = True)
+	cancel_discount_ledger(doc)
 
-def before_submit(doc,method):
-	if hasattr(doc,'is_return'):
-		if doc.is_return:
-			doc.qr_code_url=""
-			return
-	create_qr_code(doc)
-	file_doc = frappe.db.get_value('File', {'attached_to_doctype': 'Sales Invoice', 'attached_to_name': doc.name})
-	if file_doc:
-		file_doc=frappe.get_doc("File",file_doc)
-		doc.qr_code_url=file_doc.file_url
-
-def create_qr_code(self):
-	if self.status!='Return' and self.company=='Omnipresent Services':
-		try:
-			qrcode_as_png(customer=self.customer,invoiceNo=self.name,amount=self.rounded_total,gstin=self.customer_gstin)
-		except:
-			pass
-
-def qrcode_as_png(customer,invoiceNo,amount,email=None,contact=None,gstin=None,notes=None):
-	doctype='Sales Invoice'
-	docname='qr_code_url'
-
-	qr_code_url = createQR(customer, invoiceNo, amount, email, contact, gstin, notes)
-
-
-	if not qr_code_url:
+def cancel_discount_ledger(doc):
+	if doc.company!='Omnipresent Services' or doc.is_return==1:
 		return
-
-	url = qrcreate(qr_code_url)
-	png_file_name = docname + '_qr_code' + frappe.generate_hash(length=20)
-	png_file_name = '{}.png'.format(png_file_name)
-	
-	file_doc = frappe.new_doc('File')
-	file_doc.file_name = png_file_name
-	file_doc.attached_to_doctype=doctype
-	file_doc.attached_to_name=invoiceNo
-	file_doc.attached_to_field=docname
-	file_doc.content=base64.b64decode(url.png_as_base64_str(scale=3, module_color=(0, 0, 0, 255), background=(255, 255, 255, 255), quiet_zone=4))
-	file_doc.save(ignore_permissions=True)
-	
-	return
-
-
-
-def createQR(name, invoiceNo, amount, email=None, contact=None, gstin=None, notes=None):
-	amount = amount * 100  #convert paise to rs
-	headers = {
-		'Content-Type': 'application/json',
-		'Authorization': frappe.conf.razorpay_authorization
-		}
-	def createCustomer(name, email="", contact="",gstin="",notes={}):
-		url = "https://api.razorpay.com/v1/customers"
-		
-		data = {
-				"name": name,
-				"email": email,
-				"contact": contact,
-				"fail_existing": "0",
-				"notes": notes
-			}
-		if gstin:
-			data["gstin"] = gstin
-		payload = json.dumps(data)
-		response = requests.request("POST", url, headers=headers, data=payload)
-		return (response.text)
-	customer = json.loads(createCustomer(name, email, contact=contact, gstin=gstin,notes={}))
-	url = "https://api.razorpay.com/v1/payments/qr_codes"
-	data = {
-		"type": "upi_qr",
-		"name": invoiceNo,
-		"usage": "multiple_use",
-		"fixed_amount": False,
-		"payment_amount": amount,
-		"description": "For "+name+" against "+invoiceNo,
-		"customer_id": customer["id"],
-		"notes": {
-			"invoice": invoiceNo,
-			"amount": amount,
-			"customer": name
-		}
-	}
-	payload = json.dumps(data)
-	response = requests.request("POST", url, headers=headers, data=payload)
-	plink = json.loads(response.text)
-	# print("plink is", plink)
-	ic = plink["image_content"]
-	return ic
+	for item in doc.items:
+		discount_ledger_doc_name = frappe.db.get_value('Discount Ledger', {'voucher_type': 'Sales Invoice', 'voucher_no':doc.name,'voucher_details_no':item.name})
+		if discount_ledger_doc_name:
+			discount_ledger_doc = frappe.get_doc('Discount Ledger', discount_ledger_doc_name)
+			discount_ledger_doc.is_cancelled=1
+			discount_ledger_doc.save(ignore_permissions=True)	
 
 def change_sales_order_status(doc,status):
 	if doc.is_return:
@@ -180,3 +138,30 @@ def change_sales_order_status(doc,status):
 				update_status(status="Draft",name=orders)
 		except:
 			pass
+
+def calculate_discount_percentage(customer_group,mrp,rate,margin_percentage,tax_percentage):
+	per_sku_amount=rate+(rate*tax_percentage/100)
+	if	customer_group=='Margin on Mrp':
+		margin=margin_percentage*mrp/100
+		discount_amount=(mrp-per_sku_amount)-margin
+		discount_percentage=round((discount_amount/mrp)*100)
+	elif customer_group=='Margin on Discount':
+		add_margin_to_rate=per_sku_amount/(1-(margin_percentage/100))
+		if add_margin_to_rate==mrp-(mrp*margin_percentage/100):
+			discount_percentage=0
+		else:
+			discount_percentage=round((1-add_margin_to_rate/mrp )*100)
+	else:
+		discount_percentage = None
+	return discount_percentage
+		
+def get_tax_percentage(tax_type,item_tax_template:str) -> int:
+	if len(tax_type)==1:
+		tax_type=tax_type[0]
+		sql= f"""select sum(iitd.tax_rate) from `tabItem Tax Template` as iit join `tabItem Tax Template Detail` as iitd on iit.name=iitd.parent where iit.name='{item_tax_template}' and iitd.tax_type = '{tax_type}' """
+	else:
+		tax_type=tuple(tax_type)
+		sql= f"""select sum(iitd.tax_rate) from `tabItem Tax Template` as iit join `tabItem Tax Template Detail` as iitd on iit.name=iitd.parent where iit.name='{item_tax_template}' and iitd.tax_type in {tax_type} """
+	total_tax=frappe.db.sql(sql,as_list=True)
+	if total_tax:
+		return total_tax[0][0]
