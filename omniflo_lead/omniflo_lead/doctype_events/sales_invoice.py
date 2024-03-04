@@ -140,6 +140,8 @@ def change_sales_order_status(doc,status):
 			pass
 
 def calculate_discount_percentage(customer_group,mrp,rate,margin_percentage,tax_percentage):
+	if rate==0:
+		return 100
 	per_sku_amount=rate+(rate*tax_percentage/100)
 	if	customer_group=='Margin on Mrp':
 		margin=margin_percentage*mrp/100
